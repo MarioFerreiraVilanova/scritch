@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "5960530384",
+    "project_id": "minimalist-fasting",
+    "storage_bucket": "minimalist-fasting.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5960530384:android:1f4cd32af114f96c48e1d5",
+        "android_client_info": {
+          "package_name": "app.minimal.fasting"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC813Oxbll2H2HhpbcgxRzi16qeHq2_4gM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
