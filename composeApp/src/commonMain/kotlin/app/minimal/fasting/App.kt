@@ -1,36 +1,38 @@
 package app.minimal.fasting
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import app.minimal.fasting.home.HomeScreen
+import app.minimal.fasting.landing.LandingScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 @Preview
 fun App(
-    viewModel: AppViewModel = koinViewModel<AppViewModel>()
+    viewModel: AppViewModel = koinViewModel<AppViewModel>(),
+    navController: NavHostController = rememberNavController()
 ) {
-    val viewState by viewModel.appViewState.collectAsState()
-
     MaterialTheme {
-        Column {
-            Text (if (viewState.user == null) "Signed out" else "Signed in")
+        val viewState by viewModel.appViewState.collectAsState()
 
-            if (viewState.user == null){
-                Button(
-                    onClick = { viewModel.onLogIn() }
-                ){
-                    Text("Log in")
-                }
-            } else {
-                Button(
-                    onClick = { viewModel.onLogOut() }
-                ){
-                    Text("Log out")
-                }
+        NavHost(
+            navController = navController,
+            startDestination = when (viewState.user){
+                null -> Screen.Landing.name
+                else -> Screen.Home.name
+            }
+        ) {
+            composable( route = Screen.Landing.name ){
+                LandingScreen()
+            }
+
+            composable( route = Screen.Home.name ){
+                HomeScreen()
             }
         }
     }

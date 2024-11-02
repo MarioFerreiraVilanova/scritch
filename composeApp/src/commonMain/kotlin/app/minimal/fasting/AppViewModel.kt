@@ -3,7 +3,6 @@ package app.minimal.fasting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.FirebaseUser
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,12 +28,6 @@ class AppViewModel: ViewModel() {
                     )
                 }
             }
-        }
-    }
-
-    fun onLogIn(){
-        viewModelScope.launch {
-            Firebase.auth.signInAnonymously()
         }
     }
 
