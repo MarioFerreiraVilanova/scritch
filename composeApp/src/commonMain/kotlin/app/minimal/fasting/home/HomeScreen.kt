@@ -18,6 +18,12 @@ fun HomeScreen (
         Text ("You are logged in!")
 
         Button(
+            onClick = { viewModel.onClick() }
+        ){
+            Text("Click")
+        }
+
+        Button(
             onClick = { viewModel.onLogOut() }
         ){
             Text("Log out")
