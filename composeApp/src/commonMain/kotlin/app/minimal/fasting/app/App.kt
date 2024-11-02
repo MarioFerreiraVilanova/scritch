@@ -1,4 +1,4 @@
-package app.minimal.fasting
+package app.minimal.fasting.app
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import app.minimal.fasting.navigation.Screen
 import app.minimal.fasting.home.HomeScreen
 import app.minimal.fasting.landing.LandingScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview

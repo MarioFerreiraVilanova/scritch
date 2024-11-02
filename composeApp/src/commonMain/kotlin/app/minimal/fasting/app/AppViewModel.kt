@@ -1,4 +1,4 @@
-package app.minimal.fasting
+package app.minimal.fasting.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -28,12 +28,6 @@ class AppViewModel: ViewModel() {
                     )
                 }
             }
-        }
-    }
-
-    fun onLogOut(){
-        viewModelScope.launch {
-            Firebase.auth.signOut()
         }
     }
 }

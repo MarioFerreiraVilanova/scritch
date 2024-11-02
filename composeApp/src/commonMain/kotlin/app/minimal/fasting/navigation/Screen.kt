@@ -1,4 +1,4 @@
-package app.minimal.fasting
+package app.minimal.fasting.navigation
 
 enum class Screen {
     Landing,
