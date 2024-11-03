@@ -25,9 +25,9 @@ fun App(
 
         NavHost(
             navController = navController,
-            startDestination = when (viewState.user){
-                null -> Unauthenticated
-                else -> Authenticated
+            startDestination = when (viewState){
+                is AppViewState.Unauthenticated -> Unauthenticated
+                is AppViewState.Authenticated -> Authenticated
             }
         ) {
             navigation<Unauthenticated> (

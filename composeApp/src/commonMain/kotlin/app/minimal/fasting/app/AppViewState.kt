@@ -2,6 +2,11 @@ package app.minimal.fasting.app
 
 import dev.gitlive.firebase.auth.FirebaseUser
 
-data class AppViewState(
-    val user: FirebaseUser?
-)
+sealed class AppViewState {
+
+    data object Unauthenticated : AppViewState()
+
+    data class Authenticated (
+        val user: FirebaseUser,
+    ): AppViewState ()
+}
