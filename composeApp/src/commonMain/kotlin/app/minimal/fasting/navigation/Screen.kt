@@ -1,6 +1,11 @@
 package app.minimal.fasting.navigation
 
-enum class Screen {
-    Landing,
-    Home,
+import kotlinx.serialization.Serializable
+
+// Main sections of the app
+@Serializable object Unauthenticated {
+    @Serializable object LandingScreen
+}
+@Serializable object Authenticated {
+    @Serializable object HomeScreen
 }

@@ -5,10 +5,12 @@ import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import app.minimal.fasting.navigation.Screen
 import app.minimal.fasting.home.HomeScreen
 import app.minimal.fasting.landing.LandingScreen
+import app.minimal.fasting.navigation.Authenticated
+import app.minimal.fasting.navigation.Unauthenticated
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -24,16 +26,24 @@ fun App(
         NavHost(
             navController = navController,
             startDestination = when (viewState.user){
-                null -> Screen.Landing.name
-                else -> Screen.Home.name
+                null -> Unauthenticated
+                else -> Authenticated
             }
         ) {
-            composable( route = Screen.Landing.name ){
-                LandingScreen()
+            navigation<Unauthenticated> (
+                startDestination = Unauthenticated.LandingScreen,
+            ) {
+                composable<Unauthenticated.LandingScreen> {
+                    LandingScreen()
+                }
             }
 
-            composable( route = Screen.Home.name ){
-                HomeScreen()
+            navigation <Authenticated> (
+                startDestination = Authenticated.HomeScreen,
+            ){
+                composable<Authenticated.HomeScreen> {
+                    HomeScreen()
+                }
             }
         }
     }
