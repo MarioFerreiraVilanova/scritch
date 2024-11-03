@@ -1,4 +1,4 @@
-package app.minimal.fasting.fasting.ui
+package app.minimal.fasting.fasting.status
 
 import androidx.lifecycle.ViewModel
 
