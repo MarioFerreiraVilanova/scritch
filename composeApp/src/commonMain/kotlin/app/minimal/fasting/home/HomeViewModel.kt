@@ -12,7 +12,13 @@ class HomeViewModel(
 ): ViewModel() {
 
     fun onClick(){
-        userPrefsRepository.click()
+        viewModelScope.launch {
+            Firebase.auth.currentUser?.let {
+                userPrefsRepository.click(
+                    userId = it.uid
+                )
+            }
+        }
     }
 
     fun onLogOut(){
