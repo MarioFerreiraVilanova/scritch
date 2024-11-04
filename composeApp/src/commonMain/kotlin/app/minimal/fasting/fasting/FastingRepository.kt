@@ -21,7 +21,7 @@ class FastingRepository {
             }
         }
 
-    suspend fun click (userId: String){
+    suspend fun savePrefs (userId: String){
         val userPrefsSnapshot = Firebase.firestore
             .collection(FASTING_PREFS_COLLECTION)
             .document(userId)

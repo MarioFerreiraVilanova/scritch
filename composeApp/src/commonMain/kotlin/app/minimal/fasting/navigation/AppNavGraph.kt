@@ -13,7 +13,6 @@ import app.minimal.fasting.app.AppViewModel
 import app.minimal.fasting.app.AppViewState
 import app.minimal.fasting.fasting.status.FastingStatusScreen
 import app.minimal.fasting.fasting.wizard.ui.FastingWizardScreen
-import app.minimal.fasting.home.HomeScreen
 import app.minimal.fasting.landing.LandingScreen
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -53,9 +52,6 @@ private fun NavGraphBuilder.authenticatedSubGraph(
     navigation <Authenticated> (
         startDestination = Authenticated.FastingStatus,
     ){
-        composable<Authenticated.HomeScreen> {
-            HomeScreen()
-        }
         composable<Authenticated.FastingStatus> {
             FastingStatusScreen(
                 onNeedsSetup = { navController.navigate(Authenticated.FastingWizard) }
