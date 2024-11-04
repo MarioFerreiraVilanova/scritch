@@ -8,4 +8,6 @@ import kotlinx.serialization.Serializable
 }
 @Serializable object Authenticated {
     @Serializable object HomeScreen
+    @Serializable object FastingStatus
+    @Serializable object FastingWizard
 }

@@ -8,5 +8,6 @@ sealed class AppViewState {
 
     data class Authenticated (
         val user: FirebaseUser,
+        val needsInitialSetup: Boolean? = null,
     ): AppViewState ()
 }
