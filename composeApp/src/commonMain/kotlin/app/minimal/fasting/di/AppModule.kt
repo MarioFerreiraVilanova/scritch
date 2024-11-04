@@ -1,6 +1,7 @@
 package app.minimal.fasting.di
 
 import app.minimal.fasting.app.AppViewModel
+import app.minimal.fasting.auth.AuthenticationRepository
 import app.minimal.fasting.landing.LandingViewModel
 import app.minimal.fasting.home.HomeViewModel
 import app.minimal.fasting.fasting.FastingRepository
@@ -16,4 +17,5 @@ val appModule = module {
     viewModelOf(::FastingStatusViewModel)
     viewModelOf(::FastingWizardViewModel)
     single { FastingRepository() }
+    single { AuthenticationRepository() }
 }

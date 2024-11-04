@@ -2,6 +2,7 @@ package app.minimal.fasting.app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.minimal.fasting.auth.AuthenticationRepository
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,10 +11,12 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class AppViewModel : ViewModel() {
+class AppViewModel(
+    private val authenticationRepository: AuthenticationRepository,
+) : ViewModel() {
 
     private val _appViewState = MutableStateFlow(
-        Firebase.auth.currentUser?.let { user ->
+        authenticationRepository.user()?.let { user ->
             AppViewState.Authenticated(user = user)
         } ?: AppViewState.Unauthenticated
     )
@@ -21,7 +24,7 @@ class AppViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            Firebase.auth.authStateChanged.collectLatest { user ->
+            authenticationRepository.userFlow().collectLatest { user ->
                 _appViewState.update {
                     when (user) {
                         null -> AppViewState.Unauthenticated

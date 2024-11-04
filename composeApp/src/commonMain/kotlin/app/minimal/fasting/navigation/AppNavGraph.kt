@@ -32,7 +32,9 @@ fun AppNavGraph(
         }
     ) {
         unauthenticatedSubGraph()
-        authenticatedSubGraph()
+        authenticatedSubGraph(
+            navController = navController,
+        )
     }
 }
 
@@ -45,7 +47,9 @@ private fun NavGraphBuilder.unauthenticatedSubGraph() =
         }
     }
 
-private fun NavGraphBuilder.authenticatedSubGraph() =
+private fun NavGraphBuilder.authenticatedSubGraph(
+    navController: NavHostController,
+) =
     navigation <Authenticated> (
         startDestination = Authenticated.FastingStatus,
     ){
@@ -53,7 +57,9 @@ private fun NavGraphBuilder.authenticatedSubGraph() =
             HomeScreen()
         }
         composable<Authenticated.FastingStatus> {
-            FastingStatusScreen()
+            FastingStatusScreen(
+                onNeedsSetup = { navController.navigate(Authenticated.FastingWizard) }
+            )
         }
         composable<Authenticated.FastingWizard> {
             FastingWizardScreen()

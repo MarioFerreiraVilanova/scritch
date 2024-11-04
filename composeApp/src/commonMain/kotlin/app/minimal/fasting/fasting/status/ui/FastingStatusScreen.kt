@@ -16,20 +16,28 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun FastingStatusScreen(
     modifier: Modifier = Modifier,
-    viewModel: FastingStatusViewModel = koinViewModel<FastingStatusViewModel>()
+    viewModel: FastingStatusViewModel = koinViewModel<FastingStatusViewModel>(),
+    onNeedsSetup: () -> Unit,
 ) {
     val viewState by viewModel.viewState.collectAsState()
 
-    when (viewState){
-        FastingStatusViewState.Loading -> LoadingScreen()
-        is FastingStatusViewState.Loaded -> Loaded()
+    when (viewState) {
+        FastingStatusViewState.Loading -> LoadingScreen(
+            modifier = modifier,
+        )
+
+        is FastingStatusViewState.Loaded -> Loaded(
+            modifier = modifier,
+        )
+
+        FastingStatusViewState.NeedsSetup -> onNeedsSetup()
     }
 }
 
 @Composable
 private fun Loaded(
     modifier: Modifier = Modifier,
-){
+) {
     Box(
         modifier = modifier.fillMaxSize()
     ) {
