@@ -3,8 +3,6 @@ package app.minimal.fasting.app
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.minimal.fasting.auth.AuthenticationRepository
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest

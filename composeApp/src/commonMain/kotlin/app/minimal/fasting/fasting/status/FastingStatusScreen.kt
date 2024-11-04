@@ -1,4 +1,4 @@
-package app.minimal.fasting.fasting.status.ui
+package app.minimal.fasting.fasting.status
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,8 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import app.minimal.fasting.common.ui.LoadingScreen
-import app.minimal.fasting.fasting.status.FastingStatusViewModel
-import app.minimal.fasting.fasting.status.FastingStatusViewState
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

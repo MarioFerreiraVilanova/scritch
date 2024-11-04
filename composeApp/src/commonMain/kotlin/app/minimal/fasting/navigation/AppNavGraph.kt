@@ -11,7 +11,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import app.minimal.fasting.app.AppViewModel
 import app.minimal.fasting.app.AppViewState
-import app.minimal.fasting.fasting.status.ui.FastingStatusScreen
+import app.minimal.fasting.fasting.status.FastingStatusScreen
 import app.minimal.fasting.fasting.wizard.ui.FastingWizardScreen
 import app.minimal.fasting.home.HomeScreen
 import app.minimal.fasting.landing.LandingScreen

@@ -2,14 +2,15 @@ package app.minimal.fasting.landing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.auth
+import app.minimal.fasting.auth.AuthenticationRepository
 import kotlinx.coroutines.launch
 
-class LandingViewModel: ViewModel() {
+class LandingViewModel(
+    private val authenticationRepository: AuthenticationRepository,
+): ViewModel() {
     fun onLogIn(){
         viewModelScope.launch {
-            Firebase.auth.signInAnonymously()
+            authenticationRepository.login()
         }
     }
 }
