@@ -6,6 +6,7 @@ import app.minimal.fasting.fasting.FastingPrefs
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.datetime.LocalTime
 
 class FastingWizardViewModel : ViewModel() {
     private val _viewState = MutableStateFlow(
@@ -16,10 +17,16 @@ class FastingWizardViewModel : ViewModel() {
     )
     val viewState = _viewState.asStateFlow()
 
-    fun onNext() {
+    fun onNext(
+        selectedTime: LocalTime? = null
+    ) {
         _viewState.update {
             it.copy(
-                currentPage = it.currentPage.next()
+                currentPage = it.currentPage.next(),
+                fastingPrefs = it.fastingPrefs.copy(
+                    startingTimeHour = selectedTime?.hour ?: it.fastingPrefs.startingTimeHour,
+                    startingTimeMinute = selectedTime?.minute ?: it.fastingPrefs.startingTimeMinute,
+                )
             )
         }
     }

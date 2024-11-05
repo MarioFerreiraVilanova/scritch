@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class FastingPrefs(
     // Time to start fasting
     val startingTimeHour: Int = 17,
-    val sartingTimeMinute: Int = 0,
+    val startingTimeMinute: Int = 0,
     // Fasting goal in hours
     val fastingHours: Int = 16,
     // lunes, martes, miercoles, viernes, sabado, domingo
