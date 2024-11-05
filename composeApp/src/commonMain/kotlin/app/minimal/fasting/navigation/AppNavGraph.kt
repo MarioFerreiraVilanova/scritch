@@ -12,7 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import app.minimal.fasting.app.AppViewModel
 import app.minimal.fasting.app.AppViewState
 import app.minimal.fasting.fasting.status.FastingStatusScreen
-import app.minimal.fasting.fasting.wizard.ui.FastingWizardScreen
+import app.minimal.fasting.fasting.wizard.FastingWizardScreen
 import app.minimal.fasting.landing.LandingScreen
 import org.koin.compose.viewmodel.koinViewModel
 
