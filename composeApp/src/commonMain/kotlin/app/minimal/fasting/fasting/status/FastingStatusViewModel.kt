@@ -33,9 +33,11 @@ class FastingStatusViewModel(
                         FastingStatusViewState.NeedsSetup
                     }
                 } else {
-                    FastingStatusViewState.Loaded(
-                        fastingPrefs = fastingPrefs
-                    )
+                    _viewState.update {
+                        FastingStatusViewState.Loaded(
+                            fastingPrefs = fastingPrefs
+                        )
+                    }
                 }
             }
         }
