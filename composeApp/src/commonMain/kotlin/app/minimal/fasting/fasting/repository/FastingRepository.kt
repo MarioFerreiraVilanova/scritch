@@ -1,4 +1,4 @@
-package app.minimal.fasting.fasting
+package app.minimal.fasting.fasting.repository
 
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.DocumentSnapshot

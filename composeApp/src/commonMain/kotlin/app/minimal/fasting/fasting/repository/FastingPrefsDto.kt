@@ -1,4 +1,4 @@
-package app.minimal.fasting.fasting
+package app.minimal.fasting.fasting.repository
 
 import kotlinx.serialization.Serializable
 

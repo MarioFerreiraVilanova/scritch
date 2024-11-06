@@ -3,7 +3,7 @@ package app.minimal.fasting.fasting.status
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.minimal.fasting.auth.AuthenticationRepository
-import app.minimal.fasting.fasting.FastingRepository
+import app.minimal.fasting.fasting.repository.FastingRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest

@@ -1,6 +1,6 @@
 package app.minimal.fasting.fasting.status
 
-import app.minimal.fasting.fasting.FastingPrefsDto
+import app.minimal.fasting.fasting.repository.FastingPrefsDto
 
 sealed class FastingStatusViewState {
     data object Loading: FastingStatusViewState()

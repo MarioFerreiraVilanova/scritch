@@ -1,6 +1,6 @@
 package app.minimal.fasting.fasting.wizard
 
-import app.minimal.fasting.fasting.FastingPrefsDto
+import app.minimal.fasting.fasting.repository.FastingPrefsDto
 
 enum class WizardPage {
     Welcome,
