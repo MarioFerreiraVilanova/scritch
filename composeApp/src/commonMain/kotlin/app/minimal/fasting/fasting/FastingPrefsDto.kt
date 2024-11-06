@@ -3,7 +3,7 @@ package app.minimal.fasting.fasting
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FastingPrefs(
+data class FastingPrefsDto(
     // Time to start fasting
     val startingTimeHour: Int = 17,
     val startingTimeMinute: Int = 0,

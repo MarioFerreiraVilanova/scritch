@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.minimal.fasting.auth.AuthenticationRepository
 import app.minimal.fasting.common.next
-import app.minimal.fasting.fasting.FastingPrefs
+import app.minimal.fasting.fasting.FastingPrefsDto
 import app.minimal.fasting.fasting.FastingRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +18,7 @@ class FastingWizardViewModel(
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(
         WizardViewState(
-            fastingPrefs = FastingPrefs(),
+            fastingPrefs = FastingPrefsDto(),
             currentPage = WizardPage.entries.first(),
         )
     )

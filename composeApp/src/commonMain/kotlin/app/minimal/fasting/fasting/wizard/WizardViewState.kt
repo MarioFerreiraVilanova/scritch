@@ -1,6 +1,6 @@
 package app.minimal.fasting.fasting.wizard
 
-import app.minimal.fasting.fasting.FastingPrefs
+import app.minimal.fasting.fasting.FastingPrefsDto
 
 enum class WizardPage {
     Welcome,
@@ -10,6 +10,6 @@ enum class WizardPage {
 }
 
 data class WizardViewState(
-    val fastingPrefs: FastingPrefs,
+    val fastingPrefs: FastingPrefsDto,
     val currentPage: WizardPage,
 )
