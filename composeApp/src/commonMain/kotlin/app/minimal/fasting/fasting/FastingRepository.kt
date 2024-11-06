@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 private const val FASTING_PREFS_COLLECTION = "FastingPrefs"
 
 class FastingRepository {
-    fun fastingPrefs (userId: String): Flow<FastingPrefs?> = Firebase.firestore
+    fun fastingPrefs(userId: String): Flow<FastingPrefs?> = Firebase.firestore
         .collection(FASTING_PREFS_COLLECTION)
         .document(userId)
         .snapshots
@@ -21,18 +21,10 @@ class FastingRepository {
             }
         }
 
-    suspend fun savePrefs (userId: String){
-        val userPrefsSnapshot = Firebase.firestore
-            .collection(FASTING_PREFS_COLLECTION)
-            .document(userId)
-            .get()
-
-        val fastingPrefs = if (userPrefsSnapshot.exists){
-            userPrefsSnapshot.data<FastingPrefs>()
-        } else {
-            FastingPrefs()
-        }
-        println("Click!")
-        Firebase.firestore.collection(FASTING_PREFS_COLLECTION).document(userId).set(fastingPrefs)
+    suspend fun savePrefs(
+        userId: String,
+        prefs: FastingPrefs,
+    ) {
+        Firebase.firestore.collection(FASTING_PREFS_COLLECTION).document(userId).set(prefs)
     }
 }

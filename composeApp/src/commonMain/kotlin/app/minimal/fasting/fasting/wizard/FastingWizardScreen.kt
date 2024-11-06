@@ -33,7 +33,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun FastingWizardScreen(
     modifier: Modifier = Modifier,
-    viewModel: FastingWizardViewModel = koinViewModel<FastingWizardViewModel>()
+    viewModel: FastingWizardViewModel = koinViewModel<FastingWizardViewModel>(),
+    onDone: () -> Unit,
 ) {
     val viewState by viewModel.viewState.collectAsState()
 
@@ -67,6 +68,7 @@ fun FastingWizardScreen(
                 viewModel.onNext(
                     selectedDays = daySelection
                 )
+                onDone()
             }
         )
     }

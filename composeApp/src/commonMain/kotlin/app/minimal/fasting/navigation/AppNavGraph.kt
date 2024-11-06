@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -58,6 +59,14 @@ private fun NavGraphBuilder.authenticatedSubGraph(
             )
         }
         composable<Authenticated.FastingWizard> {
-            FastingWizardScreen()
+            FastingWizardScreen(
+                onDone = {
+                    navController.navigate(Authenticated.FastingStatus){
+                        popUpTo(Authenticated.FastingWizard) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
         }
     }
