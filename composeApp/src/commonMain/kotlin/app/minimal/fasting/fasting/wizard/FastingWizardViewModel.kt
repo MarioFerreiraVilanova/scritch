@@ -18,7 +18,9 @@ class FastingWizardViewModel : ViewModel() {
     val viewState = _viewState.asStateFlow()
 
     fun onNext(
-        selectedTime: LocalTime? = null
+        selectedTime: LocalTime? = null,
+        selectedFastingGoal: Int? = null,
+        selectedDays: Map<String, Boolean>? = null,
     ) {
         _viewState.update {
             it.copy(
@@ -26,6 +28,8 @@ class FastingWizardViewModel : ViewModel() {
                 fastingPrefs = it.fastingPrefs.copy(
                     startingTimeHour = selectedTime?.hour ?: it.fastingPrefs.startingTimeHour,
                     startingTimeMinute = selectedTime?.minute ?: it.fastingPrefs.startingTimeMinute,
+                    fastingHours = selectedFastingGoal ?: it.fastingPrefs.fastingHours,
+                    fastingDays = selectedDays ?: it.fastingPrefs.fastingDays,
                 )
             )
         }
