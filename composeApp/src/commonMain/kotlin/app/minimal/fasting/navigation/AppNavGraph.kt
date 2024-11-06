@@ -5,7 +5,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -21,12 +20,12 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AppNavGraph(
     viewModel: AppViewModel = koinViewModel<AppViewModel>(),
     navController: NavHostController = rememberNavController(),
-){
+) {
     val viewState by viewModel.appViewState.collectAsState()
 
     NavHost(
         navController = navController,
-        startDestination = when (viewState){
+        startDestination = when (viewState) {
             is AppViewState.Unauthenticated -> Unauthenticated
             is AppViewState.Authenticated -> Authenticated
         }
@@ -39,7 +38,7 @@ fun AppNavGraph(
 }
 
 private fun NavGraphBuilder.unauthenticatedSubGraph() =
-    navigation<Unauthenticated> (
+    navigation<Unauthenticated>(
         startDestination = Unauthenticated.LandingScreen,
     ) {
         composable<Unauthenticated.LandingScreen> {
@@ -50,9 +49,9 @@ private fun NavGraphBuilder.unauthenticatedSubGraph() =
 private fun NavGraphBuilder.authenticatedSubGraph(
     navController: NavHostController,
 ) =
-    navigation <Authenticated> (
+    navigation<Authenticated>(
         startDestination = Authenticated.FastingStatus,
-    ){
+    ) {
         composable<Authenticated.FastingStatus> {
             FastingStatusScreen(
                 onNeedsSetup = { navController.navigate(Authenticated.FastingWizard) }
@@ -61,7 +60,7 @@ private fun NavGraphBuilder.authenticatedSubGraph(
         composable<Authenticated.FastingWizard> {
             FastingWizardScreen(
                 onDone = {
-                    navController.navigate(Authenticated.FastingStatus){
+                    navController.navigate(Authenticated.FastingStatus) {
                         popUpTo(Authenticated.FastingWizard) {
                             inclusive = true
                         }
