@@ -1,8 +1,11 @@
 package app.minimal.fasting.fasting.status
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +22,7 @@ fun FastingStatusScreen(
     modifier: Modifier = Modifier,
     viewModel: FastingStatusViewModel = koinViewModel<FastingStatusViewModel>(),
     onNeedsSetup: () -> Unit,
+    onStartFasting: () -> Unit,
 ) {
     val viewState by viewModel.viewState.collectAsState()
 
@@ -29,6 +33,7 @@ fun FastingStatusScreen(
 
         is FastingStatusViewState.Loaded -> Loaded(
             viewState = viewState as FastingStatusViewState.Loaded,
+            onStartFasting = onStartFasting,
             modifier = modifier,
         )
 
@@ -39,13 +44,18 @@ fun FastingStatusScreen(
 @Composable
 private fun Loaded(
     viewState: FastingStatusViewState.Loaded,
+    onStartFasting: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val text = when (viewState.window){
         is DayWindow.EatingViewState -> {
             viewState.window.fastStartingTime.let {
                 if (it.date == now().date){
-                    "Next fast starts at ${it.hour}:${it.minute}"
+                    if (it < now()){
+                        "Next fast starts at ${it.hour}:${it.minute}"
+                    } else {
+                        "Time to fast!"
+                    }
                 } else {
                     "Next fast starts on ${it.dayOfWeek} at ${it.hour}:${it.minute}"
                 }
@@ -53,15 +63,22 @@ private fun Loaded(
         }
         is DayWindow.FastingViewState -> "TODO"
     }
-    Box(
-        modifier = modifier.fillMaxSize()
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Text(
             modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.Center),
+                .fillMaxWidth(),
             text = text,
             style = MaterialTheme.typography.h2
+        )
+
+        Button(
+            content = {
+                Text("Start fasting")
+            },
+            onClick = onStartFasting,
         )
     }
 }

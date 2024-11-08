@@ -9,4 +9,5 @@ import kotlinx.serialization.Serializable
 @Serializable object Authenticated {
     @Serializable object FastingStatus
     @Serializable object FastingWizard
+    @Serializable object StartFasting
 }
