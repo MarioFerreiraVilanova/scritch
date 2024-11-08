@@ -35,9 +35,10 @@ fun StartFastingScreen(
         )
         Button(
             onClick = viewModel::onStartFastingClick,
+            enabled = !viewState.saving,
             content = {
                 if (viewState.saving){
-                    Text("Saving...")
+                    Text("Save (start fasting now)")
                 } else {
                     Text("Save (start fasting now)")
                 }
