@@ -11,6 +11,7 @@ import app.minimal.fasting.fasting.repository.FastingPrefsDto
 import app.minimal.fasting.fasting.repository.FastingRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -47,6 +48,10 @@ class FastingStatusViewModel(
                     prefs = prefs,
                     entry = entry,
                 )
+            }.collectLatest { updatedViewState ->
+                _viewState.update {
+                    updatedViewState
+                }
             }
         }
     }
@@ -54,11 +59,9 @@ class FastingStatusViewModel(
     private fun updateViewState (
         prefs: FastingPrefsDto?,
         entry: FastingEntryDto?,
-    ) {
-        if (prefs == null) {
-            _viewState.update {
-                FastingStatusViewState.NeedsSetup
-            }
+    ): FastingStatusViewState {
+        return if (prefs == null) {
+            FastingStatusViewState.NeedsSetup
         } else{
             val window = if (entry == null){
                 DayWindow.EatingViewState(
@@ -71,12 +74,10 @@ class FastingStatusViewModel(
                     endingTime = startingTime.plusHours(prefs.fastingHours)
                 )
             }
-            _viewState.update {
-                FastingStatusViewState.Loaded(
-                    goal = prefs.fastingHours,
-                    window = window,
-                )
-            }
+            FastingStatusViewState.Loaded(
+                goal = prefs.fastingHours,
+                window = window,
+            )
         }
     }
 
