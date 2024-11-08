@@ -1,11 +1,23 @@
 package app.minimal.fasting.fasting.status
 
-import app.minimal.fasting.fasting.repository.FastingPrefsDto
+import kotlinx.datetime.LocalDateTime
 
 sealed class FastingStatusViewState {
-    data object Loading: FastingStatusViewState()
-    data object NeedsSetup: FastingStatusViewState()
+    data object Loading : FastingStatusViewState()
+    data object NeedsSetup : FastingStatusViewState()
     data class Loaded(
-        val fastingPrefs: FastingPrefsDto,
-    ): FastingStatusViewState()
+        val goal: Int,
+        val window: DayWindow,
+    ) : FastingStatusViewState()
+
+}
+
+sealed class DayWindow {
+    data class EatingViewState(
+        val fastStartingTime: LocalDateTime,
+    ) : DayWindow()
+
+    data class FastingViewState(
+        val nextStartingTime: LocalDateTime,
+    ) : DayWindow()
 }
