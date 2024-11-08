@@ -14,10 +14,11 @@ sealed class FastingStatusViewState {
 
 sealed class DayWindow {
     data class EatingViewState(
-        val fastStartingTime: LocalDateTime,
+        val startingTime: LocalDateTime,
     ) : DayWindow()
 
     data class FastingViewState(
-        val nextStartingTime: LocalDateTime,
+        val startingTime: LocalDateTime,
+        val endingTime: LocalDateTime,
     ) : DayWindow()
 }

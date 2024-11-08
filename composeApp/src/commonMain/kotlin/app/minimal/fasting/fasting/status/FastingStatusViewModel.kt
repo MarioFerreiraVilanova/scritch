@@ -3,22 +3,22 @@ package app.minimal.fasting.fasting.status
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.minimal.fasting.auth.AuthenticationRepository
+import app.minimal.fasting.common.fromTimestamp
 import app.minimal.fasting.common.now
+import app.minimal.fasting.common.plusHours
+import app.minimal.fasting.fasting.repository.FastingEntryDto
 import app.minimal.fasting.fasting.repository.FastingPrefsDto
 import app.minimal.fasting.fasting.repository.FastingRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atTime
 import kotlinx.datetime.plus
-import kotlinx.datetime.toLocalDateTime
 
 class FastingStatusViewModel(
     fastingRepository: FastingRepository,
@@ -35,23 +35,47 @@ class FastingStatusViewModel(
             ?: throw (RuntimeException("We shouldn't be here if the user is not authenticated"))
     )
 
+    private val currentFastingEntry = fastingRepository.currentFast(
+        userId = authenticationRepository.user()?.id
+            ?: throw (RuntimeException("We shouldn't be here if the user is not authenticated"))
+    )
+
     init {
         viewModelScope.launch {
-            fastingPrefs.collectLatest { fastingPrefs ->
-                if (fastingPrefs == null) {
-                    _viewState.update {
-                        FastingStatusViewState.NeedsSetup
-                    }
-                } else {
-                    _viewState.update {
-                        FastingStatusViewState.Loaded(
-                            goal = fastingPrefs.fastingHours,
-                            window = DayWindow.EatingViewState(
-                                fastStartingTime = fastingPrefs.nextFastingStartTime()
-                            ),
-                        )
-                    }
-                }
+            fastingPrefs.combine(currentFastingEntry){ prefs, entry ->
+                updateViewState(
+                    prefs = prefs,
+                    entry = entry,
+                )
+            }
+        }
+    }
+
+    private fun updateViewState (
+        prefs: FastingPrefsDto?,
+        entry: FastingEntryDto?,
+    ) {
+        if (prefs == null) {
+            _viewState.update {
+                FastingStatusViewState.NeedsSetup
+            }
+        } else{
+            val window = if (entry == null){
+                DayWindow.EatingViewState(
+                    startingTime = prefs.nextFastingStartTime()
+                )
+            } else {
+                val startingTime = LocalDateTime.fromTimestamp(entry.startTime)
+                DayWindow.FastingViewState(
+                    startingTime = startingTime,
+                    endingTime = startingTime.plusHours(prefs.fastingHours)
+                )
+            }
+            _viewState.update {
+                FastingStatusViewState.Loaded(
+                    goal = prefs.fastingHours,
+                    window = window,
+                )
             }
         }
     }

@@ -37,6 +37,22 @@ class FastingRepository {
         Firebase.firestore.collection(FASTING_PREFS_COLLECTION).document(userId).set(prefs)
     }
 
+    fun currentFast(
+        userId: String,
+    ): Flow<FastingEntryDto?> = Firebase.firestore
+        .collection(FASTING_PREFS_COLLECTION)
+        .document(userId)
+        .collection(FASTING_ENTRIES_COLLECTION)
+        .where {
+            this.all(
+                "active".equalTo(true)
+            )
+        }
+        .snapshots
+        .map {
+            it.documents.firstOrNull()?.data<FastingEntryDto>()
+        }
+
     @OptIn(ExperimentalUuidApi::class)
     suspend fun startFast(
         userId: String,
