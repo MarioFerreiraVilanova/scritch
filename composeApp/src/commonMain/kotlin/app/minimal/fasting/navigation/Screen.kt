@@ -10,4 +10,5 @@ import kotlinx.serialization.Serializable
     @Serializable object FastingStatus
     @Serializable object FastingWizard
     @Serializable object StartFasting
+    @Serializable object FinishFasting
 }

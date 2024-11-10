@@ -57,6 +57,7 @@ private fun NavGraphBuilder.authenticatedSubGraph(
             FastingStatusScreen(
                 onNeedsSetup = { navController.navigate(Authenticated.FastingWizard) },
                 onStartFasting = { navController.navigate(Authenticated.StartFasting) },
+                onFinishFasting = { navController.navigate(Authenticated.FinishFasting) },
             )
         }
         composable<Authenticated.FastingWizard> {

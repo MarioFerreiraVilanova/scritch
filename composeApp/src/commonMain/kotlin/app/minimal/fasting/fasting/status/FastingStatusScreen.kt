@@ -21,6 +21,7 @@ fun FastingStatusScreen(
     viewModel: FastingStatusViewModel = koinViewModel<FastingStatusViewModel>(),
     onNeedsSetup: () -> Unit,
     onStartFasting: () -> Unit,
+    onFinishFasting: () -> Unit,
 ) {
     val viewState by viewModel.viewState.collectAsState()
 
@@ -32,6 +33,7 @@ fun FastingStatusScreen(
         is FastingStatusViewState.Loaded -> Loaded(
             viewState = viewState as FastingStatusViewState.Loaded,
             onStartFasting = onStartFasting,
+            onFinishFasting = onFinishFasting,
             modifier = modifier,
         )
 
@@ -43,6 +45,7 @@ fun FastingStatusScreen(
 private fun Loaded(
     viewState: FastingStatusViewState.Loaded,
     onStartFasting: () -> Unit,
+    onFinishFasting: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val text = when (viewState.window){
@@ -59,7 +62,11 @@ private fun Loaded(
                 }
             }
         }
-        is DayWindow.FastingViewState -> "TODO"
+        is DayWindow.FastingViewState -> {
+            // TODO calculate for how long the user has been fasting
+            // or maybe do that in the view model and put it in the view state
+            "Fasting, your fast ends at some point! woohooo"
+        }
     }
     Column(
         modifier = modifier.fillMaxSize(),
@@ -72,11 +79,20 @@ private fun Loaded(
             style = MaterialTheme.typography.h2
         )
 
-        Button(
-            content = {
-                Text("Start fasting")
-            },
-            onClick = onStartFasting,
-        )
+        when (viewState.window){
+            is DayWindow.EatingViewState -> Button(
+                content = {
+                    Text("Start fasting")
+                },
+                onClick = onStartFasting,
+            )
+            is DayWindow.FastingViewState -> Button(
+                content = {
+                    Text("Finish fasting")
+                },
+                onClick = onFinishFasting,
+            )
+        }
+
     }
 }
