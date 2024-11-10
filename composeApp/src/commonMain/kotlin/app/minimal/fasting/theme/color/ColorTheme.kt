@@ -18,29 +18,29 @@ private const val Icicle = 0xfff0f0f5
 private const val Silver = 0xffdfdfe8
 
 data class ColorTheme (
-    val primary01: Color,
-    val primary02: Color,
-    val primary03: Color,
+    val emphasis: Color,
+    val emphasis2: Color,
+    val emphasis3: Color,
     val surface01: Color,
     val surface02: Color,
     val surface03: Color,
     val surface04: Color,
-    val neutral01: Color,
-    val neutral02: Color,
-    val neutral03: Color,
-    val neutral04: Color,
+    val typography: Color,
+    val typography2: Color,
+    val typography3: Color,
+    val typography4: Color,
 )
 
 fun lightTheme() = ColorTheme(
-    primary01 = Color(Pumpkin),
-    primary02 = Color(StravaOrange),
-    primary03 = Color(Rust),
+    emphasis = Color(StravaOrange),
+    emphasis2 = Color(Pumpkin),
+    emphasis3 = Color(Rust),
     surface01 = Color.White,
     surface02 = Color(Fog),
     surface03 = Color(Icicle),
     surface04 = Color(Silver),
-    neutral01 = Color.Black,
-    neutral02 = Color(Coal),
-    neutral03 = Color(Asphalt),
-    neutral04 = Color(Gravel),
+    typography = Color.Black,
+    typography2 = Color(Coal),
+    typography3 = Color(Asphalt),
+    typography4 = Color(Gravel),
 )
