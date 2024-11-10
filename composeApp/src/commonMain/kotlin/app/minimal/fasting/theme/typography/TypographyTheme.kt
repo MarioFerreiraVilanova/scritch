@@ -1,5 +1,6 @@
 package app.minimal.fasting.theme.typography
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -9,7 +10,9 @@ import minimalfasting.composeapp.generated.resources.bevietnampro_semibold
 import org.jetbrains.compose.resources.Font
 
 data class TypographyTheme (
-    val bigText: TextStyle = TextStyle(),
+    val h1: TextStyle = TextStyle(),
+    val h2: TextStyle = TextStyle(),
+    val h3: TextStyle = TextStyle(),
 
 )
 
@@ -18,13 +21,26 @@ fun typographyTheme(): TypographyTheme {
     val beVietnam = FontFamily(
         Font(Res.font.bevietnampro_semibold)
     )
+    MaterialTheme.typography
     return TypographyTheme(
-        bigText = TextStyle(
+        h1 = TextStyle(
             fontFamily = beVietnam,
             fontSize = 96.sp,
             lineHeight = 112.sp,
             letterSpacing = (-1.5).sp
         ),
+        h2 = TextStyle(
+            fontFamily = beVietnam,
+            fontSize = 60.sp,
+            lineHeight = 72.sp,
+            letterSpacing = (-0.5).sp
+        ),
+        h3 = TextStyle(
+            fontFamily = beVietnam,
+            fontSize = 48.sp,
+            lineHeight = 56.sp,
+            letterSpacing = 0.sp
+        )
 
     )
 }
