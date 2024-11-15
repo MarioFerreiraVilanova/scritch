@@ -28,3 +28,7 @@ fun LocalDateTime.plusHours(hours: Int): LocalDateTime = this
     .toInstant(TimeZone.currentSystemDefault())
     .plus(duration = hours.toDuration(DurationUnit.HOURS))
     .toLocalDateTime(TimeZone.currentSystemDefault())
+
+fun LocalDateTime.toHoursAndMinutes(): String {
+    return "${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}"
+}

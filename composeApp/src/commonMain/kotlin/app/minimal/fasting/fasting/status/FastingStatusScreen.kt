@@ -4,8 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.Button
@@ -14,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -23,11 +25,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import app.minimal.fasting.common.now
+import app.minimal.fasting.common.toHoursAndMinutes
 import app.minimal.fasting.common.toTimestamp
 import app.minimal.fasting.common.ui.LoadingScreen
 import app.minimal.fasting.theme.MinimalTheme
+import app.minimal.fasting.theme.components.ProgressBar
 import app.minimal.fasting.theme.components.TextButton
-import dev.gitlive.firebase.firestore.Timestamp
 import dev.gitlive.firebase.firestore.toDuration
 import kotlinx.coroutines.delay
 import org.koin.compose.viewmodel.koinViewModel
@@ -65,7 +68,7 @@ private fun Loaded(
     onFinishFasting: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val reference = when (viewState.window){
+    val reference = when (viewState.window) {
         is DayWindow.EatingViewState -> viewState.window.startingTime
         is DayWindow.FastingViewState -> viewState.window.startingTime
     }
@@ -75,14 +78,15 @@ private fun Loaded(
     }
 
     var isRunning by remember { mutableStateOf(false) }
-    LifecycleResumeEffect(Unit){
+    LifecycleResumeEffect(Unit) {
         isRunning = true
         onPauseOrDispose { isRunning = false }
     }
 
-    LaunchedEffect(isRunning){
-        while (isRunning){
-            remainingTime = now().toTimestamp().toDuration().minus(reference.toTimestamp().toDuration())
+    LaunchedEffect(isRunning) {
+        while (isRunning) {
+            remainingTime =
+                now().toTimestamp().toDuration().minus(reference.toTimestamp().toDuration())
             delay(500)
         }
     }
@@ -103,9 +107,10 @@ private fun Loaded(
         }
 
         is DayWindow.FastingViewState -> {
-            val timePassed = remainingTime.toComponents { hours, minutes, seconds, _ -> "${hours}h and ${minutes}m" }
-            when (remainingTime.inWholeHours){
-                else -> "You've been fasting for $timePassed"
+            val timePassed =
+                remainingTime.toComponents { hours, minutes, seconds, _ -> "${hours}h and ${minutes}m" }
+            when (remainingTime.inWholeHours) {
+                else -> "you've been fasting for $timePassed."
             }
         }
     }
@@ -124,13 +129,22 @@ private fun Loaded(
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        BasicText(
-            modifier = Modifier.fillMaxWidth(),
-            text = text,
-            style = MinimalTheme.typography.h3.copy(
-                color = MinimalTheme.color.typography2,
-            ),
-        )
+
+        Column {
+            BasicText(
+                modifier = Modifier.fillMaxWidth(),
+                text = text,
+                style = MinimalTheme.typography.h3.copy(
+                    color = MinimalTheme.color.typography2,
+                ),
+            )
+
+            Spacer(modifier = Modifier.height(124.dp))
+
+            (viewState.window as? DayWindow.FastingViewState)?.let {
+                FastingProgress(it)
+            }
+        }
 
         when (viewState.window) {
             is DayWindow.EatingViewState -> Button(
@@ -147,5 +161,39 @@ private fun Loaded(
             )
         }
 
+    }
+}
+
+@Composable
+private fun FastingProgress(
+    viewState: DayWindow.FastingViewState,
+) {
+
+    ProgressBar(
+        progress = 0.75f,
+        circleProgress = 0.5f,
+    )
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                top = 4.dp,
+            ),
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        BasicText(
+            text = viewState.startingTime.toHoursAndMinutes(),
+            style = MinimalTheme.typography.h6.copy(
+                color = MinimalTheme.color.typography4,
+            ),
+        )
+
+        BasicText(
+            text = viewState.endingTime.toHoursAndMinutes(),
+            style = MinimalTheme.typography.h6.copy(
+                color = MinimalTheme.color.typography4,
+            ),
+        )
     }
 }
