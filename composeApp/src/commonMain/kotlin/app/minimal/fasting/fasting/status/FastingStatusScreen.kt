@@ -7,16 +7,27 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import app.minimal.fasting.common.now
+import app.minimal.fasting.common.toTimestamp
 import app.minimal.fasting.common.ui.LoadingScreen
 import app.minimal.fasting.theme.MinimalTheme
+import dev.gitlive.firebase.firestore.Timestamp
+import dev.gitlive.firebase.firestore.toDuration
+import kotlinx.coroutines.delay
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -52,6 +63,28 @@ private fun Loaded(
     onFinishFasting: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val reference = when (viewState.window){
+        is DayWindow.EatingViewState -> viewState.window.startingTime
+        is DayWindow.FastingViewState -> viewState.window.startingTime
+    }
+
+    var remainingTime by remember {
+        mutableStateOf(now().toTimestamp().toDuration().minus(reference.toTimestamp().toDuration()))
+    }
+
+    var isRunning by remember { mutableStateOf(false) }
+    LifecycleResumeEffect(Unit){
+        isRunning = true
+        onPauseOrDispose { isRunning = false }
+    }
+
+    LaunchedEffect(isRunning){
+        while (isRunning){
+            remainingTime = now().toTimestamp().toDuration().minus(reference.toTimestamp().toDuration())
+            delay(500)
+        }
+    }
+
     val text = when (viewState.window) {
         is DayWindow.EatingViewState -> {
             viewState.window.startingTime.let {
@@ -68,9 +101,10 @@ private fun Loaded(
         }
 
         is DayWindow.FastingViewState -> {
-            // TODO calculate for how long the user has been fasting
-            // or maybe do that in the view model and put it in the view state
-            "You've been fasting for 12h and 45m"
+            val timePassed = remainingTime.toComponents { hours, minutes, seconds, _ -> "$hours hours and $minutes minutes" }
+            when (remainingTime.inWholeHours){
+                else -> "Fasting for $timePassed"
+            }
         }
     }
     Box(
@@ -88,12 +122,12 @@ private fun Loaded(
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text(
-            modifier = Modifier
-                .fillMaxWidth(),
+        BasicText(
+            modifier = Modifier.fillMaxWidth(),
             text = text,
-            style = MinimalTheme.typography.h3,
-            color = MinimalTheme.color.typography2,
+            style = MinimalTheme.typography.h3.copy(
+                color = MinimalTheme.color.typography2,
+            ),
         )
 
         when (viewState.window) {
@@ -112,5 +146,27 @@ private fun Loaded(
             )
         }
 
+    }
+}
+
+@Composable
+private fun calculateRemainingTimeText(
+    reference: Timestamp,
+){
+    var remainingTime by remember {
+        mutableStateOf(now().toTimestamp().toDuration().minus(reference.toDuration()))
+    }
+
+    var isRunning by remember { mutableStateOf(false) }
+    LifecycleResumeEffect(Unit){
+        isRunning = true
+        onPauseOrDispose { isRunning = false }
+    }
+
+    LaunchedEffect(isRunning){
+        while (isRunning){
+            remainingTime = now().toTimestamp().toDuration().minus(reference.toDuration())
+            delay(500)
+        }
     }
 }
