@@ -142,7 +142,11 @@ private fun Loaded(
             Spacer(modifier = Modifier.height(124.dp))
 
             (viewState.window as? DayWindow.FastingViewState)?.let {
-                FastingProgress(it)
+                FastingProgress(
+                    goal = viewState.goal,
+                    progressInMinutes = remainingTime.inWholeMinutes.toInt(),
+                    viewState = it,
+                )
             }
         }
 
@@ -166,12 +170,16 @@ private fun Loaded(
 
 @Composable
 private fun FastingProgress(
+    goal: Int,
+    progressInMinutes: Int,
     viewState: DayWindow.FastingViewState,
 ) {
+    val safetyZone = 12f/goal
+    val progress = progressInMinutes / (goal.times(60))
 
     ProgressBar(
-        progress = 0.75f,
-        circleProgress = 0.5f,
+        progress = safetyZone,
+        circleProgress = progress.toFloat(),
     )
 
     Row(
