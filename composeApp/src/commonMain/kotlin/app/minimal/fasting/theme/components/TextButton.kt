@@ -16,7 +16,9 @@ fun TextButton(
     MaterialTheme.typography.h5
     BasicText(
         text = label,
-        style = MinimalTheme.typography.h5,
+        style = MinimalTheme.typography.h4.copy(
+            color = MinimalTheme.color.typography2
+        ),
         modifier = modifier.clickable (
             onClick = onClick,
         )
