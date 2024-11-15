@@ -4,6 +4,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import minimalfasting.composeapp.generated.resources.Res
 import minimalfasting.composeapp.generated.resources.bevietnampro_semibold
@@ -13,7 +14,8 @@ data class TypographyTheme (
     val h1: TextStyle = TextStyle(),
     val h2: TextStyle = TextStyle(),
     val h3: TextStyle = TextStyle(),
-
+    val h4: TextStyle = TextStyle(),
+    val h5: TextStyle = TextStyle(),
 )
 
 @Composable
@@ -39,6 +41,18 @@ fun typographyTheme(): TypographyTheme {
             fontFamily = beVietnam,
             fontSize = 48.sp,
             lineHeight = 56.sp,
+            letterSpacing = 0.sp
+        ),
+        h4 = TextStyle(
+            fontFamily = beVietnam,
+            fontSize = 34.sp,
+            lineHeight = 36.sp,
+            letterSpacing = 0.25.sp
+        ),
+        h5 = TextStyle(
+            fontFamily = beVietnam,
+            fontSize = 24.sp,
+            lineHeight = 24.sp,
             letterSpacing = 0.sp
         )
 

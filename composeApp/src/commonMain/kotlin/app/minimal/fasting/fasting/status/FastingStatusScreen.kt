@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -25,6 +26,7 @@ import app.minimal.fasting.common.now
 import app.minimal.fasting.common.toTimestamp
 import app.minimal.fasting.common.ui.LoadingScreen
 import app.minimal.fasting.theme.MinimalTheme
+import app.minimal.fasting.theme.components.TextButton
 import dev.gitlive.firebase.firestore.Timestamp
 import dev.gitlive.firebase.firestore.toDuration
 import kotlinx.coroutines.delay
@@ -138,35 +140,12 @@ private fun Loaded(
                 onClick = onStartFasting,
             )
 
-            is DayWindow.FastingViewState -> Button(
-                content = {
-                    Text("Finish fasting")
-                },
+            is DayWindow.FastingViewState -> TextButton(
+                label = "Finish fasting.",
                 onClick = onFinishFasting,
+                modifier = Modifier.align(Alignment.End)
             )
         }
 
-    }
-}
-
-@Composable
-private fun calculateRemainingTimeText(
-    reference: Timestamp,
-){
-    var remainingTime by remember {
-        mutableStateOf(now().toTimestamp().toDuration().minus(reference.toDuration()))
-    }
-
-    var isRunning by remember { mutableStateOf(false) }
-    LifecycleResumeEffect(Unit){
-        isRunning = true
-        onPauseOrDispose { isRunning = false }
-    }
-
-    LaunchedEffect(isRunning){
-        while (isRunning){
-            remainingTime = now().toTimestamp().toDuration().minus(reference.toDuration())
-            delay(500)
-        }
     }
 }
