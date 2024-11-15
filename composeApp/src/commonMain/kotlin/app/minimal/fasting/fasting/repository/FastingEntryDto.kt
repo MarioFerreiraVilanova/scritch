@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FastingEntryDto(
     val startTime: Timestamp,
-    val active: Boolean,
+    val endTime: Timestamp? = null,
 )

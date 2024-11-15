@@ -108,7 +108,13 @@ private fun Loaded(
 
         is DayWindow.FastingViewState -> {
             val timePassed =
-                remainingTime.toComponents { hours, minutes, seconds, _ -> "${hours}h and ${minutes}m" }
+                remainingTime.toComponents { hours, minutes, seconds, _ ->
+                    if (hours.toInt() == 0) {
+                        "${minutes} minutes"
+                    } else {
+                        "${hours}h and ${minutes}m"
+                    }
+                }
             when (remainingTime.inWholeHours) {
                 else -> "you've been fasting for $timePassed."
             }

@@ -45,7 +45,7 @@ class FastingRepository {
         .collection(FASTING_ENTRIES_COLLECTION)
         .where {
             this.all(
-                "active".equalTo(true)
+                "endTime".equalTo(null)
             )
         }
         .snapshots
@@ -65,7 +65,7 @@ class FastingRepository {
             .collection(FASTING_ENTRIES_COLLECTION)
             .where {
                 this.all(
-                    "active".equalTo(true)
+                    "endTime".equalTo(null)
                 )
             }
             .get()
@@ -85,7 +85,6 @@ class FastingRepository {
                 .set(updatedFast)
         } else {
             val newFastEntry = FastingEntryDto(
-                active = true,
                 startTime = startTime.toTimestamp()
             )
             Firebase.firestore

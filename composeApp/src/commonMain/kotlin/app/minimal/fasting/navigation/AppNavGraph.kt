@@ -79,4 +79,12 @@ private fun NavGraphBuilder.authenticatedSubGraph(
                 }
             )
         }
+
+        /*composable<Authenticated.FinishFasting> {
+            FinishFastingScreen(
+                onDone = {
+                    navController.popBackStack()
+                }
+            )
+        }*/
     }
