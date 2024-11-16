@@ -15,17 +15,13 @@ class TimeSelectionViewModel(
     private val authenticationRepository: AuthenticationRepository,
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(
-        TimeSelectionViewState(
-            startingTime = null,
-            saving = false,
-            done = false
-        )
+        TimeSelectionViewState.fromNow()
     )
 
     val viewState = _viewState.asStateFlow()
 
     fun onStartFastingClick() {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             _viewState.update {
                 it.copy(saving = true)
             }
@@ -40,8 +36,27 @@ class TimeSelectionViewModel(
                     done = true,
                 )
             }
+        }*/
+    }
+
+    fun onHourSelect(
+        selectedHour: Int,
+    ){
+        _viewState.update {
+            it.copy(
+                selectedHour = selectedHour,
+                step = TimeSelectionStep.Minutes,
+            )
         }
     }
 
-
+    fun onMinuteSelect(
+        selectedMinute: Int,
+    ){
+        _viewState.update {
+            it.copy(
+                selectedMinute = selectedMinute,
+            )
+        }
+    }
 }

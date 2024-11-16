@@ -1,9 +1,29 @@
 package app.minimal.fasting.fasting.timeselection
 
-import kotlinx.datetime.LocalDateTime
+import app.minimal.fasting.common.now
 
 data class TimeSelectionViewState(
-    val startingTime: LocalDateTime?,
-    val saving: Boolean,
-    val done: Boolean,
-)
+    val hintHour: Int? = null,
+    val hintMinute: Int? = null,
+    val selectedHour: Int? = null,
+    val selectedMinute: Int? = null,
+    val step: TimeSelectionStep = TimeSelectionStep.Hours,
+) {
+
+    // Creates a view state instance with hints pointing at the current time
+    companion object {
+        fun fromNow(): TimeSelectionViewState {
+            now().let {
+                return TimeSelectionViewState(
+                    hintHour = it.hour,
+                    hintMinute = it.minute,
+                )
+            }
+        }
+    }
+}
+
+enum class TimeSelectionStep {
+    Hours,
+    Minutes,
+}
