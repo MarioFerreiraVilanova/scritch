@@ -1,4 +1,4 @@
-package app.minimal.fasting.fasting.start
+package app.minimal.fasting.fasting.timeselection
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,12 +10,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class StartFastingViewModel(
+class TimeSelectionViewModel(
     private val fastingRepository: FastingRepository,
     private val authenticationRepository: AuthenticationRepository,
 ) : ViewModel() {
     private val _viewState = MutableStateFlow(
-        StartFastingViewState(
+        TimeSelectionViewState(
             startingTime = null,
             saving = false,
             done = false

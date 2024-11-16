@@ -1,4 +1,4 @@
-package app.minimal.fasting.fasting.start
+package app.minimal.fasting.fasting.timeselection
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun StartFastingScreen(
+fun TimeSelectionScreen(
     modifier: Modifier = Modifier,
-    viewModel: StartFastingViewModel = koinViewModel(),
+    viewModel: TimeSelectionViewModel = koinViewModel(),
     onDone: () -> Unit,
 ) {
     val viewState by viewModel.viewState.collectAsState()

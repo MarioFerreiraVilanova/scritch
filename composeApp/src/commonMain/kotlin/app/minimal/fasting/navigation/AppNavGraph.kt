@@ -11,7 +11,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import app.minimal.fasting.app.AppViewModel
 import app.minimal.fasting.app.AppViewState
-import app.minimal.fasting.fasting.start.StartFastingScreen
+import app.minimal.fasting.fasting.timeselection.TimeSelectionScreen
 import app.minimal.fasting.fasting.status.FastingStatusScreen
 import app.minimal.fasting.fasting.wizard.FastingWizardScreen
 import app.minimal.fasting.landing.LandingScreen
@@ -73,7 +73,7 @@ private fun NavGraphBuilder.authenticatedSubGraph(
         }
 
         composable<Authenticated.StartFasting> {
-            StartFastingScreen(
+            TimeSelectionScreen(
                 onDone = {
                     navController.popBackStack()
                 }
