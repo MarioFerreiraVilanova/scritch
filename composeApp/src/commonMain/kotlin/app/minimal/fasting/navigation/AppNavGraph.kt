@@ -80,11 +80,11 @@ private fun NavGraphBuilder.authenticatedSubGraph(
             )
         }
 
-        /*composable<Authenticated.FinishFasting> {
-            FinishFastingScreen(
+        composable<Authenticated.FinishFasting> {
+            TimeSelectionScreen(
                 onDone = {
                     navController.popBackStack()
                 }
             )
-        }*/
+        }
     }

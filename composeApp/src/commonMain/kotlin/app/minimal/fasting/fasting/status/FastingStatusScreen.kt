@@ -124,7 +124,7 @@ private fun Loaded(
         modifier = modifier
             .fillMaxSize()
             .background(
-                MinimalTheme.color.surface04,
+                MinimalTheme.color.surface01,
             ),
     ) {
 

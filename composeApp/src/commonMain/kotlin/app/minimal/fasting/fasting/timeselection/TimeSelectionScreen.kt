@@ -2,6 +2,7 @@
 
 package app.minimal.fasting.fasting.timeselection
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -9,14 +10,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import app.minimal.fasting.theme.MinimalTheme
 import app.minimal.fasting.theme.components.TextButton
 import org.koin.compose.viewmodel.koinViewModel
@@ -31,46 +36,54 @@ fun TimeSelectionScreen(
     /*if (viewState.done){
         onDone()
     }*/
-    Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween,
+    Box(
+        modifier = modifier.fillMaxSize()
+            .background(
+                MinimalTheme.color.surface01,
+            )
+            .padding(16.dp),
     ) {
-        BasicText(
-            text = "Placeholder",
-            style = MinimalTheme.typography.h3.copy(
-                color = MinimalTheme.color.typography2,
-            ),
-        )
-        when (viewState.step){
-            TimeSelectionStep.Hours -> HourPicker(
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+            BasicText(
+                text = "Placeholder",
+                style = MinimalTheme.typography.h3.copy(
+                    color = MinimalTheme.color.typography2,
+                ),
+            )
+            HourPicker(
                 hint = viewState.hintHour,
                 selection = viewState.selectedHour,
                 onHourPick = { selectedHour ->
                     viewModel.onHourSelect(selectedHour)
                 }
             )
-            TimeSelectionStep.Minutes -> MinutePicker(
+            MinutePicker(
                 hint = viewState.hintMinute,
                 selection = viewState.selectedMinute,
                 onMinutePick = { selectedMinute ->
                     viewModel.onMinuteSelect(selectedMinute)
                 }
             )
+            TextButton(
+                label = "done.",
+                onClick = onDone,
+                modifier = Modifier.align(Alignment.End),
+            )
         }
-        TextButton(
-            label = "done.",
-            onClick = onDone,
-            modifier = Modifier.align(Alignment.End),
-        )
     }
+
 }
 
 @Composable
 private fun HourPicker(
     hint: Int?,
     selection: Int?,
+    modifier: Modifier = Modifier,
     onHourPick: (hour: Int) -> Unit,
-){
+) {
     val hours = remember {
         listOf(
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 21, 23, 24
@@ -78,7 +91,7 @@ private fun HourPicker(
     }
     val labels = remember {
         hours.map { hour ->
-            if (hour < 10){
+            if (hour < 10) {
                 "0$hour"
             } else {
                 hour.toString()
@@ -87,10 +100,11 @@ private fun HourPicker(
     }
 
     Picker(
+        modifier = modifier,
         items = labels,
-        hint = hint,
-        selection = selection,
-        onSelected = { index ->  onHourPick(hours[index]) }
+        hint = hours.indexOf(hint),
+        selection = hours.indexOf(selection),
+        onSelected = { index -> onHourPick(hours[index]) }
     )
 }
 
@@ -98,8 +112,9 @@ private fun HourPicker(
 private fun MinutePicker(
     hint: Int?,
     selection: Int?,
+    modifier: Modifier = Modifier,
     onMinutePick: (hour: Int) -> Unit,
-){
+) {
     val minutes = remember {
         listOf(
             0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55
@@ -107,7 +122,7 @@ private fun MinutePicker(
     }
     val labels = remember {
         minutes.map { minute ->
-            if (minute < 10){
+            if (minute < 10) {
                 "0$minute"
             } else {
                 minute.toString()
@@ -116,10 +131,11 @@ private fun MinutePicker(
     }
 
     Picker(
+        modifier = modifier,
         items = labels,
-        hint = hint,
-        selection = selection,
-        onSelected = { index ->  onMinutePick(minutes[index]) }
+        hint = minutes.indexOf(hint),
+        selection = minutes.indexOf(selection),
+        onSelected = { index -> onMinutePick(minutes[index]) }
     )
 }
 
@@ -128,9 +144,12 @@ private fun Picker(
     items: List<String>,
     hint: Int?,
     selection: Int?,
+    modifier: Modifier = Modifier,
     onSelected: (index: Int) -> Unit,
-){
-    FlowRow {
+) {
+    FlowRow (
+        modifier = modifier,
+    ){
         items.forEachIndexed { index, label ->
             PickerItem(
                 label = label,
@@ -149,19 +168,32 @@ private fun PickerItem(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
-    Box {
+    Box(
+        modifier = Modifier
+            .size(48.dp)
+            .padding(4.dp)
+            .clip(CircleShape)
+            .background(
+                when {
+                    selected -> MinimalTheme.color.emphasis
+                    hint -> MinimalTheme.color.surface02
+                    else -> MinimalTheme.color.surface03
+                }
+            )
+            .clickable {
+                onClick()
+            },
+        contentAlignment = Alignment.Center,
+    ) {
         BasicText(
             text = label,
             style = MinimalTheme.typography.h6.copy(
                 color = when {
-                    selected -> MinimalTheme.color.surface04
-                    hint -> MinimalTheme.color.surface03
+                    selected -> MinimalTheme.color.onEmphasis
+                    hint -> MinimalTheme.color.typography2
                     else -> MinimalTheme.color.typography
                 }
             ),
-            modifier = Modifier.clickable {
-                onClick()
-            }
         )
     }
 }
