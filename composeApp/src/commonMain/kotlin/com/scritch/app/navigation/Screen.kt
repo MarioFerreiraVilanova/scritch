@@ -16,10 +16,17 @@ import kotlinx.serialization.Serializable
                 step = 1,
             )
 
-            fun stepTwo () = WizardMediumSelection(
+            private fun stepTwo () = WizardMediumSelection(
                 category = Category.Support,
                 step = 2,
             )
+
+            fun nextStep(
+                currentStep: Int,
+            ) = when (currentStep){
+                1 -> stepTwo()
+                else -> null
+            }
         }
     }
 }

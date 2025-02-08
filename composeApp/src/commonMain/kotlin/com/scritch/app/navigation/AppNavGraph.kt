@@ -58,7 +58,12 @@ private fun NavGraphBuilder.unauthenticatedSubGraph(
         }
         composable<Unauthenticated.WizardMediumSelection> {
             WizardScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
+                onContinue = { currentStep ->
+                    Unauthenticated.WizardMediumSelection.nextStep(currentStep)?.let {
+                        navController.navigate(it)
+                    } ?: navController.navigate(Authenticated.Home)
+                }
             )
         }
     }
