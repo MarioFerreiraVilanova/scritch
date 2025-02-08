@@ -92,11 +92,11 @@ kotlin {
 }
 
 android {
-    namespace = "app.minimal.fasting"
+    namespace = "com.scritch.app"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "app.minimal.fasting"
+        applicationId = "com.scritch.app"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -128,7 +128,7 @@ dependencies {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "app.minimal.fasting"
+            packageName = "com.scritch.app"
             packageVersion = "1.0.0"
         }
     }

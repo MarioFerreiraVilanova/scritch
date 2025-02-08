@@ -1,4 +1,4 @@
-rootProject.name = "MinimalFasting"
+rootProject.name = "Scritch"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
