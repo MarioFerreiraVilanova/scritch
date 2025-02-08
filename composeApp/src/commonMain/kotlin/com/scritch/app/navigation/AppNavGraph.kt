@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.scritch.app.app.AppViewModel
 import com.scritch.app.app.AppViewState
 import com.scritch.app.landing.LandingScreen
+import com.scritch.app.wizard.WizardScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -33,17 +34,32 @@ fun AppNavGraph(
             is AppViewState.Authenticated -> Authenticated
         }
     ) {
-        unauthenticatedSubGraph()
+        unauthenticatedSubGraph(
+            navController = navController,
+        )
         authenticatedSubGraph()
     }
 }
 
-private fun NavGraphBuilder.unauthenticatedSubGraph() =
+private fun NavGraphBuilder.unauthenticatedSubGraph(
+    navController: NavHostController,
+) =
     navigation<Unauthenticated>(
         startDestination = Unauthenticated.LandingScreen,
     ) {
         composable<Unauthenticated.LandingScreen> {
-            LandingScreen()
+            LandingScreen(
+                onContinue = {
+                    navController.navigate(
+                        route = Unauthenticated.WizardMediumSelection.stepOne(),
+                    )
+                }
+            )
+        }
+        composable<Unauthenticated.WizardMediumSelection> {
+            WizardScreen(
+                onBackClick = { navController.popBackStack() }
+            )
         }
     }
 
