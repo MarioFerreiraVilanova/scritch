@@ -106,6 +106,16 @@ private fun CategoryItems(
                 description = viewState.category.toDescription(),
             )
         }
+
+        if (viewState.options == null){
+            PageLoader()
+        } else {
+            items(
+                items = viewState.options,
+            ){
+
+            }
+        }
     }
 }
 

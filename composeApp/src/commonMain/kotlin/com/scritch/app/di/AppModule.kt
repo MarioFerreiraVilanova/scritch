@@ -2,6 +2,7 @@ package com.scritch.app.di
 
 import com.scritch.app.app.AppViewModel
 import com.scritch.app.auth.AuthenticationRepository
+import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.landing.LandingViewModel
 import com.scritch.app.wizard.WizardScreenViewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -12,4 +13,5 @@ val appModule = module {
     viewModelOf(::LandingViewModel)
     viewModelOf(::WizardScreenViewModel)
     single { AuthenticationRepository() }
+    single { CategoryRepository() }
 }
