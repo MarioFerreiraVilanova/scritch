@@ -30,6 +30,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun LandingScreen(
     onContinue: () -> Unit,
+    onSkip: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LandingViewModel = koinViewModel<LandingViewModel>(),
 ) {
@@ -39,7 +40,9 @@ fun LandingScreen(
             TopAppBar(
                 title = {},
                 actions = {
-                    IconButton({}) {
+                    IconButton(
+                        onClick = onSkip,
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.Done,
                             contentDescription = "menu items"

@@ -50,9 +50,12 @@ private fun NavGraphBuilder.unauthenticatedSubGraph(
         composable<Unauthenticated.LandingScreen> {
             LandingScreen(
                 onContinue = {
-                    navController.navigate(
-                        route = Unauthenticated.WizardMediumSelection.stepOne(),
-                    )
+                    navController.navigate(Unauthenticated.WizardMediumSelection.stepOne())
+                },
+                onSkip = {
+                    navController.navigate(Authenticated.Home){
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
             )
         }
@@ -62,7 +65,9 @@ private fun NavGraphBuilder.unauthenticatedSubGraph(
                 onContinue = { currentStep ->
                     Unauthenticated.WizardMediumSelection.nextStep(currentStep)?.let {
                         navController.navigate(it)
-                    } ?: navController.navigate(Authenticated.Home)
+                    } ?: navController.navigate(Authenticated.Home){
+                        popUpTo(0) { inclusive = true }
+                    }
                 }
             )
         }
