@@ -103,10 +103,10 @@ private fun CategoryItems(
 ){
     LazyColumn (
         modifier = modifier,
-        contentPadding = PaddingValues(16.dp),
     ) {
         item {
             PageHeader(
+                modifier = Modifier.padding(16.dp),
                 title = viewState.category.toTitle(),
                 description = viewState.category.toDescription(),
             )
