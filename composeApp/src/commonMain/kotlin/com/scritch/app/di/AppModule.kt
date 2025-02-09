@@ -12,6 +12,6 @@ val appModule = module {
     viewModelOf(::AppViewModel)
     viewModelOf(::LandingViewModel)
     viewModelOf(::WizardScreenViewModel)
-    single { AuthenticationRepository() }
     single { CategoryRepository() }
+    single { AuthenticationRepository() }
 }

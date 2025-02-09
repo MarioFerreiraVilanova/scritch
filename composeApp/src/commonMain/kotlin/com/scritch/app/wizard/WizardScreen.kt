@@ -1,7 +1,6 @@
 package com.scritch.app.wizard
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -31,7 +30,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.scritch.app.categories.Category
+import com.scritch.app.categories.Option
 import com.scritch.app.uicomponents.PageHeader
+import com.scritch.app.uicomponents.PageLoader
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -47,6 +48,7 @@ fun WizardScreen(
         modifier = modifier,
         onBackClick = onBackClick,
         onContinue = { onContinue(viewState.step) },
+        onOptionCheckChangeRequest = viewModel::onOptionCheckChangeRequest
     )
 }
 
@@ -55,6 +57,7 @@ private fun WizardScreen (
     viewState: WizardScreenViewState,
     onBackClick: () -> Unit,
     onContinue: () -> Unit,
+    onOptionCheckChangeRequest: (optionId: String) -> Unit,
     modifier: Modifier = Modifier,
 ){
     Scaffold(
@@ -82,6 +85,7 @@ private fun WizardScreen (
             CategoryItems(
                 viewState = viewState,
                 modifier = Modifier.weight(1f),
+                onCheckChangeRequest = onOptionCheckChangeRequest,
             )
             NextStep(
                 currentStep = viewState.step,
@@ -94,6 +98,7 @@ private fun WizardScreen (
 @Composable
 private fun CategoryItems(
     viewState: WizardScreenViewState,
+    onCheckChangeRequest: (optionId: String) -> Unit,
     modifier: Modifier = Modifier,
 ){
     LazyColumn (
@@ -107,13 +112,20 @@ private fun CategoryItems(
             )
         }
 
-        if (viewState.options == null){
-            PageLoader()
+        if (viewState.optionStates == null){
+            item {
+                PageLoader()
+            }
         } else {
             items(
-                items = viewState.options,
-            ){
-
+                count = viewState.optionStates.size,
+            ){ index ->
+                viewState.optionStates.getOrNull(index)?.let { optionState ->
+                    Option(
+                        state = optionState,
+                        onCheckChangeRequest = { onCheckChangeRequest(optionState.id) }
+                    )
+                }
             }
         }
     }

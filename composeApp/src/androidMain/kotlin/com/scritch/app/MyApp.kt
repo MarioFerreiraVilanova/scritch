@@ -9,9 +9,9 @@ import org.koin.core.component.KoinComponent
 class MyApp : Application(), KoinComponent {
     override fun onCreate() {
         super.onCreate()
-        initKoin {
+        /*initKoin {
             androidLogger()
             androidContext(this@MyApp)
-        }
+        }*/
     }
 }

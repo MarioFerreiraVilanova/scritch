@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.scritch.app.categories.CategoryRepository
-import com.scritch.app.categories.Option
+import com.scritch.app.categories.OptionState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -20,7 +20,7 @@ class WizardScreenViewModel(
         WizardScreenViewState(
             category = navArgs.category,
             step = navArgs.step,
-            options = null,
+            optionStates = null,
         )
     )
 
@@ -32,12 +32,23 @@ class WizardScreenViewModel(
         }
     }
 
+    fun onOptionCheckChangeRequest (optionId: String){
+        mutableViewState.value.optionStates?.find { it.id == optionId }?.let { option ->
+            mutableViewState.update { state ->
+                val options = state.optionStates?.minus(option)?.plus(option.copy(selected = !option.selected))
+                state.copy(
+                    optionStates = options
+                )
+            }    
+        }
+    }
+
     private suspend fun loadOptions() {
         val optionDtos = categoryRepository.getOptions(category = navArgs.category)
         mutableViewState.update {
             it.copy(
-                options = optionDtos.mapNotNull { dto ->
-                    Option.fromDto(
+                optionStates = optionDtos.mapNotNull { dto ->
+                    OptionState.fromDto(
                         dto = dto,
                         selected = true,
                     )

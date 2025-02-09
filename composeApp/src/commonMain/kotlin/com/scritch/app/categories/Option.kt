@@ -1,25 +1,21 @@
 package com.scritch.app.categories
 
-import kotlinx.serialization.Serializable
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.scritch.app.uicomponents.ToggleListRow
 
-@Serializable
-data class Option(
-    val id: String,
-    val name: String,
-    val selected: Boolean,
-    val description: String?,
-) {
-    companion object {
-        fun fromDto(
-            dto: OptionDto,
-            selected: Boolean,
-        ): Option? {
-            return Option(
-                id = dto.id,
-                name = dto.name ?: return null,
-                description = dto.description,
-                selected = selected,
-            )
-        }
-    }
+@Composable
+fun Option (
+    state: OptionState,
+    onCheckChangeRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+){
+    ToggleListRow(
+        modifier = modifier,
+        title = state.name,
+        subtitle = state.description,
+        checked = state.selected,
+        enabled = state.enabled,
+        onCheckChangeRequest = onCheckChangeRequest,
+    )
 }
