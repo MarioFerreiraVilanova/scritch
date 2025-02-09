@@ -1,7 +1,6 @@
 package com.scritch.app.categories
 
 import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.firestore.DocumentSnapshot
 import dev.gitlive.firebase.firestore.firestore
 
 private const val CATEGORY_COLLECTION = "categories"

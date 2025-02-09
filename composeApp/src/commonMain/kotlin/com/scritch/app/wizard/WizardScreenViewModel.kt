@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.OptionState
+import com.scritch.app.navigation.Unauthenticated
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -15,7 +16,7 @@ class WizardScreenViewModel(
     savedStateHandle: SavedStateHandle,
     private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
-    private val navArgs = savedStateHandle.toRoute<WizardScreenViewState>()
+    private val navArgs = savedStateHandle.toRoute<Unauthenticated.WizardMediumSelection>()
     private val mutableViewState = MutableStateFlow(
         WizardScreenViewState(
             category = navArgs.category,
