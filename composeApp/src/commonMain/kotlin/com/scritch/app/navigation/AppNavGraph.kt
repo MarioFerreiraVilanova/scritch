@@ -16,6 +16,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.scritch.app.app.AppViewModel
 import com.scritch.app.app.AppViewState
+import com.scritch.app.home.HomeScreen
 import com.scritch.app.landing.LandingScreen
 import com.scritch.app.wizard.WizardScreen
 import org.koin.compose.viewmodel.koinViewModel
@@ -78,6 +79,6 @@ private fun NavGraphBuilder.authenticatedSubGraph() =
         startDestination = Authenticated.Home,
     ) {
         composable<Authenticated.Home> {
-            Box(modifier = Modifier.background(Color.Red).fillMaxSize())
+            HomeScreen()
         }
     }
