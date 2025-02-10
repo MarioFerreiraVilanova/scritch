@@ -3,6 +3,7 @@ package com.scritch.app.di
 import com.scritch.app.app.AppViewModel
 import com.scritch.app.auth.AuthenticationRepository
 import com.scritch.app.categories.CategoryRepository
+import com.scritch.app.userdata.UserDataRepository
 import com.scritch.app.landing.LandingViewModel
 import com.scritch.app.wizard.WizardScreenViewModel
 import com.scritch.app.home.HomeViewModel
@@ -13,6 +14,7 @@ import org.koin.dsl.module
 val appModule = module {
     singleOf(::AuthenticationRepository)
     singleOf(::CategoryRepository)
+    singleOf(::UserDataRepository)
 
     viewModelOf(::AppViewModel)
     viewModelOf(::HomeViewModel)

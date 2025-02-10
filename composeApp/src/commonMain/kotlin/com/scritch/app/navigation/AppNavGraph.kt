@@ -1,13 +1,8 @@
 package com.scritch.app.navigation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -31,54 +26,53 @@ fun AppNavGraph(
     NavHost(
         navController = navController,
         startDestination = when (viewState) {
+            AppViewState.StatingApp ->
             is AppViewState.Unauthenticated -> Unauthenticated
             is AppViewState.Authenticated -> Authenticated
         }
     ) {
-        unauthenticatedSubGraph(
+        unauthenticatedSubGraph()
+        authenticatedSubGraph(
+            viewState = viewState,
             navController = navController,
         )
-        authenticatedSubGraph()
     }
 }
 
-private fun NavGraphBuilder.unauthenticatedSubGraph(
-    navController: NavHostController,
-) =
+private fun NavGraphBuilder.unauthenticatedSubGraph() =
     navigation<Unauthenticated>(
         startDestination = Unauthenticated.LandingScreen,
     ) {
         composable<Unauthenticated.LandingScreen> {
-            LandingScreen(
-                onNavigateToWizard = {
-                    navController.navigate(Unauthenticated.WizardMediumSelection.stepOne())
-                },
-                onNavigateToHome = {
-                    navController.navigate(Authenticated.Home){
-                        popUpTo(0) { inclusive = true }
-                    }
-                }
-            )
-        }
-        composable<Unauthenticated.WizardMediumSelection> {
-            WizardScreen(
-                onBackClick = { navController.popBackStack() },
-                onContinue = { currentStep ->
-                    Unauthenticated.WizardMediumSelection.nextStep(currentStep)?.let {
-                        navController.navigate(it)
-                    } ?: navController.navigate(Authenticated.Home){
-                        popUpTo(0) { inclusive = true }
-                    }
-                }
-            )
+            LandingScreen()
         }
     }
 
-private fun NavGraphBuilder.authenticatedSubGraph() =
+private fun NavGraphBuilder.authenticatedSubGraph(
+    navController: NavHostController,
+    viewState: AppViewState,
+) =
     navigation<Authenticated>(
-        startDestination = Authenticated.Home,
+        startDestination = if ((viewState as? AppViewState.Authenticated)?.needsInitialSetup == true) {
+            Authenticated.WizardMediumSelection.stepOne()
+        } else {
+            Authenticated.Home
+        },
     ) {
         composable<Authenticated.Home> {
             HomeScreen()
+        }
+
+        composable<Authenticated.WizardMediumSelection> {
+            WizardScreen(
+                onBackClick = { navController.popBackStack() },
+                onContinue = { currentStep ->
+                    Authenticated.WizardMediumSelection.nextStep(currentStep)?.let {
+                        navController.navigate(it)
+                    } ?: navController.navigate(Authenticated.Home) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
         }
     }

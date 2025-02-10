@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 // Main sections of the app
 @Serializable object Unauthenticated {
     @Serializable object LandingScreen
+}
+@Serializable object Authenticated {
+    @Serializable object Home
     @Serializable data class WizardMediumSelection(
         val category: Category,
         val step: Int,
@@ -29,7 +32,4 @@ import kotlinx.serialization.Serializable
             }
         }
     }
-}
-@Serializable object Authenticated {
-    @Serializable object Home
 }

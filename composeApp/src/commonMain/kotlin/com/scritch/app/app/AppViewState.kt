@@ -4,10 +4,12 @@ import com.scritch.app.auth.User
 
 sealed class AppViewState {
 
+    data object StatingApp: AppViewState()
+
     data object Unauthenticated : AppViewState()
 
     data class Authenticated(
         val user: User,
-        val needsInitialSetup: Boolean? = null,
+        val needsInitialSetup: Boolean,
     ) : AppViewState()
 }
