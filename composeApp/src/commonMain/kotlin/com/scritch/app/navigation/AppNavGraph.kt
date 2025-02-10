@@ -32,9 +32,7 @@ fun AppNavGraph(
                     navController.goHome()
                 },
                 onGoToLanding = {
-                    navController.navigate(Unauthenticated.LandingScreen) {
-                        popUpTo(0) { inclusive = true }
-                    }
+                    navController.goToLanding()
                 }
             )
         }
@@ -69,7 +67,11 @@ private fun NavGraphBuilder.authenticatedSubGraph(
         startDestination = Authenticated.Home,
     ) {
         composable<Authenticated.Home> {
-            HomeScreen()
+            HomeScreen(
+                onLogOut = {
+                    navController.goToLanding()
+                }
+            )
         }
 
         composable<Authenticated.WizardMediumSelection> {
@@ -88,6 +90,12 @@ private fun NavGraphBuilder.authenticatedSubGraph(
 
 private fun NavHostController.goHome(){
     navigate(Authenticated.Home) {
+        popUpTo(0) { inclusive = true }
+    }
+}
+
+private fun NavHostController.goToLanding(){
+    navigate(Unauthenticated.LandingScreen) {
         popUpTo(0) { inclusive = true }
     }
 }

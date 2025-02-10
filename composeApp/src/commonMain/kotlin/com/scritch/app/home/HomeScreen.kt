@@ -12,6 +12,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
+    onLogOut: () -> Unit, // TODO remove this and use events
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
 ){
@@ -24,7 +25,10 @@ fun HomeScreen(
         ) {
             Button(
                 content = { Text("Logout") },
-                onClick = viewModel::onLogout,
+                onClick = {
+                    viewModel.onLogout()
+                    onLogOut()
+                },
             )
         }
     }
