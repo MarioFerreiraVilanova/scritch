@@ -29,9 +29,20 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LandingScreen(
+    onGoHome: () -> Unit,
+    onGoToWizard: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LandingViewModel = koinViewModel<LandingViewModel>(),
 ) {
+    val viewState by viewModel.viewState.collectAsState()
+    viewState.events.firstOrNull()?.let { event ->
+        when (event){
+            LandingEvent.GoHome -> onGoHome()
+            LandingEvent.GoToWizard -> onGoToWizard()
+        }
+        viewModel.consumeEvent(event)
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {

@@ -29,9 +29,7 @@ fun AppNavGraph(
         composable<SplashScreen> {
             SplashScreen(
                 onGoHome = {
-                    navController.navigate(Authenticated.Home) {
-                        popUpTo(0) { inclusive = true }
-                    }
+                    navController.goHome()
                 },
                 onGoToLanding = {
                     navController.navigate(Unauthenticated.LandingScreen) {
@@ -41,19 +39,26 @@ fun AppNavGraph(
             )
         }
 
-        unauthenticatedSubGraph()
+        unauthenticatedSubGraph(
+            navController = navController,
+        )
         authenticatedSubGraph(
             navController = navController,
         )
     }
 }
 
-private fun NavGraphBuilder.unauthenticatedSubGraph() =
+private fun NavGraphBuilder.unauthenticatedSubGraph(
+    navController: NavHostController,
+) =
     navigation<Unauthenticated>(
         startDestination = Unauthenticated.LandingScreen,
     ) {
         composable<Unauthenticated.LandingScreen> {
-            LandingScreen()
+            LandingScreen(
+                onGoHome = { navController.goHome() },
+                onGoToWizard = { navController.navigate(Authenticated.WizardMediumSelection.stepOne())}
+            )
         }
     }
 
@@ -73,10 +78,16 @@ private fun NavGraphBuilder.authenticatedSubGraph(
                 onContinue = { currentStep ->
                     Authenticated.WizardMediumSelection.nextStep(currentStep)?.let {
                         navController.navigate(it)
-                    } ?: navController.navigate(Authenticated.Home) {
-                        popUpTo(0) { inclusive = true }
-                    }
+                    } ?: navController.goHome()
                 }
             )
         }
     }
+
+// Helper functions
+
+private fun NavHostController.goHome(){
+    navigate(Authenticated.Home) {
+        popUpTo(0) { inclusive = true }
+    }
+}
