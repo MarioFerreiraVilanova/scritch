@@ -49,10 +49,10 @@ private fun NavGraphBuilder.unauthenticatedSubGraph(
     ) {
         composable<Unauthenticated.LandingScreen> {
             LandingScreen(
-                onContinue = {
+                onNavigateToWizard = {
                     navController.navigate(Unauthenticated.WizardMediumSelection.stepOne())
                 },
-                onSkip = {
+                onNavigateToHome = {
                     navController.navigate(Authenticated.Home){
                         popUpTo(0) { inclusive = true }
                     }

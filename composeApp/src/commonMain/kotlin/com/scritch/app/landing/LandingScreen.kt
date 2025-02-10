@@ -2,7 +2,6 @@ package com.scritch.app.landing
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,13 +9,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
@@ -29,11 +29,21 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LandingScreen(
-    onContinue: () -> Unit,
-    onSkip: () -> Unit,
+    onNavigateToWizard: () -> Unit,
+    onNavigateToHome: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LandingViewModel = koinViewModel<LandingViewModel>(),
 ) {
+    val viewState by viewModel.viewState.collectAsState()
+
+    viewState.events.firstOrNull()?.let { event ->
+        when (event){
+            LandingScreenEvent.NavigateToHome -> onNavigateToHome()
+            LandingScreenEvent.NavigateToWizard -> onNavigateToWizard()
+        }
+        viewModel.consumeEvent(event)
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -41,7 +51,7 @@ fun LandingScreen(
                 title = {},
                 actions = {
                     IconButton(
-                        onClick = onSkip,
+                        onClick = viewModel::onSkip,
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Done,
@@ -79,7 +89,7 @@ fun LandingScreen(
                     contentAlignment = Alignment.CenterEnd,
                 ) {
                     Button(
-                        onClick = onContinue,
+                        onClick = viewModel::onContinue,
                         content = {
                             Text("Continue")
                         }
