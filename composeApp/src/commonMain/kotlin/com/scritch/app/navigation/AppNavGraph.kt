@@ -13,6 +13,7 @@ import com.scritch.app.app.AppViewModel
 import com.scritch.app.app.AppViewState
 import com.scritch.app.home.HomeScreen
 import com.scritch.app.landing.LandingScreen
+import com.scritch.app.splash.SplashScreen
 import com.scritch.app.wizard.WizardScreen
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -21,19 +22,27 @@ fun AppNavGraph(
     viewModel: AppViewModel = koinViewModel<AppViewModel>(),
     navController: NavHostController = rememberNavController(),
 ) {
-    val viewState by viewModel.appViewState.collectAsState()
-
     NavHost(
         navController = navController,
-        startDestination = when (viewState) {
-            AppViewState.StatingApp ->
-            is AppViewState.Unauthenticated -> Unauthenticated
-            is AppViewState.Authenticated -> Authenticated
-        }
+        startDestination = SplashScreen,
     ) {
+        composable<SplashScreen> {
+            SplashScreen(
+                onGoHome = {
+                    navController.navigate(Authenticated.Home) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                },
+                onGoToLanding = {
+                    navController.navigate(Unauthenticated.LandingScreen) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
         unauthenticatedSubGraph()
         authenticatedSubGraph(
-            viewState = viewState,
             navController = navController,
         )
     }
@@ -50,14 +59,9 @@ private fun NavGraphBuilder.unauthenticatedSubGraph() =
 
 private fun NavGraphBuilder.authenticatedSubGraph(
     navController: NavHostController,
-    viewState: AppViewState,
 ) =
     navigation<Authenticated>(
-        startDestination = if ((viewState as? AppViewState.Authenticated)?.needsInitialSetup == true) {
-            Authenticated.WizardMediumSelection.stepOne()
-        } else {
-            Authenticated.Home
-        },
+        startDestination = Authenticated.Home,
     ) {
         composable<Authenticated.Home> {
             HomeScreen()

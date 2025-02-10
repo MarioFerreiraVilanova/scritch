@@ -4,6 +4,8 @@ import com.scritch.app.categories.Category
 import kotlinx.serialization.Serializable
 
 // Main sections of the app
+@Serializable object SplashScreen
+
 @Serializable object Unauthenticated {
     @Serializable object LandingScreen
 }
