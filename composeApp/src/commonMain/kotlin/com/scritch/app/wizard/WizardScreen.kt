@@ -47,7 +47,10 @@ fun WizardScreen(
         viewState = viewState,
         modifier = modifier,
         onBackClick = onBackClick,
-        onContinue = { onContinue(viewState.step) },
+        onContinue = {
+            viewModel.onContinue()
+            onContinue(viewState.step)
+        },
         onOptionCheckChangeRequest = viewModel::onOptionCheckChangeRequest
     )
 }

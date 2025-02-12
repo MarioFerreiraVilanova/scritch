@@ -5,10 +5,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.scritch.app.app.AppViewState
+import com.scritch.app.auth.AuthenticationRepository
 import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.OptionState
 import com.scritch.app.navigation.Authenticated
 import com.scritch.app.navigation.Unauthenticated
+import com.scritch.app.userdata.UserDataRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -16,7 +18,9 @@ import kotlinx.coroutines.launch
 
 class WizardScreenViewModel(
     savedStateHandle: SavedStateHandle,
+    private val authenticationRepository: AuthenticationRepository,
     private val categoryRepository: CategoryRepository,
+    private val userDataRepository: UserDataRepository,
 ) : ViewModel() {
     private val navArgs = savedStateHandle.toRoute<Authenticated.WizardMediumSelection>()
     private val mutableViewState = MutableStateFlow(
@@ -43,6 +47,21 @@ class WizardScreenViewModel(
                     optionStates = options
                 )
             }    
+        }
+    }
+
+    fun onContinue(){
+        viewModelScope.launch {
+            authenticationRepository.user()?.id?.let { userId ->
+                mutableViewState.value.optionStates?.let { optionStates ->
+                    userDataRepository.enableOptions(
+                        userId = userId,
+                        category = navArgs.category,
+                        optionIds = optionStates.filter { it.selected }.map { it.id }
+                    )
+                }
+            }
+
         }
     }
 
