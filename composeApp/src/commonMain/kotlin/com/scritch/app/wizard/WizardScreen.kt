@@ -122,8 +122,9 @@ private fun CategoryItems(
         } else {
             items(
                 count = viewState.optionStates.size,
+                key = { index -> viewState.optionStates[index].id}
             ){ index ->
-                viewState.optionStates.getOrNull(index)?.let { optionState ->
+                viewState.optionStates[index].let { optionState ->
                     Option(
                         state = optionState,
                         onCheckChangeRequest = { onCheckChangeRequest(optionState.id) }

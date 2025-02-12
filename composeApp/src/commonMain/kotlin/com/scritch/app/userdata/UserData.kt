@@ -1,12 +1,14 @@
 package com.scritch.app.userdata
 
 data class UserData(
-    val needsInitialSetup: Boolean,
+    val disabledMediumIds: List<String>,
+    val disabledSupportIds: List<String>,
 ){
     companion object {
-        fun fromDto(dto: UserDataDto): UserData? {
+        fun fromDto(dto: UserDataDto): UserData {
             return UserData(
-                needsInitialSetup = dto.needsInitialSetup ?: return null
+                disabledMediumIds = dto.disabledMediumIds ?: emptyList(),
+                disabledSupportIds = dto.disabledSupportIds ?: emptyList(),
             )
         }
     }

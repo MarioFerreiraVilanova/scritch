@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 
 class AppViewModel(
     private val authenticationRepository: AuthenticationRepository,
-    private val userDataRepository: UserDataRepository,
 ) : ViewModel() {
 
     private val _appViewState = MutableStateFlow<AppViewState>(AppViewState.StatingApp)
@@ -28,16 +27,16 @@ class AppViewModel(
         }
     }
 
-    private suspend fun onUserChanged(user: User?){
-        user?.id?.let { userId ->
-            val userData = userDataRepository.userData(userId)
+    private fun onUserChanged(user: User?){
+        if (user != null){
             _appViewState.update {
                 AppViewState.Authenticated(
                     user = user,
-                    needsInitialSetup = userData?.needsInitialSetup == true,
                 )
             }
-        } ?: _appViewState.update { AppViewState.Unauthenticated }
+        } else {
+            _appViewState.update { AppViewState.Unauthenticated }
+        }
 
     }
 }

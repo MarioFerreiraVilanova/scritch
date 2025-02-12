@@ -10,6 +10,5 @@ sealed class AppViewState {
 
     data class Authenticated(
         val user: User,
-        val needsInitialSetup: Boolean,
     ) : AppViewState()
 }

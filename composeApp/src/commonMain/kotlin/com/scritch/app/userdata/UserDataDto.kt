@@ -3,19 +3,23 @@ package com.scritch.app.userdata
 import dev.gitlive.firebase.firestore.DocumentSnapshot
 
 data class UserDataDto(
-    val needsInitialSetup: Boolean?,
+    val disabledMediumIds: List<String>?,
+    val disabledSupportIds: List<String>?,
 ){
     companion object {
         fun initial() = UserDataDto(
-            needsInitialSetup = true,
+            disabledMediumIds = emptyList(),
+            disabledSupportIds = emptyList(),
         )
     }
 
     constructor(documentSnapshot: DocumentSnapshot): this(
-        needsInitialSetup = documentSnapshot.get<Boolean?>("needsInitialSetup"),
+        disabledMediumIds = documentSnapshot.get<List<String>>("disabledMediumIds"),
+        disabledSupportIds = documentSnapshot.get<List<String>>("disabledSupportIds"),
     )
 
     fun asMap() = mapOf(
-        "needsInitialSetup" to needsInitialSetup
+        "disabledMediumIds" to disabledMediumIds,
+        "disabledSupportIds" to disabledSupportIds
     )
 }
