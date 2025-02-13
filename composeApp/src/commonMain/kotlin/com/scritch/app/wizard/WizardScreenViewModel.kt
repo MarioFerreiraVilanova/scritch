@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.scritch.app.auth.AuthenticationRepository
 import com.scritch.app.categories.Category
 import com.scritch.app.categories.CategoryRepository
+import com.scritch.app.categories.LoadUserOptionsUseCase
 import com.scritch.app.categories.OptionState
 import com.scritch.app.navigation.Authenticated
 import com.scritch.app.userdata.UserData
@@ -20,8 +21,8 @@ import kotlinx.coroutines.launch
 class WizardScreenViewModel(
     savedStateHandle: SavedStateHandle,
     private val authenticationRepository: AuthenticationRepository,
-    private val categoryRepository: CategoryRepository,
     private val userDataRepository: UserDataRepository,
+    private val loadUserOptions: LoadUserOptionsUseCase,
 ) : ViewModel() {
     private val navArgs = savedStateHandle.toRoute<Authenticated.WizardMediumSelection>()
     private val mutableViewState = MutableStateFlow(
@@ -66,23 +67,10 @@ class WizardScreenViewModel(
     }
 
     private suspend fun loadOptions() {
-        authenticationRepository.user()?.id?.let { userId ->
-            val optionDtos = categoryRepository.getOptions(category = navArgs.category)
-            val userData = userDataRepository.userData(userId = userId)
-            val disabledOptions = when (navArgs.category){
-                Category.Medium -> userData.disabledMediumIds
-                Category.Support -> userData.disabledSupportIds
-            }
-            mutableViewState.update {
-                it.copy(
-                    optionStates = optionDtos.mapNotNull { dto ->
-                        OptionState.fromDto(
-                            dto = dto,
-                            selected = !disabledOptions.contains(dto.id),
-                        )
-                    }.sortedBy { it.name }
-                )
-            }
+        mutableViewState.update {
+            it.copy(
+                optionStates = loadUserOptions(category = navArgs.category),
+            )
         }
     }
 }
