@@ -1,17 +1,13 @@
 package com.scritch.app.home
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.scritch.app.auth.AuthenticationRepository
-import kotlinx.coroutines.launch
+import com.scritch.app.categories.LoadUserOptionsUseCase
 
-class HomeViewModel (
-    private val authenticationRepository: AuthenticationRepository,
-): ViewModel() {
+class HomeViewModel(
+    private val loadUserOptions: LoadUserOptionsUseCase,
+) : ViewModel() {
 
-    fun onLogout(){
-        viewModelScope.launch {
-            authenticationRepository.logout()
-        }
+    fun onGeneratePrompt() {
+        TODO("Not yet implemented")
     }
 }

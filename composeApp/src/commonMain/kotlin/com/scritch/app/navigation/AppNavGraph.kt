@@ -13,6 +13,7 @@ import com.scritch.app.app.AppViewModel
 import com.scritch.app.app.AppViewState
 import com.scritch.app.home.HomeScreen
 import com.scritch.app.landing.LandingScreen
+import com.scritch.app.settings.SettingsScreen
 import com.scritch.app.splash.SplashScreen
 import com.scritch.app.wizard.WizardScreen
 import org.koin.compose.viewmodel.koinViewModel
@@ -68,8 +69,8 @@ private fun NavGraphBuilder.authenticatedSubGraph(
     ) {
         composable<Authenticated.Home> {
             HomeScreen(
-                onLogOut = {
-                    navController.goToLanding()
+                onGoToSettings = {
+                    navController.navigate(Authenticated.Settings)
                 }
             )
         }
@@ -81,6 +82,14 @@ private fun NavGraphBuilder.authenticatedSubGraph(
                     Authenticated.WizardMediumSelection.nextStep(currentStep)?.let {
                         navController.navigate(it)
                     } ?: navController.goHome()
+                }
+            )
+        }
+
+        composable<Authenticated.Settings> {
+            SettingsScreen(
+                onLogOut = {
+                    navController.goToLanding()
                 }
             )
         }

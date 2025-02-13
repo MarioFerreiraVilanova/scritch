@@ -11,6 +11,7 @@ import kotlinx.serialization.Serializable
 }
 @Serializable object Authenticated {
     @Serializable object Home
+    @Serializable object Settings
     @Serializable data class WizardMediumSelection(
         val category: Category,
         val step: Int,
