@@ -9,7 +9,7 @@ private const val USER_DATA_COLLECTION = "user_data"
 
 class UserDataRepository {
 
-    suspend fun userData(userId: String): UserData? {
+    suspend fun userData(userId: String): UserData {
         val doc = Firebase.firestore
             .collection(USER_DATA_COLLECTION)
             .document(userId)

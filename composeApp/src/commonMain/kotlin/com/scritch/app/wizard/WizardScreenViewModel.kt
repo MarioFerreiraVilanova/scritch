@@ -5,12 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.scritch.app.auth.AuthenticationRepository
+import com.scritch.app.categories.Category
 import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.OptionState
 import com.scritch.app.navigation.Authenticated
+import com.scritch.app.userdata.UserData
 import com.scritch.app.userdata.UserDataRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -42,7 +45,7 @@ class WizardScreenViewModel(
             mutableViewState.update { state ->
                 val options = state.optionStates?.minus(option)?.plus(option.copy(selected = !option.selected))
                 state.copy(
-                    optionStates = options
+                    optionStates = options?.sortedBy { it.name }
                 )
             }    
         }
@@ -63,16 +66,23 @@ class WizardScreenViewModel(
     }
 
     private suspend fun loadOptions() {
-        val optionDtos = categoryRepository.getOptions(category = navArgs.category)
-        mutableViewState.update {
-            it.copy(
-                optionStates = optionDtos.mapNotNull { dto ->
-                    OptionState.fromDto(
-                        dto = dto,
-                        selected = true,
-                    )
-                }
-            )
+        authenticationRepository.user()?.id?.let { userId ->
+            val optionDtos = categoryRepository.getOptions(category = navArgs.category)
+            val userData = userDataRepository.userData(userId = userId)
+            val disabledOptions = when (navArgs.category){
+                Category.Medium -> userData.disabledMediumIds
+                Category.Support -> userData.disabledSupportIds
+            }
+            mutableViewState.update {
+                it.copy(
+                    optionStates = optionDtos.mapNotNull { dto ->
+                        OptionState.fromDto(
+                            dto = dto,
+                            selected = !disabledOptions.contains(dto.id),
+                        )
+                    }.sortedBy { it.name }
+                )
+            }
         }
     }
 }
