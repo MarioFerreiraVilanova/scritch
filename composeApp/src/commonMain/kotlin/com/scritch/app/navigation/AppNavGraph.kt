@@ -93,6 +93,9 @@ private fun NavGraphBuilder.authenticatedSubGraph(
                 },
                 onBackPress = {
                     navController.popBackStack()
+                },
+                onCategoryPress = { category ->
+                    // TODO
                 }
             )
         }
