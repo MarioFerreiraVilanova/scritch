@@ -7,6 +7,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class WizardScreenViewState(
     val category: Category,
-    val step: Int,
+    val step: Int?,
     val optionStates: List<OptionState>?,
-)
+) {
+    val isWizard = step != null
+}

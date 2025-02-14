@@ -2,7 +2,6 @@ package com.scritch.app.wizard
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,23 +45,28 @@ fun WizardScreen(
     WizardScreen(
         viewState = viewState,
         modifier = modifier,
-        onBackClick = onBackClick,
+        onBackClick = {
+            viewModel.onBackClick()
+            onBackClick()
+        },
         onContinue = {
             viewModel.onContinue()
-            onContinue(viewState.step)
+            viewState.step?.let { step ->
+                onContinue(step)
+            }
         },
         onOptionCheckChangeRequest = viewModel::onOptionCheckChangeRequest
     )
 }
 
 @Composable
-private fun WizardScreen (
+private fun WizardScreen(
     viewState: WizardScreenViewState,
     onBackClick: () -> Unit,
     onContinue: () -> Unit,
     onOptionCheckChangeRequest: (optionId: String) -> Unit,
     modifier: Modifier = Modifier,
-){
+) {
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -78,11 +82,15 @@ private fun WizardScreen (
                         onClick = onBackClick,
                     )
                 },
-                title = {}
+                title = {
+                    if (viewState.step == null) {
+                        Text(viewState.category.name)
+                    }
+                }
             )
         }
     ) {
-        Column (
+        Column(
             modifier = Modifier.fillMaxSize(),
         ) {
             CategoryItems(
@@ -90,10 +98,12 @@ private fun WizardScreen (
                 modifier = Modifier.weight(1f),
                 onCheckChangeRequest = onOptionCheckChangeRequest,
             )
-            NextStep(
-                currentStep = viewState.step,
-                onContinue = onContinue,
-            )
+            if (viewState.step != null) {
+                NextStep(
+                    currentStep = viewState.step,
+                    onContinue = onContinue,
+                )
+            }
         }
     }
 }
@@ -103,27 +113,25 @@ private fun CategoryItems(
     viewState: WizardScreenViewState,
     onCheckChangeRequest: (optionId: String) -> Unit,
     modifier: Modifier = Modifier,
-){
-    LazyColumn (
+) {
+    LazyColumn(
         modifier = modifier,
     ) {
         item {
-            PageHeader(
-                modifier = Modifier.padding(16.dp),
-                title = viewState.category.toTitle(),
-                description = viewState.category.toDescription(),
+            Header(
+                viewState = viewState,
             )
         }
 
-        if (viewState.optionStates == null){
+        if (viewState.optionStates == null) {
             item {
                 PageLoader()
             }
         } else {
             items(
                 count = viewState.optionStates.size,
-                key = { index -> viewState.optionStates[index].id}
-            ){ index ->
+                key = { index -> viewState.optionStates[index].id }
+            ) { index ->
                 viewState.optionStates[index].let { optionState ->
                     Option(
                         state = optionState,
@@ -136,11 +144,33 @@ private fun CategoryItems(
 }
 
 @Composable
+private fun Header (
+    viewState: WizardScreenViewState,
+) {
+    if (viewState.isWizard){
+        PageHeader(
+            modifier = Modifier.padding(16.dp),
+            title = viewState.category.toTitle(),
+            description = viewState.category.toDescription(),
+        )
+    } else {
+        val categoryText = when (viewState.category){
+            Category.Medium -> "mediums"
+            Category.Support -> "supports"
+        }
+        Text(
+            text = "Unselect the $categoryText that you don't want to see appear in the prompts anymore",
+            modifier = Modifier.padding(16.dp)
+        )
+    }
+}
+
+@Composable
 private fun NextStep(
     currentStep: Int,
     onContinue: () -> Unit,
-){
-    Surface (
+) {
+    Surface(
         modifier = Modifier.fillMaxWidth(),
         elevation = 8.dp,
         color = MaterialTheme.colors.primarySurface,
@@ -149,7 +179,7 @@ private fun NextStep(
             modifier = Modifier.padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-        ){
+        ) {
             Text(text = "$currentStep/2")
             Button(
                 onClick = onContinue,
@@ -161,12 +191,12 @@ private fun NextStep(
     }
 }
 
-private fun Category.toTitle() = when (this){
+private fun Category.toTitle() = when (this) {
     Category.Medium -> "Mediums"
     Category.Support -> "Supports"
 }
 
-private fun Category.toDescription() = when (this){
+private fun Category.toDescription() = when (this) {
     Category.Medium -> buildAnnotatedString {
         append("Scritch will prompt you for using different mediums. ")
         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
@@ -174,6 +204,7 @@ private fun Category.toDescription() = when (this){
         }
         append("You won't see them in the prompts. You can always change that later in settings")
     }
+
     Category.Support -> buildAnnotatedString {
         append("Scritch will prompt you for using different supports. ")
         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {

@@ -95,7 +95,12 @@ private fun NavGraphBuilder.authenticatedSubGraph(
                     navController.popBackStack()
                 },
                 onCategoryPress = { category ->
-                    // TODO
+                    navController.navigate(
+                        Authenticated.WizardMediumSelection(
+                            category = category,
+                            step = null,
+                        )
+                    )
                 }
             )
         }

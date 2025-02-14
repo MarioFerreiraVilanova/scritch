@@ -14,7 +14,7 @@ import kotlinx.serialization.Serializable
     @Serializable object Settings
     @Serializable data class WizardMediumSelection(
         val category: Category,
-        val step: Int,
+        val step: Int?,
     ){
         companion object {
             fun stepOne () = WizardMediumSelection(

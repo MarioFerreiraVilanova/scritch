@@ -54,15 +54,13 @@ class WizardScreenViewModel(
 
     fun onContinue(){
         viewModelScope.launch {
-            authenticationRepository.user()?.id?.let { userId ->
-                mutableViewState.value.optionStates?.let { optionStates ->
-                    userDataRepository.disableOptions(
-                        userId = userId,
-                        category = navArgs.category,
-                        optionIds = optionStates.filter { !it.selected }.map { it.id }
-                    )
-                }
-            }
+            saveOptions()
+        }
+    }
+
+    fun onBackClick() {
+        viewModelScope.launch {
+            saveOptions()
         }
     }
 
@@ -71,6 +69,18 @@ class WizardScreenViewModel(
             it.copy(
                 optionStates = loadUserOptions(category = navArgs.category),
             )
+        }
+    }
+
+    private suspend fun saveOptions(){
+        authenticationRepository.user()?.id?.let { userId ->
+            mutableViewState.value.optionStates?.let { optionStates ->
+                userDataRepository.disableOptions(
+                    userId = userId,
+                    category = navArgs.category,
+                    optionIds = optionStates.filter { !it.selected }.map { it.id }
+                )
+            }
         }
     }
 }
