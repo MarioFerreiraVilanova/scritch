@@ -90,6 +90,9 @@ private fun NavGraphBuilder.authenticatedSubGraph(
             SettingsScreen(
                 onLogOut = {
                     navController.goToLanding()
+                },
+                onBackPress = {
+                    navController.popBackStack()
                 }
             )
         }
