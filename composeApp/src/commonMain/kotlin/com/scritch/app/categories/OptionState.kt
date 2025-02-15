@@ -8,6 +8,7 @@ data class OptionState(
     val name: String,
     val selected: Boolean,
     val description: String?,
+    val tips: String?,
     val enabled: Boolean = true,
 ) {
     companion object {
@@ -19,6 +20,7 @@ data class OptionState(
                 id = dto.id,
                 name = dto.name ?: return null,
                 description = dto.description,
+                tips = dto.tips,
                 selected = selected,
             )
         }

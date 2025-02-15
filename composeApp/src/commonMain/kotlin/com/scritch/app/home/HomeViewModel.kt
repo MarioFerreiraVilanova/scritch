@@ -17,6 +17,7 @@ class HomeViewModel(
     private val mutableViewState = MutableStateFlow(HomeScreenViewState(
         medium = null,
         support = null,
+        selectedOption = null,
     ))
     val viewState = mutableViewState.asStateFlow()
 
@@ -41,5 +42,21 @@ class HomeViewModel(
     private suspend fun initOptions(){
         mediums = loadUserOptions(category = Category.Medium).filter { it.selected }
         supports = loadUserOptions(category = Category.Support).filter { it.selected }
+    }
+
+    fun onCategoryClick(clickedOption: OptionState) {
+        mutableViewState.update {
+            it.copy(
+                selectedOption = clickedOption
+            )
+        }
+    }
+
+    fun onTipDisplayed() {
+        mutableViewState.update {
+            it.copy(
+                selectedOption = null,
+            )
+        }
     }
 }
