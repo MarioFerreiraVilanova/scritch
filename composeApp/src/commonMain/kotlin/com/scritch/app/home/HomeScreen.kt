@@ -75,7 +75,7 @@ fun HomeScreen(
         sheetContent = {
             Tips(
                 title = viewState.selectedOption?.name ?: "",
-                description = viewState.selectedOption?.description ?: ""
+                description = viewState.selectedOption?.tips ?: ""
             )
         }
     ){
