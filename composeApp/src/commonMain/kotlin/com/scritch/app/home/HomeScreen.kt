@@ -135,45 +135,56 @@ private fun promptFromViewState(
 ): AnnotatedString? {
     if (viewState.medium == null && viewState.support == null) return null
 
+
+    return buildAnnotatedString {
+        append("Draw ")
+        appendCategory(
+            category = Category.Support,
+            option = viewState.support,
+            onClick = onClick,
+        )
+        append(" ")
+        appendCategory(
+            category = Category.Medium,
+            option = viewState.medium,
+            onClick = onClick,
+        )
+        append(".")
+    }
+}
+
+@Composable
+private fun AnnotatedString.Builder.appendCategory(
+    category: Category,
+    option: OptionState?,
+    onClick: (OptionState) -> Unit,
+){
     val textStyle = MaterialTheme.typography.h4.toSpanStyle()
     val linkStyle = textStyle.copy(
         textDecoration = TextDecoration.Underline
     )
-    return buildAnnotatedString {
-        append("Draw 5 objects")
-        if (viewState.medium == null) {
-            append("with a medium of your choice")
-        } else {
-            append("with a ")
-            withLink(
-                link = LinkAnnotation.Clickable(
-                    tag = Category.Medium.name,
-                    linkInteractionListener = {
-                        onClick(viewState.medium)
-                    }
-                )
-            ) {
-                withStyle(
-                    style = linkStyle
-                ) {
-                    append(viewState.medium.name)
-                }
-            }
-            append(" ")
+
+    if (option == null) {
+        when (category){
+            Category.Medium -> append("with the medium of your choice")
+            Category.Support -> append("on a surface of your choice")
         }
-    }
-
-    /*val subjectText = "Draw 5 objects"
-    val mediumText = if (viewState.medium == null) {
-        "with a medium of your choice"
+    }  else if (option.tips != null) {
+        withLink(
+            link = LinkAnnotation.Clickable(
+                tag = category.name,
+                linkInteractionListener = {
+                    onClick(option)
+                }
+            )
+        ) {
+            withStyle(
+                style = linkStyle
+            ) {
+                append(option.prompt)
+            }
+        }
     } else {
-        "with a ${viewState.medium.name}"
+        append (option.prompt)
     }
-    val supportText = if (viewState.support == null) {
-        "with the support of your choice"
-    } else {
-        "on a ${viewState.support.name}"
-    }
-
-    return "$subjectText, $mediumText, $supportText"*/
 }
