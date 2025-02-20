@@ -88,16 +88,8 @@ private fun WizardScreen(
                     }
                 }
             )
-        }
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            CategoryItems(
-                viewState = viewState,
-                modifier = Modifier.weight(1f),
-                onCheckChangeRequest = onOptionCheckChangeRequest,
-            )
+        },
+        bottomBar = {
             if (viewState.step != null) {
                 NextStep(
                     currentStep = viewState.step,
@@ -105,6 +97,12 @@ private fun WizardScreen(
                 )
             }
         }
+    ) {
+        CategoryItems(
+            viewState = viewState,
+            modifier = Modifier.fillMaxSize(),
+            onCheckChangeRequest = onOptionCheckChangeRequest,
+        )
     }
 }
 
