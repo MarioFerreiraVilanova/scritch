@@ -30,6 +30,7 @@ class WizardScreenViewModel(
             category = navArgs.category,
             step = navArgs.step,
             optionStates = null,
+            allDisabled = false,
         )
     )
 
@@ -62,6 +63,10 @@ class WizardScreenViewModel(
         viewModelScope.launch {
             saveOptions()
         }
+    }
+
+    fun onDisableAll() {
+
     }
 
     private suspend fun loadOptions() {

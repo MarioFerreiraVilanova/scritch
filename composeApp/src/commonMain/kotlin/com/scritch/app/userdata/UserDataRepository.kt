@@ -53,6 +53,26 @@ class UserDataRepository {
             )
     }
 
+    suspend fun toggleCategory (
+        userId: String,
+        category: Category,
+        enabled: Boolean,
+    ){
+        val docReference = Firebase.firestore
+            .collection(USER_DATA_COLLECTION)
+            .document(userId)
+
+        val dto = UserDataDto(docReference.get())
+        val categorySettings = (dto.categorySettings ?: emptyMap()).toMutableMap()
+        categorySettings[category.name] = enabled
+
+        docReference.set(
+            data = dto.copy(
+                categorySettings = categorySettings
+            ).asMap(),
+        )
+    }
+
     private suspend fun initialiseUserDocument(userId: String) {
         Firebase.firestore
             .collection(USER_DATA_COLLECTION)
