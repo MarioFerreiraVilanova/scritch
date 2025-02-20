@@ -5,16 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.scritch.app.auth.AuthenticationRepository
-import com.scritch.app.categories.Category
-import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.LoadUserOptionsUseCase
-import com.scritch.app.categories.OptionState
 import com.scritch.app.navigation.Authenticated
-import com.scritch.app.userdata.UserData
 import com.scritch.app.userdata.UserDataRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -30,7 +25,7 @@ class WizardScreenViewModel(
             category = navArgs.category,
             step = navArgs.step,
             optionStates = null,
-            allDisabled = false,
+            unselectAll = false,
         )
     )
 
@@ -65,8 +60,21 @@ class WizardScreenViewModel(
         }
     }
 
-    fun onDisableAll() {
-
+    fun onUnselectAll() {
+        authenticationRepository.user()?.id?.let { userId ->
+            viewModelScope.launch {
+                userDataRepository.toggleCategory(
+                    userId = userId,
+                    category = viewState.value.category,
+                    newValue = !viewState.value.unselectAll,
+                )
+                mutableViewState.update {
+                    it.copy(
+                        unselectAll = !it.unselectAll,
+                    )
+                }
+            }
+        }
     }
 
     private suspend fun loadOptions() {

@@ -56,7 +56,7 @@ class UserDataRepository {
     suspend fun toggleCategory (
         userId: String,
         category: Category,
-        enabled: Boolean,
+        newValue: Boolean,
     ){
         val docReference = Firebase.firestore
             .collection(USER_DATA_COLLECTION)
@@ -64,7 +64,7 @@ class UserDataRepository {
 
         val dto = UserDataDto(docReference.get())
         val categorySettings = (dto.categorySettings ?: emptyMap()).toMutableMap()
-        categorySettings[category.name] = enabled
+        categorySettings[category.name] = newValue
 
         docReference.set(
             data = dto.copy(

@@ -1,13 +1,13 @@
 package com.scritch.app.wizard
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -32,6 +32,7 @@ import com.scritch.app.categories.Category
 import com.scritch.app.categories.Option
 import com.scritch.app.uicomponents.PageHeader
 import com.scritch.app.uicomponents.PageLoader
+import com.scritch.app.uicomponents.ToggleListRow
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -55,7 +56,8 @@ fun WizardScreen(
                 onContinue(step)
             }
         },
-        onOptionCheckChangeRequest = viewModel::onOptionCheckChangeRequest
+        onOptionCheckChangeRequest = viewModel::onOptionCheckChangeRequest,
+        onUnselectAll = viewModel::onUnselectAll,
     )
 }
 
@@ -65,6 +67,7 @@ private fun WizardScreen(
     onBackClick: () -> Unit,
     onContinue: () -> Unit,
     onOptionCheckChangeRequest: (optionId: String) -> Unit,
+    onUnselectAll: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -102,6 +105,7 @@ private fun WizardScreen(
             viewState = viewState,
             modifier = Modifier.fillMaxSize(),
             onCheckChangeRequest = onOptionCheckChangeRequest,
+            onUnselectAll = onUnselectAll,
         )
     }
 }
@@ -110,6 +114,7 @@ private fun WizardScreen(
 private fun CategoryItems(
     viewState: WizardScreenViewState,
     onCheckChangeRequest: (optionId: String) -> Unit,
+    onUnselectAll: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -118,6 +123,21 @@ private fun CategoryItems(
         item {
             Header(
                 viewState = viewState,
+            )
+        }
+
+        item {
+            ToggleListRow(
+                title = "Unselect all",
+                subtitle = "No ${viewState.category.toTitle().lowercase()} imposed",
+                checked = viewState.unselectAll,
+                onCheckChangeRequest = onUnselectAll,
+            )
+        }
+
+        item {
+            Divider(
+                modifier = Modifier.padding(vertical = 8.dp)
             )
         }
 

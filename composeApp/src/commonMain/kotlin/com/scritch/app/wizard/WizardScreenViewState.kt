@@ -9,7 +9,7 @@ data class WizardScreenViewState(
     val category: Category,
     val step: Int?,
     val optionStates: List<OptionState>?,
-    val allDisabled: Boolean,
+    val unselectAll: Boolean,
 ) {
     val isWizard = step != null
 }
