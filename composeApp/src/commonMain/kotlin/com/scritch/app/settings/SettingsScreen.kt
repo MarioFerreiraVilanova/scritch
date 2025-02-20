@@ -56,7 +56,7 @@ fun SettingsScreen(
         },
         bottomBar = {
             Text(
-                text = "Version 0.2",
+                text = "Version 0.3",
                 style = MaterialTheme.typography.subtitle2.copy(
 
                 ),
