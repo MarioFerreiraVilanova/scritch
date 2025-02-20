@@ -5,19 +5,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.ListItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.scritch.app.categories.Category
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     onLogOut: () -> Unit, // TODO remove this and use events
@@ -57,10 +57,7 @@ fun SettingsScreen(
         bottomBar = {
             Text(
                 text = "Version 0.3",
-                style = MaterialTheme.typography.subtitle2.copy(
-
-                ),
-
+                style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
             )
@@ -88,10 +85,10 @@ fun SettingsScreen(
 
             item {
                 ListItem(
-                    text = {
+                    headlineContent = {
                         Text("Logout")
                     },
-                    icon = {
+                    leadingContent = {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = null,
@@ -112,12 +109,11 @@ private fun SectionTitle(
 ) {
     Text(
         text = title,
-        style = MaterialTheme.typography.subtitle2,
+        style = MaterialTheme.typography.labelMedium,
         modifier = Modifier.padding(16.dp)
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun CategorySettingsItem(
     category: Category,
@@ -125,7 +121,7 @@ private fun CategorySettingsItem(
 ) {
     ListItem(
         modifier = modifier,
-        icon = {
+        leadingContent = {
             Icon(
                 imageVector = when (category) {
                     Category.Medium -> Icons.Default.Edit
@@ -134,7 +130,7 @@ private fun CategorySettingsItem(
                 contentDescription = null,
             )
         },
-        text = {
+        headlineContent = {
             Text(
                 when (category) {
                     Category.Medium -> "Mediums"
