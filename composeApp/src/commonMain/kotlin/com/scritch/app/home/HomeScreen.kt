@@ -5,28 +5,22 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.Button
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.rememberBottomSheetScaffoldState
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
@@ -42,7 +36,7 @@ import com.scritch.app.categories.Category
 import com.scritch.app.categories.OptionState
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onGoToSettings: () -> Unit,
@@ -50,9 +44,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
-    val sheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden
-    )
+    val sheetState = rememberModalBottomSheetState()
 
     val prompt = promptFromViewState(
         viewState = viewState,
@@ -81,60 +73,62 @@ fun HomeScreen(
         }
     }
 
-    ModalBottomSheetLayout(
-        sheetState = sheetState,
-        sheetContent = {
-            Tips(
-                title = viewState.selectedOption?.name ?: "",
-                description = viewState.selectedOption?.tips ?: ""
-            )
-        }
-    ){
-        Scaffold(
-            modifier = modifier,
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text("Scritch")
-                    },
-                    actions = {
-                        IconButton(
-                            onClick = onGoToSettings,
-                            content = {
-                                Icon(
-                                    imageVector = Icons.Default.Settings,
-                                    contentDescription = "Settings",
-                                )
-                            }
-                        )
-                    }
-                )
-            },
-        ) {
-            Box(
-                modifier = modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.padding(16.dp)
-                ) {
-                    if (prompt != null) {
-                        Text(
-                            text = prompt,
-                            style = MaterialTheme.typography.h4,
-                        )
-                    }
-                    Button(
-                        content = { Text("Generate prompt") },
-                        onClick = {
-                            viewModel.onGeneratePrompt()
-                        },
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("Scritch")
+                },
+                actions = {
+                    IconButton(
+                        onClick = onGoToSettings,
+                        content = {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Settings",
+                            )
+                        }
                     )
                 }
+            )
+        },
+    ) {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(16.dp)
+            ) {
+                if (prompt != null) {
+                    Text(
+                        text = prompt,
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
+                }
+                Button(
+                    content = { Text("Generate prompt") },
+                    onClick = {
+                        viewModel.onGeneratePrompt()
+                    },
+                )
             }
         }
+    }
+
+    ModalBottomSheet(
+        sheetState = sheetState,
+        onDismissRequest = {
+            viewModel.onTipDisplayed()
+        }
+    ){
+        Tips(
+            title = viewState.selectedOption?.name ?: "",
+            description = viewState.selectedOption?.tips ?: ""
+        )
     }
 
 }
@@ -170,7 +164,7 @@ private fun AnnotatedString.Builder.appendCategory(
     option: OptionState?,
     onClick: (OptionState) -> Unit,
 ){
-    val textStyle = MaterialTheme.typography.h4.toSpanStyle()
+    val textStyle = MaterialTheme.typography.headlineSmall.toSpanStyle()
     val linkStyle = textStyle.copy(
         textDecoration = TextDecoration.Underline
     )
