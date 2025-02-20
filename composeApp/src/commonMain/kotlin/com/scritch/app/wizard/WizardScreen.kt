@@ -153,6 +153,7 @@ private fun CategoryItems(
                 viewState.optionStates[index].let { optionState ->
                     Option(
                         state = optionState,
+                        enabled = !viewState.unselectAll,
                         onCheckChangeRequest = { onCheckChangeRequest(optionState.id) }
                     )
                 }

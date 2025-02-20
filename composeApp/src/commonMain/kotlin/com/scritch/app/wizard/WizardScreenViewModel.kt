@@ -10,6 +10,7 @@ import com.scritch.app.navigation.Authenticated
 import com.scritch.app.userdata.UserDataRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -34,6 +35,9 @@ class WizardScreenViewModel(
     init {
         viewModelScope.launch {
             loadOptions()
+        }
+        viewModelScope.launch {
+            loadUserData()
         }
     }
 
@@ -68,11 +72,6 @@ class WizardScreenViewModel(
                     category = viewState.value.category,
                     newValue = !viewState.value.unselectAll,
                 )
-                mutableViewState.update {
-                    it.copy(
-                        unselectAll = !it.unselectAll,
-                    )
-                }
             }
         }
     }
@@ -93,6 +92,18 @@ class WizardScreenViewModel(
                     category = navArgs.category,
                     optionIds = optionStates.filter { !it.selected }.map { it.id }
                 )
+            }
+        }
+    }
+
+    private suspend fun loadUserData(){
+        authenticationRepository.user()?.id?.let { userId ->
+            userDataRepository.userDataFlow(userId).collectLatest { userData ->
+                mutableViewState.update {
+                    it.copy(
+                        unselectAll = userData.categorySettings[navArgs.category] ?: false,
+                    )
+                }
             }
         }
     }

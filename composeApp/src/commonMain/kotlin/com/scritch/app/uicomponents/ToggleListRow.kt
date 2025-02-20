@@ -28,7 +28,13 @@ fun ToggleListRow(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onCheckChangeRequest() },
+            .then(
+                if (enabled){
+                    Modifier.clickable { onCheckChangeRequest() }
+                } else {
+                    Modifier
+                }
+            ),
     ) {
         Row(
             modifier = Modifier

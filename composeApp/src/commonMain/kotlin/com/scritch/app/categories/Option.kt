@@ -7,6 +7,7 @@ import com.scritch.app.uicomponents.ToggleListRow
 @Composable
 fun Option (
     state: OptionState,
+    enabled: Boolean,
     onCheckChangeRequest: () -> Unit,
     modifier: Modifier = Modifier,
 ){
@@ -15,7 +16,7 @@ fun Option (
         title = state.name,
         subtitle = state.description,
         checked = state.selected,
-        enabled = state.enabled,
+        enabled = enabled,
         onCheckChangeRequest = onCheckChangeRequest,
     )
 }

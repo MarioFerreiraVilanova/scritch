@@ -10,7 +10,6 @@ data class OptionState(
     val description: String?,
     val tips: String?,
     val prompt: String,
-    val enabled: Boolean = true,
 ) {
     companion object {
         fun fromDto(
