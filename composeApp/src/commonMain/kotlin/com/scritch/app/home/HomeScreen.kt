@@ -36,6 +36,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.scritch.app.categories.Category
 import com.scritch.app.categories.OptionState
 import org.koin.compose.viewmodel.koinViewModel
@@ -67,6 +69,15 @@ fun HomeScreen(
     LaunchedEffect(sheetState.isVisible){
         if (!sheetState.isVisible){
             viewModel.onTipDisplayed()
+        }
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+
+    LaunchedEffect(lifecycleState) {
+        if (lifecycleState == Lifecycle.State.RESUMED) run {
+            viewModel.onResume()
         }
     }
 

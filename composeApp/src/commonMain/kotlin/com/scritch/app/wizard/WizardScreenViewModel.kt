@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.scritch.app.auth.AuthenticationRepository
 import com.scritch.app.categories.LoadUserOptionsUseCase
 import com.scritch.app.navigation.Authenticated
+import com.scritch.app.userdata.LoadUserDataUseCase
 import com.scritch.app.userdata.UserDataRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,6 +20,7 @@ class WizardScreenViewModel(
     private val authenticationRepository: AuthenticationRepository,
     private val userDataRepository: UserDataRepository,
     private val loadUserOptions: LoadUserOptionsUseCase,
+    private val loadUserData: LoadUserDataUseCase,
 ) : ViewModel() {
     private val navArgs = savedStateHandle.toRoute<Authenticated.WizardMediumSelection>()
     private val mutableViewState = MutableStateFlow(
@@ -37,22 +39,23 @@ class WizardScreenViewModel(
             loadOptions()
         }
         viewModelScope.launch {
-            loadUserData()
+            initUserData()
         }
     }
 
-    fun onOptionCheckChangeRequest (optionId: String){
+    fun onOptionCheckChangeRequest(optionId: String) {
         mutableViewState.value.optionStates?.find { it.id == optionId }?.let { option ->
             mutableViewState.update { state ->
-                val options = state.optionStates?.minus(option)?.plus(option.copy(selected = !option.selected))
+                val options = state.optionStates?.minus(option)
+                    ?.plus(option.copy(selected = !option.selected))
                 state.copy(
                     optionStates = options?.sortedBy { it.name }
                 )
-            }    
+            }
         }
     }
 
-    fun onContinue(){
+    fun onContinue() {
         viewModelScope.launch {
             saveOptions()
         }
@@ -84,7 +87,7 @@ class WizardScreenViewModel(
         }
     }
 
-    private suspend fun saveOptions(){
+    private suspend fun saveOptions() {
         authenticationRepository.user()?.id?.let { userId ->
             mutableViewState.value.optionStates?.let { optionStates ->
                 userDataRepository.disableOptions(
@@ -96,14 +99,12 @@ class WizardScreenViewModel(
         }
     }
 
-    private suspend fun loadUserData(){
-        authenticationRepository.user()?.id?.let { userId ->
-            userDataRepository.userDataFlow(userId).collectLatest { userData ->
-                mutableViewState.update {
-                    it.copy(
-                        unselectAll = userData.categorySettings[navArgs.category] ?: false,
-                    )
-                }
+    private suspend fun initUserData() {
+        loadUserData()?.collectLatest { userData ->
+            mutableViewState.update {
+                it.copy(
+                    unselectAll = userData.categorySettings[navArgs.category] ?: false,
+                )
             }
         }
     }

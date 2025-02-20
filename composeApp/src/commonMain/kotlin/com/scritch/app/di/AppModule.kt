@@ -8,6 +8,7 @@ import com.scritch.app.home.HomeViewModel
 import com.scritch.app.landing.LandingViewModel
 import com.scritch.app.settings.SettingsViewModel
 import com.scritch.app.splash.SplashViewModel
+import com.scritch.app.userdata.LoadUserDataUseCase
 import com.scritch.app.userdata.UserDataRepository
 import com.scritch.app.wizard.WizardScreenViewModel
 import org.koin.core.module.dsl.factoryOf
@@ -27,5 +28,6 @@ val appModule = module {
     viewModelOf(::SplashViewModel)
     viewModelOf(::WizardScreenViewModel)
 
+    factoryOf(::LoadUserDataUseCase)
     factoryOf(::LoadUserOptionsUseCase)
 }
