@@ -119,16 +119,18 @@ fun HomeScreen(
         }
     }
 
-    ModalBottomSheet(
-        sheetState = sheetState,
-        onDismissRequest = {
-            viewModel.onTipDisplayed()
+    if(sheetState.isVisible){
+        ModalBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = {
+                viewModel.onTipDisplayed()
+            }
+        ){
+            Tips(
+                title = viewState.selectedOption?.name ?: "",
+                description = viewState.selectedOption?.tips ?: ""
+            )
         }
-    ){
-        Tips(
-            title = viewState.selectedOption?.name ?: "",
-            description = viewState.selectedOption?.tips ?: ""
-        )
     }
 
 }
