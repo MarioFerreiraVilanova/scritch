@@ -64,7 +64,7 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -80,10 +80,6 @@ kotlin {
             api(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.composeVM)
-
-            implementation ("androidx.compose.material3:material3:1.3.1")
-            implementation ("androidx.compose.material3:material3-window-size-class:1.3.1")
-            implementation ("androidx.compose.material3:material3-adaptive-navigation-suite:1.4.0-alpha08")
         }
         /*desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
