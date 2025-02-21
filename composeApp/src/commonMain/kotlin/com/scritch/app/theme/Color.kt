@@ -5,5 +5,5 @@ import androidx.compose.ui.graphics.Color
 
 val scritchColorScheme = darkColorScheme(
     primary = Color(0xFFEED201),
-    onPrimary = Color(0xFF000000)
+    onPrimary = Color(0xFF000000),
 )
