@@ -5,6 +5,7 @@ import androidx.compose.runtime.*
 import com.scritch.app.di.appModule
 import com.scritch.app.navigation.AppNavGraph
 import com.scritch.app.theme.scritchColorScheme
+import com.scritch.app.theme.scritchTypography
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 
@@ -18,6 +19,7 @@ fun App() {
     ){
         MaterialTheme(
             colorScheme = scritchColorScheme,
+            typography = scritchTypography(),
         ) {
             AppNavGraph()
         }
