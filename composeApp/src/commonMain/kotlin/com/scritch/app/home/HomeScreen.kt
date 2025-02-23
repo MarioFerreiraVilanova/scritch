@@ -123,7 +123,7 @@ fun HomeScreen(
         }
     }
 
-    if(sheetState.isVisible){
+    if(viewState.selectedOption != null){
         ModalBottomSheet(
             sheetState = sheetState,
             onDismissRequest = {
