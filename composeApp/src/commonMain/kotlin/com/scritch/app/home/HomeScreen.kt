@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
@@ -110,7 +111,7 @@ fun HomeScreen(
                 if (prompt != null) {
                     Text(
                         text = prompt,
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = MaterialTheme.typography.headlineMedium,
                     )
                 }
                 Button(
@@ -170,9 +171,11 @@ private fun AnnotatedString.Builder.appendCategory(
     option: OptionState?,
     onClick: (OptionState) -> Unit,
 ){
-    val textStyle = MaterialTheme.typography.headlineSmall.toSpanStyle()
+    val textStyle = MaterialTheme.typography.headlineMedium.toSpanStyle()
     val linkStyle = textStyle.copy(
-        textDecoration = TextDecoration.Underline
+        textDecoration = TextDecoration.Underline,
+        color = MaterialTheme.colorScheme.primary,
+        fontWeight = FontWeight.Bold,
     )
 
     if (option == null) {
@@ -181,6 +184,9 @@ private fun AnnotatedString.Builder.appendCategory(
             Category.Support -> append("on a surface of your choice")
         }
     }  else if (option.tips != null) {
+        val startOfLink = option.prompt.indexOfFirst { it == '*' }.coerceAtLeast(0)
+        val endOfLink = option.prompt.indexOfLast { it == '*' }.coerceAtLeast(0)
+        append(option.prompt.substring(0, startOfLink))
         withLink(
             link = LinkAnnotation.Clickable(
                 tag = category.name,
@@ -192,10 +198,14 @@ private fun AnnotatedString.Builder.appendCategory(
             withStyle(
                 style = linkStyle
             ) {
-                append(option.prompt)
+                if (option.prompt.contains('*')){
+                    append(option.prompt.substring(startOfLink+1, endOfLink))
+                } else {
+                    append(option.prompt)
+                }
             }
         }
     } else {
-        append (option.prompt)
+        append (option.prompt.replace("*", ""))
     }
 }
