@@ -3,6 +3,9 @@ package com.scritch.app.landing
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,6 +27,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.scritch.app.uicomponents.PageHeader
 import org.koin.compose.viewmodel.koinViewModel
@@ -62,10 +66,15 @@ fun LandingScreen(
                 }
             )
         }
-    ) {
+    ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
+            modifier = Modifier.fillMaxSize().consumeWindowInsets(innerPadding),
+            contentPadding = PaddingValues(
+                start = innerPadding.calculateStartPadding(LayoutDirection.Ltr) + 16.dp,
+                top = innerPadding.calculateTopPadding() + 16.dp,
+                end = innerPadding.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
+                bottom = innerPadding.calculateBottomPadding() + 16.dp
+            ),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             item {

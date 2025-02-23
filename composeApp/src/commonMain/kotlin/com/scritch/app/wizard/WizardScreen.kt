@@ -1,9 +1,12 @@
 package com.scritch.app.wizard
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -102,12 +105,13 @@ private fun WizardScreen(
                 )
             }
         }
-    ) {
+    ) { innerPadding ->
         CategoryItems(
             viewState = viewState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().consumeWindowInsets(innerPadding),
             onCheckChangeRequest = onOptionCheckChangeRequest,
             onUnselectAll = onUnselectAll,
+            innerPadding = innerPadding,
         )
     }
 }
@@ -115,12 +119,14 @@ private fun WizardScreen(
 @Composable
 private fun CategoryItems(
     viewState: WizardScreenViewState,
+    innerPadding: PaddingValues,
     onCheckChangeRequest: (optionId: String) -> Unit,
     onUnselectAll: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
         modifier = modifier,
+        contentPadding = innerPadding,
     ) {
         item {
             Header(
@@ -198,7 +204,7 @@ private fun NextStep(
         color = MaterialTheme.colorScheme.surface,
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.navigationBarsPadding().padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {

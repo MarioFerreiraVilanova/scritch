@@ -1,8 +1,16 @@
 package com.scritch.app.settings
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -59,11 +67,14 @@ fun SettingsScreen(
                 text = "Version 0.4",
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                modifier = Modifier.fillMaxWidth().padding(16.dp).navigationBarsPadding()
             )
         }
-    ) {
-        LazyColumn {
+    ) { innerPadding ->
+        LazyColumn(
+            modifier = Modifier.consumeWindowInsets(innerPadding),
+            contentPadding = innerPadding,
+        ) {
             item {
                 SectionTitle("Prompt Settings")
             }
