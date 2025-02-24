@@ -149,13 +149,18 @@ private fun promptFromViewState(
 
 
     return buildAnnotatedString {
-        append("Draw ")
+        appendCategory(
+            category = Category.Topic,
+            option = viewState.topic,
+            onClick = onClick,
+        )
+        append(", ")
         appendCategory(
             category = Category.Support,
             option = viewState.support,
             onClick = onClick,
         )
-        append(" ")
+        append(", ")
         appendCategory(
             category = Category.Medium,
             option = viewState.medium,

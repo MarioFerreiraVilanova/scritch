@@ -18,6 +18,7 @@ class HomeViewModel(
 ) : ViewModel() {
 
     private val mutableViewState = MutableStateFlow(HomeScreenViewState(
+        topic = null,
         medium = null,
         support = null,
         selectedOption = null,
@@ -25,6 +26,7 @@ class HomeViewModel(
     val viewState = mutableViewState.asStateFlow()
 
     private var categorySettings = emptyMap<Category, Boolean>()
+    private var topics = emptyList<OptionState>()
     private var mediums = emptyList<OptionState>()
     private var supports = emptyList<OptionState>()
 
@@ -48,6 +50,11 @@ class HomeViewModel(
     fun onGeneratePrompt() {
         mutableViewState.update {
             it.copy(
+                topic = if (categorySettings[Category.Topic] == true) {
+                    unImposedOption(Category.Topic)
+                } else {
+                    topics.randomOrNull() ?: unImposedOption(Category.Topic)
+                },
                 medium = if (categorySettings[Category.Medium] == true) {
                     unImposedOption(Category.Medium)
                 } else {
@@ -79,6 +86,7 @@ class HomeViewModel(
     }
 
     private suspend fun loadOptions() {
+        topics = loadUserOptions(category = Category.Topic).filter { it.selected }
         mediums = loadUserOptions(category = Category.Medium).filter { it.selected }
         supports = loadUserOptions(category = Category.Support).filter { it.selected }
     }
