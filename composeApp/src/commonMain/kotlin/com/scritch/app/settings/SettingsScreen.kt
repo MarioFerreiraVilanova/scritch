@@ -66,7 +66,7 @@ fun SettingsScreen(
         },
         bottomBar = {
             Text(
-                text = "Version 0.4",
+                text = "Version 0.5",
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(16.dp).navigationBarsPadding()
