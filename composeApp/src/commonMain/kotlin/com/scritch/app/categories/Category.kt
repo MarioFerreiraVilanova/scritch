@@ -4,4 +4,5 @@ enum class Category {
     Topic,
     Medium,
     Support,
+    Constraint,
 }

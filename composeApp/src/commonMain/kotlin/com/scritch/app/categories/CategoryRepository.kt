@@ -26,5 +26,6 @@ class CategoryRepository {
         Category.Medium -> "medium"
         Category.Support -> "support"
         Category.Topic -> "topic"
+        Category.Constraint -> "constraint"
     }
 }

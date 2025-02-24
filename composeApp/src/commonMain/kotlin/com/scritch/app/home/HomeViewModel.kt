@@ -103,6 +103,7 @@ class HomeViewModel(
             Category.Medium -> "with a medium of your choice"
             Category.Support -> "on the support of your choice"
             Category.Topic -> "something"
+            Category.Constraint -> ""
         }
     )
 }

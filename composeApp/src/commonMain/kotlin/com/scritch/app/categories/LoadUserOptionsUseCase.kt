@@ -18,6 +18,7 @@ class LoadUserOptionsUseCase(
                 Category.Medium -> userData.disabledMediumIds
                 Category.Support -> userData.disabledSupportIds
                 Category.Topic -> userData.disabledTopicIds
+                Category.Constraint -> userData.disabledConstraintIds
             }
             optionDtos.mapNotNull { dto ->
                 OptionState.fromDto(

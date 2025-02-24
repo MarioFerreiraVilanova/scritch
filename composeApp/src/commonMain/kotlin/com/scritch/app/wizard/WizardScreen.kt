@@ -185,6 +185,7 @@ private fun Header (
             Category.Medium -> "mediums"
             Category.Support -> "supports"
             Category.Topic -> "topics"
+            Category.Constraint -> "constraints"
         }
         Text(
             text = "Unselect the $categoryText that you don't want to see appear in the prompts anymore",
@@ -224,6 +225,7 @@ private fun Category.toTitle() = when (this) {
     Category.Medium -> "Mediums"
     Category.Support -> "Supports"
     Category.Topic -> "Topics"
+    Category.Constraint -> "Constraints"
 }
 
 private fun Category.toDescription() = when (this) {
@@ -247,6 +249,14 @@ private fun Category.toDescription() = when (this) {
         append("Scritch will prompt you for using different topics. ")
         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
             append("Unselect those you don't want to show in the prompts. ")
+        }
+        append("You won't see them in the prompts. You can always change that later in settings")
+    }
+
+    Category.Constraint -> buildAnnotatedString {
+        append("Scritch will add constraints to the prompts. ")
+        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+            append("Unselect those you don't want to see or find uninteresting. ")
         }
         append("You won't see them in the prompts. You can always change that later in settings")
     }
