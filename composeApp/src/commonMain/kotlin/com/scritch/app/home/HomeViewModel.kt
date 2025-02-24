@@ -21,6 +21,7 @@ class HomeViewModel(
         topic = null,
         medium = null,
         support = null,
+        constraint = null,
         selectedOption = null,
     ))
     val viewState = mutableViewState.asStateFlow()
@@ -29,6 +30,7 @@ class HomeViewModel(
     private var topics = emptyList<OptionState>()
     private var mediums = emptyList<OptionState>()
     private var supports = emptyList<OptionState>()
+    private var constraints = emptyList<OptionState>()
 
     init {
         viewModelScope.launch {
@@ -65,6 +67,11 @@ class HomeViewModel(
                 } else {
                     supports.randomOrNull() ?: unImposedOption(Category.Support)
                 },
+                constraint = if (categorySettings[Category.Constraint] == true) {
+                    unImposedOption(Category.Constraint)
+                } else {
+                    constraints.randomOrNull() ?: unImposedOption(Category.Constraint)
+                },
             )
         }
     }
@@ -89,6 +96,7 @@ class HomeViewModel(
         topics = loadUserOptions(category = Category.Topic).filter { it.selected }
         mediums = loadUserOptions(category = Category.Medium).filter { it.selected }
         supports = loadUserOptions(category = Category.Support).filter { it.selected }
+        constraints = loadUserOptions(category = Category.Constraint).filter { it.selected }
     }
 
     private fun unImposedOption(

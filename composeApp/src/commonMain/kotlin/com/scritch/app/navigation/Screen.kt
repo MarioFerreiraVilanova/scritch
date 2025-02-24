@@ -32,11 +32,17 @@ import kotlinx.serialization.Serializable
                 step = 3,
             )
 
+            private fun stepFour () = WizardMediumSelection(
+                category = Category.Constraint,
+                step = 4,
+            )
+
             fun nextStep(
                 currentStep: Int,
             ) = when (currentStep){
                 1 -> stepTwo()
                 2 -> stepThree()
+                3 -> stepFour()
                 else -> null
             }
         }

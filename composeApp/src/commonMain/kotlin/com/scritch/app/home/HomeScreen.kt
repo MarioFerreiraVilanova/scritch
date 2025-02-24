@@ -166,7 +166,12 @@ private fun promptFromViewState(
             option = viewState.medium,
             onClick = onClick,
         )
-        append(".")
+        append(". ")
+        appendCategory(
+            category = Category.Constraint,
+            option = viewState.constraint,
+            onClick = onClick,
+        )
     }
 }
 
