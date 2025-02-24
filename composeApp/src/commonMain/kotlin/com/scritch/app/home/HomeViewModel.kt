@@ -94,6 +94,7 @@ class HomeViewModel(
         prompt = when (category){
             Category.Medium -> "with a medium of your choice"
             Category.Support -> "on the support of your choice"
+            Category.Topic -> "something"
         }
     )
 }

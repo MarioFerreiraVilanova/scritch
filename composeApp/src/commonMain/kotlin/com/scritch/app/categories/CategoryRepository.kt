@@ -25,5 +25,6 @@ class CategoryRepository {
     private fun Category.toDbName() = when (this){
         Category.Medium -> "medium"
         Category.Support -> "support"
+        Category.Topic -> "topic"
     }
 }

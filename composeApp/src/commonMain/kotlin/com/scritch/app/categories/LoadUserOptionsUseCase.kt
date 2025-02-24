@@ -17,6 +17,7 @@ class LoadUserOptionsUseCase(
             val disabledOptions = when (category) {
                 Category.Medium -> userData.disabledMediumIds
                 Category.Support -> userData.disabledSupportIds
+                Category.Topic -> userData.disabledTopicIds
             }
             optionDtos.mapNotNull { dto ->
                 OptionState.fromDto(

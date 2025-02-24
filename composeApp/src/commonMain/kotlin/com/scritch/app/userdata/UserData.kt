@@ -3,6 +3,7 @@ package com.scritch.app.userdata
 import com.scritch.app.categories.Category
 
 data class UserData(
+    val disabledTopicIds: List<String>,
     val disabledMediumIds: List<String>,
     val disabledSupportIds: List<String>,
     val categorySettings: Map<Category, Boolean>,
@@ -10,6 +11,7 @@ data class UserData(
     companion object {
         fun fromDto(dto: UserDataDto): UserData {
             return UserData(
+                disabledTopicIds = dto.disabledTopicIds ?: emptyList(),
                 disabledMediumIds = dto.disabledMediumIds ?: emptyList(),
                 disabledSupportIds = dto.disabledSupportIds ?: emptyList(),
                 categorySettings = dto.categorySettings?.mapKeys { entry ->

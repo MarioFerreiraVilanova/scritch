@@ -184,6 +184,7 @@ private fun Header (
         val categoryText = when (viewState.category){
             Category.Medium -> "mediums"
             Category.Support -> "supports"
+            Category.Topic -> "topics"
         }
         Text(
             text = "Unselect the $categoryText that you don't want to see appear in the prompts anymore",
@@ -222,6 +223,7 @@ private fun NextStep(
 private fun Category.toTitle() = when (this) {
     Category.Medium -> "Mediums"
     Category.Support -> "Supports"
+    Category.Topic -> "Topics"
 }
 
 private fun Category.toDescription() = when (this) {
@@ -237,6 +239,14 @@ private fun Category.toDescription() = when (this) {
         append("Scritch will prompt you for using different supports. ")
         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
             append("Unselect supports you don't have or you don't want. ")
+        }
+        append("You won't see them in the prompts. You can always change that later in settings")
+    }
+
+    Category.Topic -> buildAnnotatedString {
+        append("Scritch will prompt you for using different topics. ")
+        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+            append("Unselect those you don't want to show in the prompts. ")
         }
         append("You won't see them in the prompts. You can always change that later in settings")
     }

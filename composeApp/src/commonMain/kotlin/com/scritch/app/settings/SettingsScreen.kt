@@ -18,6 +18,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -137,6 +138,7 @@ private fun CategorySettingsItem(
                 imageVector = when (category) {
                     Category.Medium -> Icons.Default.Edit
                     Category.Support -> Icons.Default.Notifications
+                    Category.Topic -> Icons.Default.Person
                 },
                 contentDescription = null,
             )
@@ -146,6 +148,7 @@ private fun CategorySettingsItem(
                 when (category) {
                     Category.Medium -> "Mediums"
                     Category.Support -> "Supports"
+                    Category.Topic -> "Topics"
                 }
             )
         },

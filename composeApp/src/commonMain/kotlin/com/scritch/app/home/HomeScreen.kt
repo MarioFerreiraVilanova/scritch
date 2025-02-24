@@ -182,6 +182,7 @@ private fun AnnotatedString.Builder.appendCategory(
         when (category){
             Category.Medium -> append("with the medium of your choice")
             Category.Support -> append("on a surface of your choice")
+            Category.Topic -> append("something")
         }
     }  else if (option.tips != null) {
         val startOfLink = option.prompt.indexOfFirst { it == '*' }.coerceAtLeast(0)
