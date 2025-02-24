@@ -18,19 +18,25 @@ import kotlinx.serialization.Serializable
     ){
         companion object {
             fun stepOne () = WizardMediumSelection(
-                category = Category.Medium,
+                category = Category.Topic,
                 step = 1,
             )
 
             private fun stepTwo () = WizardMediumSelection(
-                category = Category.Support,
+                category = Category.Medium,
                 step = 2,
+            )
+
+            private fun stepThree () = WizardMediumSelection(
+                category = Category.Support,
+                step = 3,
             )
 
             fun nextStep(
                 currentStep: Int,
             ) = when (currentStep){
                 1 -> stepTwo()
+                2 -> stepThree()
                 else -> null
             }
         }

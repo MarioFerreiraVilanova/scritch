@@ -209,7 +209,7 @@ private fun NextStep(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(text = "$currentStep/2")
+            Text(text = "$currentStep/${Category.entries.size}")
             Button(
                 onClick = onContinue,
                 content = {
