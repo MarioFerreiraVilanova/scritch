@@ -182,10 +182,12 @@ private fun AnnotatedString.Builder.appendCategory(
     onClick: (OptionState) -> Unit,
 ){
     val textStyle = MaterialTheme.typography.headlineMedium.toSpanStyle()
-    val linkStyle = textStyle.copy(
-        textDecoration = TextDecoration.Underline,
+    val highlightedStyle = textStyle.copy(
         color = MaterialTheme.colorScheme.primary,
         fontWeight = FontWeight.Bold,
+    )
+    val linkStyle = highlightedStyle.copy(
+        textDecoration = TextDecoration.Underline,
     )
 
     if (option == null) {
@@ -195,7 +197,7 @@ private fun AnnotatedString.Builder.appendCategory(
             Category.Topic -> append("something")
             Category.Constraint -> {}
         }
-    }  else if (option.tips != null) {
+    }  else {
         val startOfLink = option.prompt.indexOfFirst { it == '*' }.coerceAtLeast(0)
         val endOfLink = option.prompt.indexOfLast { it == '*' }.coerceAtLeast(0)
         append(option.prompt.substring(0, startOfLink))
@@ -208,7 +210,7 @@ private fun AnnotatedString.Builder.appendCategory(
             )
         ) {
             withStyle(
-                style = linkStyle
+                style = if (option.tips != null) linkStyle else highlightedStyle
             ) {
                 if (option.prompt.contains('*')){
                     append(option.prompt.substring(startOfLink+1, endOfLink))
@@ -217,7 +219,5 @@ private fun AnnotatedString.Builder.appendCategory(
                 }
             }
         }
-    } else {
-        append (option.prompt.replace("*", ""))
     }
 }
