@@ -10,6 +10,7 @@ class LoadUserOptionsUseCase(
 ) {
     suspend operator fun invoke(
         category: Category,
+        useFrequency: Boolean = false,
     ): List<OptionState> {
         return authenticationRepository.user()?.id?.let { userId ->
             val optionDtos = categoryRepository.getOptions(category = category)
@@ -20,12 +21,27 @@ class LoadUserOptionsUseCase(
                 Category.Topic -> userData.disabledTopicIds
                 Category.Constraint -> userData.disabledConstraintIds
             }
-            optionDtos.mapNotNull { dto ->
+            val result = optionDtos.mapNotNull { dto ->
                 OptionState.fromDto(
                     dto = dto,
                     selected = !disabledOptions.contains(dto.id),
                 )
-            }.sortedBy { it.name }
+            }.toMutableList()
+
+            if (useFrequency){
+                optionDtos.filter { it.frequency != null }.forEach { dto ->
+                    for (i in 0..(dto.frequency ?: 0)) {
+                        OptionState.fromDto(
+                            dto = dto,
+                            selected = !disabledOptions.contains(dto.id),
+                        )?.let {
+                            result.add(it)
+                        }
+                    }
+                }
+            }
+
+            result.sortedBy { it.name }
         } ?: emptyList()
     }
 }

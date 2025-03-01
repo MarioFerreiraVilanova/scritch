@@ -17,13 +17,15 @@ class HomeViewModel(
     private val loadUserData: LoadUserDataUseCase,
 ) : ViewModel() {
 
-    private val mutableViewState = MutableStateFlow(HomeScreenViewState(
-        topic = null,
-        medium = null,
-        support = null,
-        constraint = null,
-        selectedOption = null,
-    ))
+    private val mutableViewState = MutableStateFlow(
+        HomeScreenViewState(
+            topic = null,
+            medium = null,
+            support = null,
+            constraint = null,
+            selectedOption = null,
+        )
+    )
     val viewState = mutableViewState.asStateFlow()
 
     private var categorySettings = emptyMap<Category, Boolean>()
@@ -43,7 +45,7 @@ class HomeViewModel(
         }
     }
 
-    fun onResume(){
+    fun onResume() {
         viewModelScope.launch {
             loadOptions()
         }
@@ -93,10 +95,22 @@ class HomeViewModel(
     }
 
     private suspend fun loadOptions() {
-        topics = loadUserOptions(category = Category.Topic).filter { it.selected }
-        mediums = loadUserOptions(category = Category.Medium).filter { it.selected }
-        supports = loadUserOptions(category = Category.Support).filter { it.selected }
-        constraints = loadUserOptions(category = Category.Constraint).filter { it.selected }
+        topics = loadUserOptions(
+            category = Category.Topic,
+            useFrequency = true,
+        ).filter { it.selected }
+        mediums = loadUserOptions(
+            category = Category.Medium,
+            useFrequency = true,
+        ).filter { it.selected }
+        supports = loadUserOptions(
+            category = Category.Support,
+            useFrequency = true,
+        ).filter { it.selected }
+        constraints = loadUserOptions(
+            category = Category.Constraint,
+            useFrequency = true,
+        ).filter { it.selected }
     }
 
     private fun unImposedOption(
@@ -107,7 +121,7 @@ class HomeViewModel(
         selected = true,
         description = null,
         tips = null,
-        prompt = when (category){
+        prompt = when (category) {
             Category.Medium -> "with a medium of your choice"
             Category.Support -> "on the support of your choice"
             Category.Topic -> "something"

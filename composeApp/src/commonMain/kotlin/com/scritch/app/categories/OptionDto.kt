@@ -8,6 +8,7 @@ data class OptionDto(
     val description: String?,
     val tips: String?,
     val prompt: String?,
+    val frequency: Int?,
 ){
     constructor(documentSnapshot: DocumentSnapshot): this(
         id = documentSnapshot.id,
@@ -15,5 +16,6 @@ data class OptionDto(
         description = documentSnapshot.get<String?>("description"),
         tips = documentSnapshot.get<String?>("tips"),
         prompt = documentSnapshot.get<String?>("prompt"),
+        frequency = documentSnapshot.get<Int?>("frequency"),
     )
 }
