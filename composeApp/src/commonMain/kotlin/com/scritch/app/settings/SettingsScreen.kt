@@ -81,13 +81,29 @@ fun SettingsScreen(
                 SectionTitle("Prompt Settings")
             }
 
-            items(
-                items = Category.entries.toTypedArray()
-            ) { category ->
+            item {
                 CategorySettingsItem(
-                    category = category,
+                    category = Category.Medium,
                     modifier = Modifier.clickable {
-                        onCategoryPress(category)
+                        onCategoryPress(Category.Medium)
+                    },
+                )
+            }
+
+            item {
+                CategorySettingsItem(
+                    category = Category.Support,
+                    modifier = Modifier.clickable {
+                        onCategoryPress(Category.Support)
+                    },
+                )
+            }
+
+            item {
+                CategorySettingsItem(
+                    category = Category.Constraint,
+                    modifier = Modifier.clickable {
+                        onCategoryPress(Category.Constraint)
                     },
                 )
             }
