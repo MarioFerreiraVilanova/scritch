@@ -139,6 +139,7 @@ fun HomeScreen(
                     onClick = {
                         viewModel.onGeneratePrompt()
                     },
+                    shape = MaterialTheme.shapes.small
                 )
             }
         }
