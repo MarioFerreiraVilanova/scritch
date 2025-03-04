@@ -201,16 +201,28 @@ private fun AnnotatedString.Builder.appendCategory(
         val startOfLink = option.prompt.indexOfFirst { it == '*' }.coerceAtLeast(0)
         val endOfLink = option.prompt.indexOfLast { it == '*' }.coerceAtLeast(0)
         append(option.prompt.substring(0, startOfLink))
-        withLink(
-            link = LinkAnnotation.Clickable(
-                tag = category.name,
-                linkInteractionListener = {
-                    onClick(option)
+        if (option.tips != null){
+            withLink(
+                link = LinkAnnotation.Clickable(
+                    tag = category.name,
+                    linkInteractionListener = {
+                        onClick(option)
+                    }
+                )
+            ) {
+                withStyle(
+                    style = linkStyle
+                ) {
+                    if (option.prompt.contains('*')){
+                        append(option.prompt.substring(startOfLink+1, endOfLink))
+                    } else {
+                        append(option.prompt)
+                    }
                 }
-            )
-        ) {
+            }
+        } else {
             withStyle(
-                style = if (option.tips != null) linkStyle else highlightedStyle
+                style = highlightedStyle
             ) {
                 if (option.prompt.contains('*')){
                     append(option.prompt.substring(startOfLink+1, endOfLink))
@@ -219,5 +231,6 @@ private fun AnnotatedString.Builder.appendCategory(
                 }
             }
         }
+
     }
 }
