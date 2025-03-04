@@ -144,7 +144,7 @@ fun HomeScreen(
                             contentDescription = null,
                         )
                         Spacer(Modifier.width(8.dp))
-                        Text("Generate prompt")
+                        Text(text = "Generate prompt")
                     },
                     onClick = {
                         viewModel.onGeneratePrompt()
@@ -177,7 +177,6 @@ private fun promptFromViewState(
     onClick: (OptionState) -> Unit,
 ): AnnotatedString? {
     if (viewState.medium == null && viewState.support == null) return null
-
 
     return buildAnnotatedString {
         appendCategory(
@@ -212,10 +211,9 @@ private fun AnnotatedString.Builder.appendCategory(
     option: OptionState?,
     onClick: (OptionState) -> Unit,
 ) {
-    val textStyle = MaterialTheme.typography.headlineMedium.toSpanStyle()
+    val textStyle = MaterialTheme.typography.headlineLarge.toSpanStyle()
     val highlightedStyle = textStyle.copy(
         color = MaterialTheme.colorScheme.primary,
-        fontWeight = FontWeight.Bold,
     )
     val linkStyle = highlightedStyle.copy(
         textDecoration = TextDecoration.Underline,
@@ -231,7 +229,11 @@ private fun AnnotatedString.Builder.appendCategory(
     } else {
         val startOfLink = option.prompt.indexOfFirst { it == '*' }.coerceAtLeast(0)
         val endOfLink = option.prompt.indexOfLast { it == '*' }.coerceAtLeast(0)
-        append(option.prompt.substring(0, startOfLink))
+        withStyle(
+            style = textStyle
+        ){
+            append(option.prompt.substring(0, startOfLink))
+        }
         if (option.tips != null) {
             withLink(
                 link = LinkAnnotation.Clickable(
