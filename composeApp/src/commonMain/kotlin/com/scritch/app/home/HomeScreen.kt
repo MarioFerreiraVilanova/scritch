@@ -1,11 +1,14 @@
 package com.scritch.app.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
@@ -36,7 +39,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.scritch.app.categories.Category
 import com.scritch.app.categories.OptionState
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
+import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.scritch_logo_small
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,13 +61,13 @@ fun HomeScreen(
         }
     )
 
-    LaunchedEffect(viewState.selectedOption){
-        if (viewState.selectedOption != null){
+    LaunchedEffect(viewState.selectedOption) {
+        if (viewState.selectedOption != null) {
             sheetState.show()
         }
     }
-    LaunchedEffect(sheetState.isVisible){
-        if (!sheetState.isVisible){
+    LaunchedEffect(sheetState.isVisible) {
+        if (!sheetState.isVisible) {
             viewModel.onTipDisplayed()
         }
     }
@@ -80,7 +86,21 @@ fun HomeScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Scritch")
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Image(
+                            painter = painterResource(Res.drawable.scritch_logo_small),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Text(
+                            text = "Scritch",
+                            style = MaterialTheme.typography.headlineSmall
+                                .copy(fontWeight = FontWeight.Bold)
+                        )
+                    }
                 },
                 actions = {
                     IconButton(
@@ -124,13 +144,13 @@ fun HomeScreen(
         }
     }
 
-    if(viewState.selectedOption != null){
+    if (viewState.selectedOption != null) {
         ModalBottomSheet(
             sheetState = sheetState,
             onDismissRequest = {
                 viewModel.onTipDisplayed()
             }
-        ){
+        ) {
             Tips(
                 title = viewState.selectedOption?.name ?: "",
                 description = viewState.selectedOption?.tips ?: ""
@@ -180,7 +200,7 @@ private fun AnnotatedString.Builder.appendCategory(
     category: Category,
     option: OptionState?,
     onClick: (OptionState) -> Unit,
-){
+) {
     val textStyle = MaterialTheme.typography.headlineMedium.toSpanStyle()
     val highlightedStyle = textStyle.copy(
         color = MaterialTheme.colorScheme.primary,
@@ -191,17 +211,17 @@ private fun AnnotatedString.Builder.appendCategory(
     )
 
     if (option == null) {
-        when (category){
+        when (category) {
             Category.Medium -> append("with the medium of your choice")
             Category.Support -> append("on a surface of your choice")
             Category.Topic -> append("something")
             Category.Constraint -> {}
         }
-    }  else {
+    } else {
         val startOfLink = option.prompt.indexOfFirst { it == '*' }.coerceAtLeast(0)
         val endOfLink = option.prompt.indexOfLast { it == '*' }.coerceAtLeast(0)
         append(option.prompt.substring(0, startOfLink))
-        if (option.tips != null){
+        if (option.tips != null) {
             withLink(
                 link = LinkAnnotation.Clickable(
                     tag = category.name,
@@ -213,8 +233,8 @@ private fun AnnotatedString.Builder.appendCategory(
                 withStyle(
                     style = linkStyle
                 ) {
-                    if (option.prompt.contains('*')){
-                        append(option.prompt.substring(startOfLink+1, endOfLink))
+                    if (option.prompt.contains('*')) {
+                        append(option.prompt.substring(startOfLink + 1, endOfLink))
                     } else {
                         append(option.prompt)
                     }
@@ -224,8 +244,8 @@ private fun AnnotatedString.Builder.appendCategory(
             withStyle(
                 style = highlightedStyle
             ) {
-                if (option.prompt.contains('*')){
-                    append(option.prompt.substring(startOfLink+1, endOfLink))
+                if (option.prompt.contains('*')) {
+                    append(option.prompt.substring(startOfLink + 1, endOfLink))
                 } else {
                     append(option.prompt)
                 }
