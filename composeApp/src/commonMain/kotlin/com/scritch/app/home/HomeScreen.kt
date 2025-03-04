@@ -211,9 +211,10 @@ private fun AnnotatedString.Builder.appendCategory(
     option: OptionState?,
     onClick: (OptionState) -> Unit,
 ) {
-    val textStyle = MaterialTheme.typography.headlineLarge.toSpanStyle()
+    val textStyle = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Medium).toSpanStyle()
     val highlightedStyle = textStyle.copy(
         color = MaterialTheme.colorScheme.primary,
+        fontWeight = FontWeight.Black
     )
     val linkStyle = highlightedStyle.copy(
         textDecoration = TextDecoration.Underline,
