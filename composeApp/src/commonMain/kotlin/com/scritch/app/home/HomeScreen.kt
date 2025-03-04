@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
@@ -42,7 +44,8 @@ import com.scritch.app.categories.OptionState
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
-import scritch.composeapp.generated.resources.scritch_logo_small
+import scritch.composeapp.generated.resources.arrows_repeat
+import scritch.composeapp.generated.resources.scritch_logo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,7 +94,7 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Image(
-                            painter = painterResource(Res.drawable.scritch_logo_small),
+                            painter = painterResource(Res.drawable.scritch_logo),
                             contentDescription = null,
                             modifier = Modifier.size(24.dp)
                         )
@@ -135,7 +138,14 @@ fun HomeScreen(
                     )
                 }
                 Button(
-                    content = { Text("Generate prompt") },
+                    content = {
+                        Icon(
+                            painter = painterResource(Res.drawable.arrows_repeat),
+                            contentDescription = null,
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text("Generate prompt")
+                    },
                     onClick = {
                         viewModel.onGeneratePrompt()
                     },
