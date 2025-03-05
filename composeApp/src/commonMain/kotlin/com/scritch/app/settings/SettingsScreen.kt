@@ -33,7 +33,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.scritch.app.categories.Category
+import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.viewmodel.koinViewModel
+import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.ellipsis
+import scritch.composeapp.generated.resources.logout
+import scritch.composeapp.generated.resources.pen
+import scritch.composeapp.generated.resources.rectangle_vertical_history
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -126,7 +132,7 @@ fun SettingsScreen(
                     },
                     leadingContent = {
                         Icon(
-                            imageVector = Icons.Default.Close,
+                            imageVector = vectorResource(Res.drawable.logout),
                             contentDescription = null,
                         )
                     },
@@ -160,10 +166,10 @@ private fun CategorySettingsItem(
         leadingContent = {
             Icon(
                 imageVector = when (category) {
-                    Category.Medium -> Icons.Default.Edit
-                    Category.Support -> Icons.Default.Notifications
+                    Category.Medium -> vectorResource(Res.drawable.pen)
+                    Category.Support -> vectorResource(Res.drawable.rectangle_vertical_history)
                     Category.Topic -> Icons.Default.Person
-                    Category.Constraint -> Icons.Default.Lock
+                    Category.Constraint -> vectorResource(Res.drawable.ellipsis)
                 },
                 contentDescription = null,
             )
