@@ -1,5 +1,9 @@
 package com.scritch.app.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -118,6 +124,34 @@ fun HomeScreen(
                 }
             )
         },
+        bottomBar = {
+            AnimatedVisibility(
+                visible = prompt != null,
+                enter = slideInVertically(
+                    initialOffsetY = { height -> height }
+                )
+            ) {
+                Surface(
+                    tonalElevation = 4.dp,
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        PromptButton(
+                            modifier = Modifier.padding(
+                                top = 16.dp,
+                                bottom = 32.dp,
+                            ),
+                            onClick = viewModel::onGeneratePrompt
+                        )
+                    }
+                }
+            }
+            if (prompt != null) {
+
+            }
+        }
     ) { innerPadding ->
         Box(
             modifier = modifier
@@ -136,21 +170,11 @@ fun HomeScreen(
                         text = prompt,
                         style = MaterialTheme.typography.headlineMedium,
                     )
+                } else {
+                    PromptButton(
+                        onClick = viewModel::onGeneratePrompt
+                    )
                 }
-                Button(
-                    content = {
-                        Icon(
-                            painter = painterResource(Res.drawable.arrows_repeat),
-                            contentDescription = null,
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(text = "Generate prompt")
-                    },
-                    onClick = {
-                        viewModel.onGeneratePrompt()
-                    },
-                    shape = MaterialTheme.shapes.small
-                )
             }
         }
     }
@@ -211,7 +235,8 @@ private fun AnnotatedString.Builder.appendCategory(
     option: OptionState?,
     onClick: (OptionState) -> Unit,
 ) {
-    val textStyle = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Medium).toSpanStyle()
+    val textStyle =
+        MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Medium).toSpanStyle()
     val highlightedStyle = textStyle.copy(
         color = MaterialTheme.colorScheme.primary,
         fontWeight = FontWeight.Black
@@ -232,7 +257,7 @@ private fun AnnotatedString.Builder.appendCategory(
         val endOfLink = option.prompt.indexOfLast { it == '*' }.coerceAtLeast(0)
         withStyle(
             style = textStyle
-        ){
+        ) {
             append(option.prompt.substring(0, startOfLink))
         }
         if (option.tips != null) {
@@ -267,4 +292,24 @@ private fun AnnotatedString.Builder.appendCategory(
         }
 
     }
+}
+
+@Composable
+private fun PromptButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Button(
+        modifier = modifier,
+        content = {
+            Icon(
+                painter = painterResource(Res.drawable.arrows_repeat),
+                contentDescription = null,
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(text = "Generate prompt")
+        },
+        onClick = onClick,
+        shape = MaterialTheme.shapes.small
+    )
 }
