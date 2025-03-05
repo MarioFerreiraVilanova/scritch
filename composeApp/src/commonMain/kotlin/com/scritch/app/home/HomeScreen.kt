@@ -5,6 +5,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -131,25 +132,20 @@ fun HomeScreen(
                     initialOffsetY = { height -> height }
                 )
             ) {
-                Surface(
-                    tonalElevation = 4.dp,
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surfaceContainer),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        PromptButton(
-                            modifier = Modifier.padding(
-                                top = 16.dp,
-                                bottom = 32.dp,
-                            ),
-                            onClick = viewModel::onGeneratePrompt
-                        )
-                    }
+                    PromptButton(
+                        modifier = Modifier.padding(
+                            top = 16.dp,
+                            bottom = 48.dp,
+                        ),
+                        onClick = viewModel::onGeneratePrompt
+                    )
                 }
-            }
-            if (prompt != null) {
-
             }
         }
     ) { innerPadding ->
@@ -169,6 +165,9 @@ fun HomeScreen(
                     Text(
                         text = prompt,
                         style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.padding(
+                            bottom = 64.dp
+                        )
                     )
                 } else {
                     PromptButton(
@@ -182,9 +181,10 @@ fun HomeScreen(
     if (viewState.selectedOption != null) {
         ModalBottomSheet(
             sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             onDismissRequest = {
                 viewModel.onTipDisplayed()
-            }
+            },
         ) {
             Tips(
                 title = viewState.selectedOption?.name ?: "",

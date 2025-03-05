@@ -8,5 +8,6 @@ val scritchColorScheme = darkColorScheme(
     onPrimary = Color.Black,
     background = Color.Black,
     surface = Color.Black,
+    surfaceContainer = Color(0xFF1A1919),
     onSurface = Color.White,
 )
