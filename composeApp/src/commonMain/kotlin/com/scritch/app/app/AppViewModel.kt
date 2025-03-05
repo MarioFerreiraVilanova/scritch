@@ -37,6 +37,11 @@ class AppViewModel(
         } else {
             _appViewState.update { AppViewState.Unauthenticated }
         }
+    }
 
+    fun onLogoutRequest(){
+        viewModelScope.launch {
+            authenticationRepository.logout()
+        }
     }
 }

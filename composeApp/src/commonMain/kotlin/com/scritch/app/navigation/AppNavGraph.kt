@@ -1,6 +1,9 @@
 package com.scritch.app.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -8,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.scritch.app.app.AppViewModel
+import com.scritch.app.app.AppViewState
 import com.scritch.app.home.HomeScreen
 import com.scritch.app.landing.LandingScreen
 import com.scritch.app.settings.SettingsScreen
@@ -21,6 +25,14 @@ fun AppNavGraph(
     viewModel: AppViewModel = koinViewModel<AppViewModel>(),
     navController: NavHostController = rememberNavController(),
 ) {
+    val appState by viewModel.appViewState.collectAsState()
+
+    LaunchedEffect(appState){
+        if (appState is AppViewState.Unauthenticated){
+            navController.navigate(Unauthenticated.LandingScreen)
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = SplashScreen,
@@ -41,6 +53,7 @@ fun AppNavGraph(
         )
         authenticatedSubGraph(
             navController = navController,
+            onLogoutRequest = viewModel::onLogoutRequest
         )
     }
 }
@@ -61,6 +74,7 @@ private fun NavGraphBuilder.unauthenticatedSubGraph(
 
 private fun NavGraphBuilder.authenticatedSubGraph(
     navController: NavHostController,
+    onLogoutRequest: () -> Unit,
 ) =
     navigation<Authenticated>(
         startDestination = Authenticated.Home,
@@ -86,9 +100,7 @@ private fun NavGraphBuilder.authenticatedSubGraph(
 
         composable<Authenticated.Settings> {
             SettingsScreen(
-                onLogOut = {
-                    navController.goToLanding()
-                },
+                onLogOut = onLogoutRequest,
                 onBackPress = {
                     navController.popBackStack()
                 },
