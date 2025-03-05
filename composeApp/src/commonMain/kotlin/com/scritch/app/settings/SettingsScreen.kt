@@ -41,6 +41,7 @@ fun SettingsScreen(
     onLogOut: () -> Unit, // TODO remove this and use events
     onBackPress: () -> Unit,
     onCategoryPress: (Category) -> Unit,
+    onGoToVersionHistory: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = koinViewModel(),
 ) {
@@ -56,7 +57,7 @@ fun SettingsScreen(
                         content = {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                contentDescription = "Back to settings",
+                                contentDescription = "Back to home",
                             )
                         },
                         onClick = onBackPress
@@ -69,7 +70,13 @@ fun SettingsScreen(
                 text = "Version 0.6",
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(16.dp).navigationBarsPadding()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .navigationBarsPadding()
+                    .clickable {
+                        onGoToVersionHistory()
+                    }
             )
         }
     ) { innerPadding ->

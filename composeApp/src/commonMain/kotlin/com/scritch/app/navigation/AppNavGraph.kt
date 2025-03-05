@@ -1,8 +1,6 @@
 package com.scritch.app.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -10,10 +8,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.scritch.app.app.AppViewModel
-import com.scritch.app.app.AppViewState
 import com.scritch.app.home.HomeScreen
 import com.scritch.app.landing.LandingScreen
 import com.scritch.app.settings.SettingsScreen
+import com.scritch.app.settings.versionhistory.VersionHistoryScreen
 import com.scritch.app.splash.SplashScreen
 import com.scritch.app.wizard.WizardScreen
 import org.koin.compose.viewmodel.koinViewModel
@@ -101,6 +99,17 @@ private fun NavGraphBuilder.authenticatedSubGraph(
                             step = null,
                         )
                     )
+                },
+                onGoToVersionHistory = {
+                    navController.navigate(Authenticated.VersionHistory)
+                }
+            )
+        }
+
+        composable<Authenticated.VersionHistory> {
+            VersionHistoryScreen(
+                onBackPress = {
+                    navController.popBackStack()
                 }
             )
         }
