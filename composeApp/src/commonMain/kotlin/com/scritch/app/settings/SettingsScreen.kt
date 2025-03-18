@@ -177,7 +177,7 @@ private fun CategorySettingsItem(
         headlineContent = {
             Text(
                 when (category) {
-                    Category.Medium -> "Mediums"
+                    Category.Medium -> "Art mediums"
                     Category.Support -> "Supports"
                     Category.Topic -> "Topics"
                     Category.Constraint -> "Constraints"

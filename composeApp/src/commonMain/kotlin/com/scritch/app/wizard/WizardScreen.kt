@@ -92,7 +92,7 @@ private fun WizardScreen(
                 },
                 title = {
                     if (viewState.step == null) {
-                        Text(viewState.category.name)
+                        Text(viewState.category.toTitle())
                     }
                 }
             )
@@ -222,7 +222,7 @@ private fun NextStep(
 }
 
 private fun Category.toTitle() = when (this) {
-    Category.Medium -> "Mediums"
+    Category.Medium -> "Art mediums"
     Category.Support -> "Supports"
     Category.Topic -> "Topics"
     Category.Constraint -> "Constraints"
