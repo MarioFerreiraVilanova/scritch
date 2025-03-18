@@ -64,5 +64,6 @@ fun VersionHistoryScreen(
 }
 
 private fun generateVersionHistory(): List<Pair<String, String>> = listOf(
+    "0.8" to "New onboarding screen",
     "0.7" to "Themed the app black, styled prompt and added an app icon, fixed logout"
 )

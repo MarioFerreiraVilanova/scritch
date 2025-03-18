@@ -1,5 +1,6 @@
 package com.scritch.app.landing
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,31 +9,23 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.scritch.app.uicomponents.PageHeader
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LandingScreen(
     onGoHome: () -> Unit,
@@ -42,7 +35,7 @@ fun LandingScreen(
 ) {
     val viewState by viewModel.viewState.collectAsState()
     viewState.events.firstOrNull()?.let { event ->
-        when (event){
+        when (event) {
             LandingEvent.GoHome -> onGoHome()
             LandingEvent.GoToWizard -> onGoToWizard()
         }
@@ -51,22 +44,31 @@ fun LandingScreen(
 
     Scaffold(
         modifier = modifier,
-        topBar = {
-            TopAppBar(
-                title = {},
-                actions = {
-                    IconButton(
-                        onClick = viewModel::onSkip,
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Done,
-                            contentDescription = "menu items"
-                        )
-                    }
-                }
-            )
+        bottomBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceContainer),
+                contentAlignment = Alignment.Center,
+            ) {
+                Button(
+                    modifier = Modifier.padding(
+                        top = 16.dp,
+                        bottom = 48.dp,
+                    ),
+                    onClick = viewModel::onSkip,
+                    content = {
+                        Text("Continue")
+                    },
+                    shape = MaterialTheme.shapes.small,
+                )
+            }
         }
     ) { innerPadding ->
+        val descriptionStyle = MaterialTheme.typography.bodyMedium
+        val highlightedStyle = descriptionStyle.copy(
+            color = MaterialTheme.colorScheme.primary,
+        ).toSpanStyle()
         LazyColumn(
             modifier = Modifier.fillMaxSize().consumeWindowInsets(innerPadding),
             contentPadding = PaddingValues(
@@ -75,36 +77,51 @@ fun LandingScreen(
                 end = innerPadding.calculateEndPadding(LayoutDirection.Ltr) + 16.dp,
                 bottom = innerPadding.calculateBottomPadding() + 16.dp
             ),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             item {
-                PageHeader(
-                    title = "Welcome to Scritch",
-                    description = buildAnnotatedString {
-                        append(
-                            "The app that will help you get inspirations your drawing and get " +
-                                    "you good habits to draw every day"
-                        )
-                        append("\n\n")
-                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                            append("We will help you configure your app, it will take a few seconds.")
-                        }
-                    }
+                Text(
+                    text = "Looking for inspiration and develop new skills?",
+                    style = MaterialTheme.typography.displaySmall,
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
 
             }
             item {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.CenterEnd,
-                ) {
-                    Button(
-                        onClick = viewModel::onContinue,
-                        content = {
-                            Text("Continue")
+                Text(
+                    style = descriptionStyle,
+                    text = buildAnnotatedString {
+                        append("Scritch is an app designed to inspire your drawings and ")
+                        withStyle(
+                            style = highlightedStyle,
+                        ) {
+                            append("help you develop new skills ")
                         }
-                    )
-                }
+                        append("by challenging you with creative constraints that ")
+                        withStyle(
+                            style = highlightedStyle,
+                        ) {
+                            append("push you beyond your comfort zone")
+                        }
+                        append(".")
+                    }
+                )
+            }
+            item {
+                Text(
+                    style = descriptionStyle,
+                    text = buildAnnotatedString {
+                        append(
+                            "The challenges mainly involve using different art mediums and " +
+                                    "supports. Don’t have or want to use some? No worries, "
+                        )
+                        withStyle(
+                            style = highlightedStyle,
+                        ) {
+                            append("you can customize everything in the settings!")
+                        }
+                    }
+                )
             }
         }
     }
