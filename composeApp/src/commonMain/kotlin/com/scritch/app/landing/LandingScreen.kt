@@ -81,6 +81,7 @@ fun LandingScreen(
         ) {
             item {
                 Text(
+                    modifier = Modifier.padding(top = 32.dp),
                     text = "Looking for inspiration and develop new skills?",
                     style = MaterialTheme.typography.displaySmall,
                     color = MaterialTheme.colorScheme.onBackground,
