@@ -122,10 +122,10 @@ class HomeViewModel(
         description = null,
         tips = null,
         prompt = when (category) {
-            Category.Medium -> "with a medium of your choice"
-            Category.Support -> "on the support of your choice"
-            Category.Topic -> "something"
-            Category.Constraint -> ""
+            Category.Medium -> null
+            Category.Support -> null
+            Category.Topic -> null
+            Category.Constraint -> null
         }
     )
 }

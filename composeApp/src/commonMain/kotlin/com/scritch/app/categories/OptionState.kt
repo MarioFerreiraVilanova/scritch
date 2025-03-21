@@ -9,7 +9,7 @@ data class OptionState(
     val selected: Boolean,
     val description: String?,
     val tips: String?,
-    val prompt: String,
+    val prompt: String?,
 ) {
     companion object {
         fun fromDto(
@@ -22,7 +22,7 @@ data class OptionState(
                 description = dto.description,
                 tips = dto.tips,
                 selected = selected,
-                prompt = dto.prompt ?: return null,
+                prompt = dto.prompt,
             )
         }
     }

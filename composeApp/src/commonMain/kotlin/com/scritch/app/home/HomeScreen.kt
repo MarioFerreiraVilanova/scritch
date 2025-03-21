@@ -203,29 +203,48 @@ private fun promptFromViewState(
     if (viewState.medium == null && viewState.support == null) return null
 
     return buildAnnotatedString {
-        appendCategory(
-            category = Category.Topic,
-            option = viewState.topic,
-            onClick = onClick,
-        )
-        append(", ")
-        appendCategory(
-            category = Category.Support,
-            option = viewState.support,
-            onClick = onClick,
-        )
-        append(", ")
-        appendCategory(
-            category = Category.Medium,
-            option = viewState.medium,
-            onClick = onClick,
-        )
-        append(". ")
-        appendCategory(
-            category = Category.Constraint,
-            option = viewState.constraint,
-            onClick = onClick,
-        )
+        if (viewState.topic?.prompt != null){
+            appendCategory(
+                category = Category.Topic,
+                option = viewState.topic,
+                onClick = onClick,
+            )
+            if (viewState.support?.prompt != null || viewState.medium?.prompt != null){
+                append(", ")
+            } else if (viewState.constraint?.prompt != null){
+                append(". ")
+            }
+        }
+        if (viewState.support?.prompt != null){
+            appendCategory(
+                category = Category.Support,
+                option = viewState.support,
+                onClick = onClick,
+            )
+            if (viewState.medium?.prompt != null){
+                append(", ")
+            } else if (viewState.constraint?.prompt != null){
+                append(". ")
+            }
+        }
+        if (viewState.medium?.prompt != null){
+            appendCategory(
+                category = Category.Medium,
+                option = viewState.medium,
+                onClick = onClick,
+            )
+            if (viewState.constraint?.prompt != null){
+                append(". ")
+            }
+        }
+        if (viewState.constraint?.prompt != null){
+            appendCategory(
+                category = Category.Constraint,
+                option = viewState.constraint,
+                onClick = onClick,
+            )
+        }
+        append(".")
     }
 }
 
@@ -235,24 +254,16 @@ private fun AnnotatedString.Builder.appendCategory(
     option: OptionState?,
     onClick: (OptionState) -> Unit,
 ) {
-    val textStyle =
-        MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Medium).toSpanStyle()
-    val highlightedStyle = textStyle.copy(
-        color = MaterialTheme.colorScheme.primary,
-        fontWeight = FontWeight.Black
-    )
-    val linkStyle = highlightedStyle.copy(
-        textDecoration = TextDecoration.Underline,
-    )
-
-    if (option == null) {
-        when (category) {
-            Category.Medium -> append("with the medium of your choice")
-            Category.Support -> append("on a surface of your choice")
-            Category.Topic -> append("something")
-            Category.Constraint -> {}
-        }
-    } else {
+    option?.prompt?.let {
+        val textStyle =
+            MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Medium).toSpanStyle()
+        val highlightedStyle = textStyle.copy(
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Black
+        )
+        val linkStyle = highlightedStyle.copy(
+            textDecoration = TextDecoration.Underline,
+        )
         val startOfLink = option.prompt.indexOfFirst { it == '*' }.coerceAtLeast(0)
         val endOfLink = option.prompt.indexOfLast { it == '*' }.coerceAtLeast(0)
         withStyle(
@@ -290,7 +301,12 @@ private fun AnnotatedString.Builder.appendCategory(
                 }
             }
         }
-
+        /*when (category){
+            Category.Topic -> append(", ")
+            Category.Support -> append(", ")
+            Category.Medium -> append(". ")
+            Category.Constraint -> (".")
+        }*/
     }
 }
 
