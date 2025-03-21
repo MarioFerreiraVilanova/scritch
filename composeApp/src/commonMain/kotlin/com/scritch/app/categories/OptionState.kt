@@ -8,7 +8,7 @@ data class OptionState(
     val name: String,
     val selected: Boolean,
     val description: String?,
-    val tips: String?,
+    val tips: Map<String, String>?,
     val prompt: String?,
 ) {
     companion object {

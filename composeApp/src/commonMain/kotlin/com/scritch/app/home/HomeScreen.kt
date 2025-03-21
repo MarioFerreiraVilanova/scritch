@@ -186,10 +186,12 @@ fun HomeScreen(
                 viewModel.onTipDisplayed()
             },
         ) {
-            Tips(
-                title = viewState.selectedOption?.name ?: "",
-                description = viewState.selectedOption?.tips ?: ""
-            )
+            viewState.selectedOption?.tips?.let { tips ->
+                Tips(
+                    title = viewState.selectedOption?.name ?: "",
+                    tips = tips
+                )
+            }
         }
     }
 
