@@ -6,12 +6,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.scritch.app.app.AppViewModel
 import com.scritch.app.app.AppViewState
+import com.scritch.app.categories.Category
 import com.scritch.app.home.HomeScreen
 import com.scritch.app.landing.LandingScreen
 import com.scritch.app.settings.SettingsScreen
