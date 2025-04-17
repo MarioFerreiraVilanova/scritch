@@ -14,27 +14,27 @@ import kotlinx.serialization.Serializable
     @Serializable object Settings
     @Serializable object VersionHistory
     @Serializable data class WizardMediumSelection(
-        val category: Category,
+        val category: Int,
         val step: Int?,
     ){
         companion object {
             fun stepOne () = WizardMediumSelection(
-                category = Category.Topic,
+                category = Category.Topic.ordinal,
                 step = 1,
             )
 
             private fun stepTwo () = WizardMediumSelection(
-                category = Category.Medium,
+                category = Category.Medium.ordinal,
                 step = 2,
             )
 
             private fun stepThree () = WizardMediumSelection(
-                category = Category.Support,
+                category = Category.Support.ordinal,
                 step = 3,
             )
 
             private fun stepFour () = WizardMediumSelection(
-                category = Category.Constraint,
+                category = Category.Constraint.ordinal,
                 step = 4,
             )
 

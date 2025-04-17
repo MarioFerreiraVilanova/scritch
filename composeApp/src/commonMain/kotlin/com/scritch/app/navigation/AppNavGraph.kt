@@ -109,7 +109,7 @@ private fun NavGraphBuilder.authenticatedSubGraph(
                 onCategoryPress = { category ->
                     navController.navigate(
                         Authenticated.WizardMediumSelection(
-                            category = category,
+                            category = category.ordinal,
                             step = null,
                         )
                     )

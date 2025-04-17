@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.scritch.app.auth.AuthenticationRepository
+import com.scritch.app.categories.Category
 import com.scritch.app.categories.LoadUserOptionsUseCase
 import com.scritch.app.navigation.Authenticated
 import com.scritch.app.userdata.LoadUserDataUseCase
@@ -25,7 +26,7 @@ class WizardScreenViewModel(
     private val navArgs = savedStateHandle.toRoute<Authenticated.WizardMediumSelection>()
     private val mutableViewState = MutableStateFlow(
         WizardScreenViewState(
-            category = navArgs.category,
+            category = Category.entries[navArgs.category],
             step = navArgs.step,
             optionStates = null,
             unselectAll = false,
@@ -82,7 +83,7 @@ class WizardScreenViewModel(
     private suspend fun loadOptions() {
         mutableViewState.update {
             it.copy(
-                optionStates = loadUserOptions(category = navArgs.category),
+                optionStates = loadUserOptions(category = Category.entries[navArgs.category]),
             )
         }
     }
@@ -92,7 +93,7 @@ class WizardScreenViewModel(
             mutableViewState.value.optionStates?.let { optionStates ->
                 userDataRepository.disableOptions(
                     userId = userId,
-                    category = navArgs.category,
+                    category = Category.entries[navArgs.category],
                     optionIds = optionStates.filter { !it.selected }.map { it.id }
                 )
             }
@@ -103,7 +104,7 @@ class WizardScreenViewModel(
         loadUserData()?.collectLatest { userData ->
             mutableViewState.update {
                 it.copy(
-                    unselectAll = userData.categorySettings[navArgs.category] ?: false,
+                    unselectAll = userData.categorySettings[Category.entries[navArgs.category]] == true,
                 )
             }
         }
