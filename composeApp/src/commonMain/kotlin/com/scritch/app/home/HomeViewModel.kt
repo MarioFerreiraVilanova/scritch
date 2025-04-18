@@ -78,10 +78,16 @@ class HomeViewModel(
         }
     }
 
-    fun onCategoryClick(clickedOption: OptionState) {
+    fun onCategoryClick(clickedOptionId: String) {
         mutableViewState.update {
             it.copy(
-                selectedOption = clickedOption
+                selectedOption = when {
+                    it.medium?.id == clickedOptionId -> it.medium
+                    it.constraint?.id == clickedOptionId -> it.constraint
+                    it.support?.id == clickedOptionId -> it.support
+                    it.topic?.id == clickedOptionId -> it.topic
+                    else -> null
+                }
             )
         }
     }

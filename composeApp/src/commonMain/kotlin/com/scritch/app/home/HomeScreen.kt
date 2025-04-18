@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
@@ -34,16 +35,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withLink
+import androidx.compose.ui.text.withAnnotation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.scritch.app.categories.Category
 import com.scritch.app.categories.OptionState
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -62,10 +62,7 @@ fun HomeScreen(
     val sheetState = rememberModalBottomSheetState()
 
     val prompt = promptFromViewState(
-        viewState = viewState,
-        onClick = { category ->
-            viewModel.onCategoryClick(category)
-        }
+        viewState = viewState
     )
 
     LaunchedEffect(viewState.selectedOption) {
@@ -159,13 +156,17 @@ fun HomeScreen(
                 modifier = Modifier.padding(16.dp)
             ) {
                 if (prompt != null) {
-                    Text(
+                    ClickableText(
                         text = prompt,
                         style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier.padding(
                             bottom = 64.dp
                         )
-                    )
+                    ) { offset ->
+                        prompt.getStringAnnotations(offset, offset).firstOrNull()?.item?.let {
+                            viewModel.onCategoryClick(it)
+                        }
+                    }
                 } else {
                     PromptButton(
                         onClick = viewModel::onGeneratePrompt
@@ -197,65 +198,58 @@ fun HomeScreen(
 @Composable
 private fun promptFromViewState(
     viewState: HomeScreenViewState,
-    onClick: (OptionState) -> Unit,
 ): AnnotatedString? {
     if (viewState.medium == null && viewState.support == null) return null
 
     return buildAnnotatedString {
-        if (viewState.topic?.prompt != null){
+        if (viewState.topic?.prompt != null) {
             appendCategory(
-                category = Category.Topic,
                 option = viewState.topic,
-                onClick = onClick,
             )
-            if (viewState.support?.prompt != null || viewState.medium?.prompt != null){
+            if (viewState.support?.prompt != null || viewState.medium?.prompt != null) {
                 append(", ")
-            } else if (viewState.constraint?.prompt != null){
+            } else if (viewState.constraint?.prompt != null) {
                 append(". ")
             }
         }
-        if (viewState.support?.prompt != null){
+        if (viewState.support?.prompt != null) {
             appendCategory(
-                category = Category.Support,
                 option = viewState.support,
-                onClick = onClick,
             )
-            if (viewState.medium?.prompt != null){
+            if (viewState.medium?.prompt != null) {
                 append(", ")
-            } else if (viewState.constraint?.prompt != null){
+            } else if (viewState.constraint?.prompt != null) {
                 append(". ")
             }
         }
-        if (viewState.medium?.prompt != null){
+        if (viewState.medium?.prompt != null) {
             appendCategory(
-                category = Category.Medium,
                 option = viewState.medium,
-                onClick = onClick,
             )
-            if (viewState.constraint?.prompt != null){
+            if (viewState.constraint?.prompt != null) {
                 append(". ")
             }
         }
-        if (viewState.constraint?.prompt != null){
+        if (viewState.constraint?.prompt != null) {
             appendCategory(
-                category = Category.Constraint,
                 option = viewState.constraint,
-                onClick = onClick,
             )
         }
         append(".")
     }
 }
 
+@OptIn(ExperimentalTextApi::class)
 @Composable
 private fun AnnotatedString.Builder.appendCategory(
-    category: Category,
     option: OptionState?,
-    onClick: (OptionState) -> Unit,
 ) {
     option?.prompt?.let {
         val textStyle =
-            MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Medium).toSpanStyle()
+            MaterialTheme.typography.headlineLarge.copy(
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface,
+            ).toSpanStyle()
         val highlightedStyle = textStyle.copy(
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Black
@@ -271,13 +265,9 @@ private fun AnnotatedString.Builder.appendCategory(
             append(option.prompt.substring(0, startOfLink))
         }
         if (option.tips != null) {
-            withLink(
-                link = LinkAnnotation.Clickable(
-                    tag = category.name,
-                    linkInteractionListener = {
-                        onClick(option)
-                    }
-                )
+            withAnnotation(
+                tag = "PROMPT",
+                annotation = option.id,
             ) {
                 withStyle(
                     style = linkStyle
