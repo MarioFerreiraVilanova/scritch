@@ -71,6 +71,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.navigation.compose)
+            implementation(libs.digitalia.htmlconverter)
             implementation(libs.kotlinx.datetime)
             implementation(libs.gitlive.firebase.kotlin.auth)
             implementation(libs.gitlive.firebase.kotlin.firestore)

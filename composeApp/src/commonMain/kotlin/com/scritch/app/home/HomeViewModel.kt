@@ -57,7 +57,8 @@ class HomeViewModel(
                 topic = if (categorySettings[Category.Topic] == true) {
                     unImposedOption(Category.Topic)
                 } else {
-                    topics.randomOrNull() ?: unImposedOption(Category.Topic)
+                    topics.firstOrNull { it.prompt?.contains("doodle", ignoreCase = true) == true }
+                    //topics.randomOrNull() ?: unImposedOption(Category.Topic)
                 },
                 medium = if (categorySettings[Category.Medium] == true) {
                     unImposedOption(Category.Medium)
