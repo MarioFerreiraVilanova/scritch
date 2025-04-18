@@ -1,8 +1,6 @@
 package com.scritch.app.home
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,7 +24,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -303,12 +300,6 @@ private fun AnnotatedString.Builder.appendCategory(
                 }
             }
         }
-        /*when (category){
-            Category.Topic -> append(", ")
-            Category.Support -> append(", ")
-            Category.Medium -> append(". ")
-            Category.Constraint -> (".")
-        }*/
     }
 }
 
