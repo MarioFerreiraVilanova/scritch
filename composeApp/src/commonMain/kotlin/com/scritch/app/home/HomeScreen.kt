@@ -205,37 +205,43 @@ private fun promptFromViewState(
         if (viewState.topic?.prompt != null) {
             appendCategory(
                 option = viewState.topic,
+                suffix = if (viewState.support?.prompt != null || viewState.medium?.prompt != null) {
+                    ", "
+                } else if (viewState.constraint?.prompt != null) {
+                    ". "
+                } else {
+                    "."
+                },
             )
-            if (viewState.support?.prompt != null || viewState.medium?.prompt != null) {
-                append(", ")
-            } else if (viewState.constraint?.prompt != null) {
-                append(". ")
-            }
         }
         if (viewState.support?.prompt != null) {
             appendCategory(
                 option = viewState.support,
+                suffix = if (viewState.medium?.prompt != null) {
+                    ", "
+                } else if (viewState.constraint?.prompt != null) {
+                    ". "
+                } else {
+                    "."
+                }
             )
-            if (viewState.medium?.prompt != null) {
-                append(", ")
-            } else if (viewState.constraint?.prompt != null) {
-                append(". ")
-            }
         }
         if (viewState.medium?.prompt != null) {
             appendCategory(
                 option = viewState.medium,
+                suffix = if (viewState.constraint?.prompt != null) {
+                    ". "
+                } else {
+                    "."
+                }
             )
-            if (viewState.constraint?.prompt != null) {
-                append(". ")
-            }
         }
         if (viewState.constraint?.prompt != null) {
             appendCategory(
                 option = viewState.constraint,
+                suffix = "."
             )
         }
-        append(".")
     }
 }
 
@@ -243,6 +249,7 @@ private fun promptFromViewState(
 @Composable
 private fun AnnotatedString.Builder.appendCategory(
     option: OptionState?,
+    suffix: String?,
 ) {
     option?.prompt?.let {
         val textStyle =
@@ -288,6 +295,13 @@ private fun AnnotatedString.Builder.appendCategory(
                 } else {
                     append(option.prompt)
                 }
+            }
+        }
+        suffix?.let {
+            withStyle(
+                style = textStyle,
+            ) {
+                append(suffix)
             }
         }
     }
