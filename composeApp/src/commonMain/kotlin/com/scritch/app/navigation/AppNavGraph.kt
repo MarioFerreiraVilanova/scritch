@@ -35,6 +35,14 @@ fun AppNavGraph(
         }
     }
 
+    navController.addOnDestinationChangedListener { _, destination, _ ->
+        val screenName = destination.route ?: "Unknown"
+
+        viewModel.onScreenView(
+            screenName
+        )
+    }
+
     NavHost(
         navController = navController,
         startDestination = SplashScreen,
