@@ -1,6 +1,7 @@
 package com.scritch.app.settings
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.displayCutout
@@ -27,8 +28,10 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -72,18 +75,21 @@ fun SettingsScreen(
             )
         },
         bottomBar = {
-            Text(
-                text = getAppVersionWithBuildNumber(),
-                style = MaterialTheme.typography.labelMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .navigationBarsPadding()
-                    .clickable {
-                        onGoToVersionHistory()
-                    }
-            )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxWidth().navigationBarsPadding()
+            ){
+                TextButton(
+                    onClick = onGoToVersionHistory,
+                    modifier = Modifier
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = getAppVersionWithBuildNumber(),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+            }
         }
     ) { innerPadding ->
         LazyColumn(
