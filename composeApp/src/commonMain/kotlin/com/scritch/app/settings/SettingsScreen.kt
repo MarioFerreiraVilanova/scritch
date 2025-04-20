@@ -73,7 +73,7 @@ fun SettingsScreen(
         },
         bottomBar = {
             Text(
-                text = "Version 0.9",
+                text = getAppVersionWithBuildNumber(),
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
