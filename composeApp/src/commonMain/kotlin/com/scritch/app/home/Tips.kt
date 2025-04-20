@@ -8,17 +8,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.LinkAnnotation
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import be.digitalia.compose.htmlconverter.HtmlStyle
-import be.digitalia.compose.htmlconverter.htmlToAnnotatedString
 
 @Composable
 fun Tips(
@@ -30,7 +21,7 @@ fun Tips(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         items(
-            items = tips.entries.toList(),
+            items = tips.entries.sortedBy { it.key }.toList(),
         ) { tip ->
             TipsText(
                 tip = tip,
@@ -55,7 +46,8 @@ private fun TipsText(
         } else {
             Text(
                 text = tip.value,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
             )
         }
     }
