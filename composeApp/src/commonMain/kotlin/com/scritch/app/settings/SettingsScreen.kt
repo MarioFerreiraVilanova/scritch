@@ -73,7 +73,7 @@ fun SettingsScreen(
         },
         bottomBar = {
             Text(
-                text = "Version 0.8",
+                text = "Version 0.9",
                 style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
