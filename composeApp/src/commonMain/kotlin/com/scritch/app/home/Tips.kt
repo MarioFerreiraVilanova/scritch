@@ -47,7 +47,6 @@ private fun TipsText(
             Text(
                 text = tip.value,
                 style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Medium,
             )
         }
     }

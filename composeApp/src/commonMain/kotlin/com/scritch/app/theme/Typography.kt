@@ -20,14 +20,14 @@ fun scritchTypography() = Typography().run {
         headlineLarge = headlineLarge.copy(fontFamily = fontFamily, fontWeight = FontWeight.Black),
         headlineMedium = headlineMedium.copy(fontFamily = fontFamily, fontWeight = FontWeight.Black),
         headlineSmall = headlineSmall.copy(fontFamily = fontFamily, fontWeight = FontWeight.Black),
-        titleLarge = titleLarge.copy(fontFamily = fontFamily, fontWeight = FontWeight.Bold),
-        titleMedium = titleMedium.copy(fontFamily = fontFamily, fontWeight = FontWeight.Bold),
-        titleSmall = titleSmall.copy(fontFamily = fontFamily, fontWeight = FontWeight.Bold),
-        bodyLarge = bodyLarge.copy(fontFamily = fontFamily, fontWeight = FontWeight.Bold),
-        bodyMedium = bodyMedium.copy(fontFamily = fontFamily, fontWeight = FontWeight.Bold),
-        bodySmall = bodySmall.copy(fontFamily = fontFamily, fontWeight = FontWeight.Bold),
-        labelLarge = labelLarge.copy(fontFamily = fontFamily, fontWeight = FontWeight.Bold),
-        labelMedium = labelMedium.copy(fontFamily = fontFamily, fontWeight = FontWeight.Bold),
-        labelSmall = labelSmall.copy(fontFamily = fontFamily, fontWeight = FontWeight.Bold)
+        titleLarge = titleLarge.copy(fontFamily = fontFamily, fontWeight = FontWeight.Medium),
+        titleMedium = titleMedium.copy(fontFamily = fontFamily, fontWeight = FontWeight.Medium),
+        titleSmall = titleSmall.copy(fontFamily = fontFamily, fontWeight = FontWeight.Medium),
+        bodyLarge = bodyLarge.copy(fontFamily = fontFamily, fontWeight = FontWeight.Medium),
+        bodyMedium = bodyMedium.copy(fontFamily = fontFamily, fontWeight = FontWeight.Medium),
+        bodySmall = bodySmall.copy(fontFamily = fontFamily, fontWeight = FontWeight.Medium),
+        labelLarge = labelLarge.copy(fontFamily = fontFamily, fontWeight = FontWeight.Medium),
+        labelMedium = labelMedium.copy(fontFamily = fontFamily, fontWeight = FontWeight.Medium),
+        labelSmall = labelSmall.copy(fontFamily = fontFamily, fontWeight = FontWeight.Medium)
     )
 }
