@@ -121,7 +121,7 @@ fun SettingsScreen(
                 )
             }
 
-            item {
+            /*item {
                 SectionTitle("Other")
             }
 
@@ -140,7 +140,7 @@ fun SettingsScreen(
                         onLogOut()
                     }
                 )
-            }
+            }*/
         }
     }
 }
