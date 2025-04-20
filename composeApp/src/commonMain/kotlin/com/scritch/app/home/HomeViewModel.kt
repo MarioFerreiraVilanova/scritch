@@ -2,6 +2,7 @@ package com.scritch.app.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.scritch.app.analytics.AnalyticsRepository
 import com.scritch.app.categories.Category
 import com.scritch.app.categories.LoadUserOptionsUseCase
 import com.scritch.app.categories.OptionState
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel(
     private val loadUserOptions: LoadUserOptionsUseCase,
     private val loadUserData: LoadUserDataUseCase,
+    private val analyticsRepository: AnalyticsRepository,
 ) : ViewModel() {
 
     private val mutableViewState = MutableStateFlow(
@@ -74,6 +76,14 @@ class HomeViewModel(
                 } else {
                     constraints.randomOrNull() ?: unImposedOption(Category.Constraint)
                 },
+            )
+        }
+        mutableViewState.value.let {
+            analyticsRepository.onPromptGenerated(
+                topic = it.topic?.id,
+                medium = it.medium?.id,
+                support = it.support?.id,
+                constraint = it.support?.id,
             )
         }
     }
