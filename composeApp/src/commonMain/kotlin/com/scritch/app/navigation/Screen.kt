@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
     @Serializable object LandingScreen
 }
 @Serializable object Authenticated {
+    @Serializable object About
     @Serializable object Home
     @Serializable object Settings
     @Serializable object VersionHistory

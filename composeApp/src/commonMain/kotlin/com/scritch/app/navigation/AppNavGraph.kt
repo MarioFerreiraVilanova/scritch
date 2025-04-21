@@ -6,17 +6,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.scritch.app.app.AppViewModel
 import com.scritch.app.app.AppViewState
-import com.scritch.app.categories.Category
 import com.scritch.app.home.HomeScreen
 import com.scritch.app.landing.LandingScreen
 import com.scritch.app.settings.SettingsScreen
+import com.scritch.app.settings.about.AboutScreen
 import com.scritch.app.settings.versionhistory.VersionHistoryScreen
 import com.scritch.app.splash.SplashScreen
 import com.scritch.app.wizard.WizardScreen
@@ -122,9 +121,20 @@ private fun NavGraphBuilder.authenticatedSubGraph(
                         )
                     )
                 },
+                onGoToAbout = {
+                    navController.navigate(Authenticated.About)
+                }
+            )
+        }
+
+        composable<Authenticated.About> {
+            AboutScreen(
+                onBackPress = {
+                    navController.popBackStack()
+                },
                 onGoToVersionHistory = {
                     navController.navigate(Authenticated.VersionHistory)
-                }
+                },
             )
         }
 

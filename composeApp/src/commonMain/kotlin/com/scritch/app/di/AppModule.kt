@@ -7,7 +7,6 @@ import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.LoadUserOptionsUseCase
 import com.scritch.app.home.HomeViewModel
 import com.scritch.app.landing.LandingViewModel
-import com.scritch.app.settings.SettingsViewModel
 import com.scritch.app.splash.SplashViewModel
 import com.scritch.app.userdata.LoadUserDataUseCase
 import com.scritch.app.userdata.UserDataRepository
@@ -26,7 +25,6 @@ val appModule = module {
     viewModelOf(::AppViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::LandingViewModel)
-    viewModelOf(::SettingsViewModel)
     viewModelOf(::SplashViewModel)
     viewModelOf(::WizardScreenViewModel)
 
