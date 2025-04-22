@@ -14,6 +14,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -96,6 +97,28 @@ fun AboutScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
+            }
+            item {
+                Spacer(
+                    modifier = Modifier.height(16.dp)
+                )
+            }
+            item {
+                Text(
+                    text = "Feedback, suggestions?",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+            item {
+                OutlinedButton(
+                    onClick = {},
+                ) {
+                    Text(
+                        text = "Send us an email!",
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
             }
             item {
                 Spacer(
