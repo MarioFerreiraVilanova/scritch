@@ -64,6 +64,7 @@ fun VersionHistoryScreen(
 }
 
 private fun generateVersionHistory(): List<Pair<String, String>> = listOf(
+    "0.10" to "Fixed bugs related with prompts and added the About page in settings",
     "0.9" to "Changes in prompt logic and bux fixes towards iOS",
     "0.8" to "New onboarding screen, fixed titles on setting screens, new formatting for tips",
     "0.7" to "Themed the app black, styled prompt and added an app icon, fixed logout"
