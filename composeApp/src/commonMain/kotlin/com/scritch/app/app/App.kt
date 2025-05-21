@@ -2,7 +2,7 @@ package com.scritch.app.app
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
-import com.scritch.app.di.appModule
+import com.scritch.app.di.Koin
 import com.scritch.app.navigation.AppNavGraph
 import com.scritch.app.theme.scritchColorScheme
 import com.scritch.app.theme.scritchShapes
@@ -15,7 +15,7 @@ import org.koin.compose.KoinApplication
 fun App() {
     KoinApplication(
         application = {
-            modules(appModule)
+            modules(Koin.modules())
         }
     ){
         MaterialTheme(
