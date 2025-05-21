@@ -2,6 +2,7 @@ package com.scritch.app.util
 
 import android.app.Application
 import android.content.Intent
+import android.net.Uri
 import androidx.core.net.toUri
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
@@ -19,6 +20,7 @@ actual class EmailClient(
             }
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
+                onComplete(true)
             } else {
                 onComplete(false)
             }

@@ -9,7 +9,7 @@ class AboutViewModel(
 
     fun onSendFeedback(){
         emailClient.open(
-            to = "scritch@gmail.com"
+            to = "scritchapp@gmail.com"
         ) { success ->
             print("Email client launch result: $success")
         }
