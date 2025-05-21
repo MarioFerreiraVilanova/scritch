@@ -98,7 +98,7 @@ fun AboutScreen(
                     color = MaterialTheme.colorScheme.onSurface,
                 )
             }
-            /*item {
+            item {
                 Spacer(
                     modifier = Modifier.height(16.dp)
                 )
@@ -119,7 +119,7 @@ fun AboutScreen(
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 }
-            }*/
+            }
             item {
                 Spacer(
                     modifier = Modifier.height(12.dp)
