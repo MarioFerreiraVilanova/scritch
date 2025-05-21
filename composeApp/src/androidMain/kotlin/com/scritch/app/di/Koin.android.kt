@@ -1,16 +1,9 @@
 package com.scritch.app.di
 
-import com.scritch.app.app.ContextProvider
-import org.koin.android.ext.koin.androidApplication
-import org.koin.core.module.Module
+import com.scritch.app.util.EmailClient
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-actual object Koin {
-    actual fun modules(): List<Module> {
-        return listOf(appModule, androidModule)
-    }
-
-    private val androidModule = module {
-        factory { ContextProvider(androidApplication()) }
-    }
+actual val targetModule = module {
+    singleOf(::EmailClient)
 }

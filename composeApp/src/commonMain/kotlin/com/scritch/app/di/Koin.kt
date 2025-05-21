@@ -1,7 +1,16 @@
 package com.scritch.app.di
 
+import org.koin.core.KoinApplication
+import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 
-expect object Koin {
-    fun modules(): List<Module>
+expect val targetModule: Module
+
+fun initializeKoin(
+    config: (KoinApplication.() -> Unit)? = null,
+) {
+    startKoin {
+        config?.invoke(this)
+        modules(appModule, targetModule)
+    }
 }
