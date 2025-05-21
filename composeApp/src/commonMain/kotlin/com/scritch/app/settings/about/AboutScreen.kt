@@ -23,8 +23,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.scritch.app.settings.getAppVersionWithBuildNumber
 import org.jetbrains.compose.resources.vectorResource
+import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.scritch_logo
 
@@ -34,6 +36,7 @@ fun AboutScreen(
     onBackPress: () -> Unit,
     onGoToVersionHistory: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: AboutViewModel = koinViewModel()
 ) {
     Scaffold(
         modifier = modifier,
@@ -112,7 +115,7 @@ fun AboutScreen(
             }
             item {
                 OutlinedButton(
-                    onClick = {},
+                    onClick = viewModel::onSendFeedback,
                 ) {
                     Text(
                         text = "Send us an email!",
