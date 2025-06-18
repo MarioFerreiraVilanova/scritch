@@ -44,4 +44,9 @@
     <string name="version_notes_0_10">Fixed bugs related with prompts and added the About page in settings</string>
     <string name="version_notes_0_11">Added a contact us button on the about page</string>
     <string name="version_notes_0_12">Localised the app in Spanish and French</string>
+    <string name="concept_and_design">Concept and Design: $s</string>
+    <string name="development">Development: : $s</string>
+    <string name="feedback_questions">Feedback, suggestions?</string>
+    <string name="send_us_an_email">Send us an email!</string>
+    <string name="version">Version: $s</string>
 </resources>

@@ -25,10 +25,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.scritch.app.settings.getAppVersionWithBuildNumber
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.about
+import scritch.composeapp.generated.resources.app_name
+import scritch.composeapp.generated.resources.back_to_home
+import scritch.composeapp.generated.resources.back_to_settings
+import scritch.composeapp.generated.resources.concept_and_design
+import scritch.composeapp.generated.resources.development
+import scritch.composeapp.generated.resources.feedback_questions
 import scritch.composeapp.generated.resources.scritch_logo
+import scritch.composeapp.generated.resources.send_us_an_email
+import scritch.composeapp.generated.resources.version
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,14 +53,14 @@ fun AboutScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("About")
+                    Text(stringResource(Res.string.about))
                 },
                 navigationIcon = {
                     IconButton(
                         content = {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                contentDescription = "Back to home",
+                                contentDescription = stringResource(Res.string.back_to_settings),
                             )
                         },
                         onClick = onBackPress
@@ -77,7 +87,7 @@ fun AboutScreen(
             }
             item {
                 Text(
-                    text = "Scritch",
+                    text = stringResource(Res.string.app_name),
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
@@ -89,14 +99,14 @@ fun AboutScreen(
             }
             item {
                 Text(
-                    text = "Concept & Design: Coraline Janvier",
+                    text = stringResource(Res.string.concept_and_design, "Coraline Janvier"),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
             }
             item {
                 Text(
-                    text = "Development: Mario Ferreira Vilanova",
+                    text = stringResource(Res.string.development, "Mario Ferreira Vilanova"),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
@@ -108,7 +118,7 @@ fun AboutScreen(
             }
             item {
                 Text(
-                    text = "Feedback, suggestions?",
+                    text = stringResource(Res.string.feedback_questions),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
@@ -118,7 +128,7 @@ fun AboutScreen(
                     onClick = viewModel::onSendFeedback,
                 ) {
                     Text(
-                        text = "Send us an email!",
+                        text = stringResource(Res.string.send_us_an_email),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 }
@@ -133,7 +143,7 @@ fun AboutScreen(
                     onClick = onGoToVersionHistory,
                 ) {
                     Text(
-                        text = "Version: ${getAppVersionWithBuildNumber()}",
+                        text = stringResource(Res.string.version, getAppVersionWithBuildNumber()),
                         color = MaterialTheme.colorScheme.onSurface,
                     )
                 }
