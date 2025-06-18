@@ -21,11 +21,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.scritch.app.categories.Category
+import com.scritch.app.categories.toTitle
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.about
+import scritch.composeapp.generated.resources.back_to_home
 import scritch.composeapp.generated.resources.ellipsis
+import scritch.composeapp.generated.resources.other
 import scritch.composeapp.generated.resources.pen
+import scritch.composeapp.generated.resources.prompt_settings
 import scritch.composeapp.generated.resources.rectangle_vertical_history
+import scritch.composeapp.generated.resources.settings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,14 +48,14 @@ fun SettingsScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Settings")
+                    Text(stringResource(Res.string.settings))
                 },
                 navigationIcon = {
                     IconButton(
                         content = {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                contentDescription = "Back to home",
+                                contentDescription = stringResource(Res.string.back_to_home),
                             )
                         },
                         onClick = onBackPress
@@ -61,7 +68,7 @@ fun SettingsScreen(
             contentPadding = innerPadding,
         ) {
             item {
-                SectionTitle("Prompt Settings")
+                SectionTitle(stringResource(Res.string.prompt_settings))
             }
 
             item {
@@ -92,13 +99,13 @@ fun SettingsScreen(
             }
 
             item {
-                SectionTitle("Other")
+                SectionTitle(stringResource(Res.string.other))
             }
 
             item {
                 ListItem(
                     headlineContent = {
-                        Text("About")
+                        Text(stringResource(Res.string.about))
                     },
                     leadingContent = {
                         Icon(
@@ -162,14 +169,7 @@ private fun CategorySettingsItem(
             )
         },
         headlineContent = {
-            Text(
-                when (category) {
-                    Category.Medium -> "Art mediums"
-                    Category.Support -> "Supports"
-                    Category.Topic -> "Topics"
-                    Category.Constraint -> "Constraints"
-                }
-            )
+            Text( category.toTitle(plural = true))
         },
     )
 }

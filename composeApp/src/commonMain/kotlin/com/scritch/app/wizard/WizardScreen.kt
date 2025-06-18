@@ -35,6 +35,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.scritch.app.categories.Category
 import com.scritch.app.categories.Option
+import com.scritch.app.categories.toTitle
 import com.scritch.app.uicomponents.PageHeader
 import com.scritch.app.uicomponents.PageLoader
 import com.scritch.app.uicomponents.ToggleListRow
@@ -206,24 +207,7 @@ private fun Header(
             description = viewState.category.toDescription(),
         )
     } else {
-        val categoryText = when (viewState.category) {
-            Category.Medium -> pluralStringResource(
-                resource = Res.plurals.category_art_medium,
-                quantity = 10,
-            )
-            Category.Support -> pluralStringResource(
-                resource = Res.plurals.category_support,
-                quantity = 10,
-            )
-            Category.Topic -> pluralStringResource(
-                resource = Res.plurals.category_topic,
-                quantity = 10,
-            )
-            Category.Constraint -> pluralStringResource(
-                resource = Res.plurals.category_constraint,
-                quantity = 10,
-            )
-        }.toLowerCase(LocaleList.current)
+        val categoryText = viewState.category.toTitle(plural = true).toLowerCase(LocaleList.current)
         Text(
             text = stringResource(Res.string.unselect_options_description, categoryText),
             modifier = Modifier.padding(16.dp)
@@ -256,26 +240,6 @@ private fun NextStep(
             )
         }
     }
-}
-
-@Composable
-private fun Category.toTitle() = when (this) {
-    Category.Medium -> pluralStringResource(
-        resource = Res.plurals.category_art_medium,
-        quantity = 1,
-    )
-    Category.Support -> pluralStringResource(
-        resource = Res.plurals.category_support,
-        quantity = 1,
-    )
-    Category.Topic -> pluralStringResource(
-        resource = Res.plurals.category_topic,
-        quantity = 1,
-    )
-    Category.Constraint -> pluralStringResource(
-        resource = Res.plurals.category_constraint,
-        quantity = 1,
-    )
 }
 
 @Composable

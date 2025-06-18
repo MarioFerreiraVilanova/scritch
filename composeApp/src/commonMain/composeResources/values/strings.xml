@@ -31,4 +31,9 @@
     <string name="category_description_topic_2">Unselect those you don't want to show in the prompts. </string>
     <string name="category_description_constraint_1">Scritch will add constraints to the prompts. </string>
     <string name="category_description_constraint_2">Unselect those you don't want to see or find uninteresting. </string>
+    <string name="settings">Settings</string>
+    <string name="back_to_home">Back to home</string>
+    <string name="prompt_settings">Prompt settings</string>
+    <string name="other">Other</string>
+    <string name="about">About</string>
 </resources>
