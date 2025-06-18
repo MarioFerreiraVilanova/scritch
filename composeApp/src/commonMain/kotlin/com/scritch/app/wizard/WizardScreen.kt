@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -30,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.LocaleList
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.scritch.app.categories.Category
@@ -37,7 +38,28 @@ import com.scritch.app.categories.Option
 import com.scritch.app.uicomponents.PageHeader
 import com.scritch.app.uicomponents.PageLoader
 import com.scritch.app.uicomponents.ToggleListRow
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.back
+import scritch.composeapp.generated.resources.category_art_medium
+import scritch.composeapp.generated.resources.category_constraint
+import scritch.composeapp.generated.resources.category_description_3
+import scritch.composeapp.generated.resources.category_description_constraint_1
+import scritch.composeapp.generated.resources.category_description_constraint_2
+import scritch.composeapp.generated.resources.category_description_medium_1
+import scritch.composeapp.generated.resources.category_description_medium_2
+import scritch.composeapp.generated.resources.category_description_support_1
+import scritch.composeapp.generated.resources.category_description_support_2
+import scritch.composeapp.generated.resources.category_description_topic_1
+import scritch.composeapp.generated.resources.category_description_topic_2
+import scritch.composeapp.generated.resources.category_support
+import scritch.composeapp.generated.resources.category_topic
+import scritch.composeapp.generated.resources.continue_word
+import scritch.composeapp.generated.resources.no_category_imposed
+import scritch.composeapp.generated.resources.unselect_all
+import scritch.composeapp.generated.resources.unselect_options_description
 
 @Composable
 fun WizardScreen(
@@ -84,7 +106,7 @@ private fun WizardScreen(
                         content = {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back",
+                                contentDescription = stringResource(Res.string.back),
                             )
                         },
                         onClick = onBackClick,
@@ -136,8 +158,11 @@ private fun CategoryItems(
 
         item {
             ToggleListRow(
-                title = "Unselect all",
-                subtitle = "No ${viewState.category.toTitle().lowercase()} imposed",
+                title = stringResource(Res.string.unselect_all),
+                subtitle = stringResource(
+                    resource = Res.string.no_category_imposed,
+                    viewState.category.toTitle().lowercase(),
+                ),
                 checked = viewState.unselectAll,
                 onCheckChangeRequest = onUnselectAll,
             )
@@ -171,24 +196,36 @@ private fun CategoryItems(
 }
 
 @Composable
-private fun Header (
+private fun Header(
     viewState: WizardScreenViewState,
 ) {
-    if (viewState.isWizard){
+    if (viewState.isWizard) {
         PageHeader(
             modifier = Modifier.padding(16.dp),
             title = viewState.category.toTitle(),
             description = viewState.category.toDescription(),
         )
     } else {
-        val categoryText = when (viewState.category){
-            Category.Medium -> "mediums"
-            Category.Support -> "supports"
-            Category.Topic -> "topics"
-            Category.Constraint -> "constraints"
-        }
+        val categoryText = when (viewState.category) {
+            Category.Medium -> pluralStringResource(
+                resource = Res.plurals.category_art_medium,
+                quantity = 10,
+            )
+            Category.Support -> pluralStringResource(
+                resource = Res.plurals.category_support,
+                quantity = 10,
+            )
+            Category.Topic -> pluralStringResource(
+                resource = Res.plurals.category_topic,
+                quantity = 10,
+            )
+            Category.Constraint -> pluralStringResource(
+                resource = Res.plurals.category_constraint,
+                quantity = 10,
+            )
+        }.toLowerCase(LocaleList.current)
         Text(
-            text = "Unselect the $categoryText that you don't want to see appear in the prompts anymore",
+            text = stringResource(Res.string.unselect_options_description, categoryText),
             modifier = Modifier.padding(16.dp)
         )
     }
@@ -202,7 +239,7 @@ private fun NextStep(
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shadowElevation = 8.dp,
-        tonalElevation =  8.dp,
+        tonalElevation = 8.dp,
         color = MaterialTheme.colorScheme.surface,
     ) {
         Row(
@@ -214,50 +251,64 @@ private fun NextStep(
             Button(
                 onClick = onContinue,
                 content = {
-                    Text("Continue")
+                    Text(stringResource(Res.string.continue_word))
                 }
             )
         }
     }
 }
 
+@Composable
 private fun Category.toTitle() = when (this) {
-    Category.Medium -> "Art mediums"
-    Category.Support -> "Supports"
-    Category.Topic -> "Topics"
-    Category.Constraint -> "Constraints"
+    Category.Medium -> pluralStringResource(
+        resource = Res.plurals.category_art_medium,
+        quantity = 1,
+    )
+    Category.Support -> pluralStringResource(
+        resource = Res.plurals.category_support,
+        quantity = 1,
+    )
+    Category.Topic -> pluralStringResource(
+        resource = Res.plurals.category_topic,
+        quantity = 1,
+    )
+    Category.Constraint -> pluralStringResource(
+        resource = Res.plurals.category_constraint,
+        quantity = 1,
+    )
 }
 
+@Composable
 private fun Category.toDescription() = when (this) {
     Category.Medium -> buildAnnotatedString {
-        append("Scritch will prompt you for using different mediums. ")
+        append(stringResource(Res.string.category_description_medium_1))
         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-            append("Unselect mediums you don't have or you don't want. ")
+            append(stringResource(Res.string.category_description_medium_2))
         }
-        append("You won't see them in the prompts. You can always change that later in settings")
+        append(stringResource(Res.string.category_description_3))
     }
 
     Category.Support -> buildAnnotatedString {
-        append("Scritch will prompt you for using different supports. ")
+        append(stringResource(Res.string.category_description_support_1))
         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-            append("Unselect supports you don't have or you don't want. ")
+            append(stringResource(Res.string.category_description_support_2))
         }
-        append("You won't see them in the prompts. You can always change that later in settings")
+        append(stringResource(Res.string.category_description_3))
     }
 
     Category.Topic -> buildAnnotatedString {
-        append("Scritch will prompt you for using different topics. ")
+        append(stringResource(Res.string.category_description_topic_1))
         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-            append("Unselect those you don't want to show in the prompts. ")
+            append(stringResource(Res.string.category_description_topic_2))
         }
-        append("You won't see them in the prompts. You can always change that later in settings")
+        append(stringResource(Res.string.category_description_3))
     }
 
     Category.Constraint -> buildAnnotatedString {
-        append("Scritch will add constraints to the prompts. ")
+        append(stringResource(Res.string.category_description_constraint_1))
         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-            append("Unselect those you don't want to see or find uninteresting. ")
+            append(stringResource(Res.string.category_description_constraint_2))
         }
-        append("You won't see them in the prompts. You can always change that later in settings")
+        append(stringResource(Res.string.category_description_3))
     }
 }

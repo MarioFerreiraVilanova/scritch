@@ -1,4 +1,34 @@
 <resources>
     <string name="app_name">Scritch</string>
     <string name="unknown">Unknown</string>
+    <string name="back">Back</string>
+    <string name="unselect_all">Unselect all</string>
+    <string name="no_category_imposed">No %s imposed</string>
+    <string name="continue_word">Continue</string>
+    <plurals name="category_art_medium">
+        <item quantity="one">Art medium</item>
+        <item quantity="other">Art mediums</item>
+    </plurals>
+    <plurals name="category_support">
+        <item quantity="one">Support</item>
+        <item quantity="other">Supports</item>
+    </plurals>
+    <plurals name="category_topic">
+        <item quantity="one">Topic</item>
+        <item quantity="other">Topics</item>
+    </plurals>
+    <plurals name="category_constraint">
+        <item quantity="one">Constraint</item>
+        <item quantity="other">Constraints</item>
+    </plurals>
+    <string name="unselect_options_description">Unselect the $s that you don't want to see appear in the prompts anymore</string>
+    <string name="category_description_medium_1">Scritch will prompt you for using different mediums. </string>
+    <string name="category_description_medium_2">Unselect mediums you don't have or you don't want. </string>
+    <string name="category_description_3">You won't see them in the prompts. You can always change that later in settings</string>
+    <string name="category_description_support_1">Scritch will prompt you for using different supports. </string>
+    <string name="category_description_support_2">Unselect supports you don't have or you don't want. </string>
+    <string name="category_description_topic_1">Scritch will prompt you for using different topics. </string>
+    <string name="category_description_topic_2">Unselect those you don't want to show in the prompts. </string>
+    <string name="category_description_constraint_1">Scritch will add constraints to the prompts. </string>
+    <string name="category_description_constraint_2">Unselect those you don't want to see or find uninteresting. </string>
 </resources>
