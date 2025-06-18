@@ -7,7 +7,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.app_name
 
 @Composable
 fun SplashScreen(
@@ -28,6 +31,6 @@ fun SplashScreen(
         modifier = modifier,
         contentAlignment = Alignment.Center,
     ){
-        Text("Scritch")
+        Text(stringResource(Res.string.app_name))
     }
 }
