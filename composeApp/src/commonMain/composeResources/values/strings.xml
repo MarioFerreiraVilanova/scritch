@@ -21,7 +21,7 @@
         <item quantity="one">Constraint</item>
         <item quantity="other">Constraints</item>
     </plurals>
-    <string name="unselect_options_description">Unselect the $s that you don't want to see appear in the prompts anymore</string>
+    <string name="unselect_options_description">Unselect the %1$s that you don't want to see appear in the prompts anymore</string>
     <string name="category_description_medium_1">Scritch will prompt you for using different mediums. </string>
     <string name="category_description_medium_2">Unselect mediums you don't have or you don't want. </string>
     <string name="category_description_3">You won't see them in the prompts. You can always change that later in settings</string>
@@ -44,9 +44,9 @@
     <string name="version_notes_0_10">Fixed bugs related with prompts and added the About page in settings</string>
     <string name="version_notes_0_11">Added a contact us button on the about page</string>
     <string name="version_notes_0_12">Localised the app in Spanish and French</string>
-    <string name="concept_and_design">Concept and Design: $s</string>
-    <string name="development">Development: : $s</string>
+    <string name="concept_and_design">Concept and Design: %1$s</string>
+    <string name="development">Development: : %1$s</string>
     <string name="feedback_questions">Feedback, suggestions?</string>
     <string name="send_us_an_email">Send us an email!</string>
-    <string name="version">Version: $s</string>
+    <string name="version">Version: %1$s</string>
 </resources>
