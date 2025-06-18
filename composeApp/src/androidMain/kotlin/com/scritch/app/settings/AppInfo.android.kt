@@ -3,6 +3,9 @@ package com.scritch.app.settings
 import android.content.pm.PackageManager
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import org.jetbrains.compose.resources.stringResource
+import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.unknown
 
 @Composable
 actual fun getAppVersionWithBuildNumber(): String {
@@ -18,6 +21,6 @@ actual fun getAppVersionWithBuildNumber(): String {
         }
         "Android $versionName ($versionCode)"
     } catch (e: PackageManager.NameNotFoundException) {
-        "Unknown"
+        stringResource(Res.string.unknown)
     }
 }
