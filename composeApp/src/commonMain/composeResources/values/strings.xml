@@ -36,4 +36,12 @@
     <string name="prompt_settings">Prompt settings</string>
     <string name="other">Other</string>
     <string name="about">About</string>
+    <string name="version_history">Version history</string>
+    <string name="back_to_settings">Back to settings</string>
+    <string name="version_notes_0_7">Themed the app black, styled prompt and added an app icon, fixed logout</string>
+    <string name="version_notes_0_8">New onboarding screen, fixed titles on setting screens, new formatting for tips</string>
+    <string name="version_notes_0_9">Changes in prompt logic and bux fixes towards iOS</string>
+    <string name="version_notes_0_10">Fixed bugs related with prompts and added the About page in settings</string>
+    <string name="version_notes_0_11">Added a contact us button on the about page</string>
+    <string name="version_notes_0_12">Localised the app in Spanish and French</string>
 </resources>

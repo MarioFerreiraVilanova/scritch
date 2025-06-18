@@ -14,6 +14,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import org.jetbrains.compose.resources.stringResource
+import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.back_to_settings
+import scritch.composeapp.generated.resources.version_history
+import scritch.composeapp.generated.resources.version_notes_0_10
+import scritch.composeapp.generated.resources.version_notes_0_11
+import scritch.composeapp.generated.resources.version_notes_0_12
+import scritch.composeapp.generated.resources.version_notes_0_7
+import scritch.composeapp.generated.resources.version_notes_0_8
+import scritch.composeapp.generated.resources.version_notes_0_9
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,14 +37,14 @@ fun VersionHistoryScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Version history")
+                    Text(stringResource(Res.string.version_history))
                 },
                 navigationIcon = {
                     IconButton(
                         content = {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                contentDescription = "Back to settings",
+                                contentDescription = stringResource(Res.string.back_to_settings),
                             )
                         },
                         onClick = onBackPress
@@ -63,10 +73,12 @@ fun VersionHistoryScreen(
     }
 }
 
+@Composable
 private fun generateVersionHistory(): List<Pair<String, String>> = listOf(
-    "0.11" to "Added a contact us button on the about page",
-    "0.10" to "Fixed bugs related with prompts and added the About page in settings",
-    "0.9" to "Changes in prompt logic and bux fixes towards iOS",
-    "0.8" to "New onboarding screen, fixed titles on setting screens, new formatting for tips",
-    "0.7" to "Themed the app black, styled prompt and added an app icon, fixed logout"
+    "0.12" to stringResource(Res.string.version_notes_0_12),
+    "0.11" to stringResource(Res.string.version_notes_0_11),
+    "0.10" to stringResource(Res.string.version_notes_0_10),
+    "0.9" to stringResource(Res.string.version_notes_0_9),
+    "0.8" to stringResource(Res.string.version_notes_0_8),
+    "0.7" to stringResource(Res.string.version_notes_0_7),
 )
