@@ -24,7 +24,18 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.continue_word
+import scritch.composeapp.generated.resources.landing_screen_description_1
+import scritch.composeapp.generated.resources.landing_screen_description_2
+import scritch.composeapp.generated.resources.landing_screen_description_3
+import scritch.composeapp.generated.resources.landing_screen_description_4
+import scritch.composeapp.generated.resources.landing_screen_description_5
+import scritch.composeapp.generated.resources.landing_screen_header
+import scritch.composeapp.generated.resources.landing_screen_second_description_1
+import scritch.composeapp.generated.resources.landing_screen_second_description_2
 
 @Composable
 fun LandingScreen(
@@ -58,7 +69,7 @@ fun LandingScreen(
                     ),
                     onClick = viewModel::onSkip,
                     content = {
-                        Text("Continue")
+                        Text(stringResource(Res.string.continue_word))
                     },
                     shape = MaterialTheme.shapes.small,
                 )
@@ -82,7 +93,7 @@ fun LandingScreen(
             item {
                 Text(
                     modifier = Modifier.padding(top = 32.dp),
-                    text = "Looking for inspiration and develop new skills?",
+                    text = stringResource(Res.string.landing_screen_header),
                     style = MaterialTheme.typography.displaySmall,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
@@ -92,19 +103,19 @@ fun LandingScreen(
                 Text(
                     style = descriptionStyle,
                     text = buildAnnotatedString {
-                        append("Scritch is an app designed to inspire your drawings and ")
+                        append(stringResource(Res.string.landing_screen_description_1))
                         withStyle(
                             style = highlightedStyle,
                         ) {
-                            append("help you develop new skills ")
+                            append(stringResource(Res.string.landing_screen_description_2))
                         }
-                        append("by challenging you with creative constraints that ")
+                        append(stringResource(Res.string.landing_screen_description_3))
                         withStyle(
                             style = highlightedStyle,
                         ) {
-                            append("push you beyond your comfort zone")
+                            append(stringResource(Res.string.landing_screen_description_4))
                         }
-                        append(".")
+                        append(stringResource(Res.string.landing_screen_description_5))
                     }
                 )
             }
@@ -112,14 +123,11 @@ fun LandingScreen(
                 Text(
                     style = descriptionStyle,
                     text = buildAnnotatedString {
-                        append(
-                            "The challenges mainly involve using different art mediums and " +
-                                    "supports. Don’t have or want to use some? No worries, "
-                        )
+                        append(stringResource(Res.string.landing_screen_second_description_1))
                         withStyle(
                             style = highlightedStyle,
                         ) {
-                            append("you can customize everything in the settings!")
+                            append(stringResource(Res.string.landing_screen_second_description_2))
                         }
                     }
                 )

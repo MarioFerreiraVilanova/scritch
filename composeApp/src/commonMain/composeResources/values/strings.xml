@@ -49,4 +49,12 @@
     <string name="feedback_questions">Feedback, suggestions?</string>
     <string name="send_us_an_email">Send us an email!</string>
     <string name="version">Version: %1$s</string>
+    <string name="landing_screen_header">Looking for inspiration and develop new skills?</string>
+    <string name="landing_screen_description_1">Scritch is an app designed to inspire your drawings and </string>
+    <string name="landing_screen_description_2">help you develop new skills </string>
+    <string name="landing_screen_description_3">by challenging you with creative constraints that </string>
+    <string name="landing_screen_description_4">push you beyond your comfort zone</string>
+    <string name="landing_screen_description_5">.</string>
+    <string name="landing_screen_second_description_1">The challenges mainly involve using different art mediums and supports. Don’t have or want to use some? No worries, </string>
+    <string name="landing_screen_second_description_2">you can customize everything in the settings!</string>
 </resources>
