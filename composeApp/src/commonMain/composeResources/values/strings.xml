@@ -57,4 +57,5 @@
     <string name="landing_screen_description_5">.</string>
     <string name="landing_screen_second_description_1">The challenges mainly involve using different art mediums and supports. Don’t have or want to use some? No worries, </string>
     <string name="landing_screen_second_description_2">you can customize everything in the settings!</string>
+    <string name ="generate_prompt">Generate prompt</string>
 </resources>

@@ -46,10 +46,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.scritch.app.categories.OptionState
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.app_name
 import scritch.composeapp.generated.resources.arrows_repeat
+import scritch.composeapp.generated.resources.generate_prompt
+import scritch.composeapp.generated.resources.landing_screen_description_1
 import scritch.composeapp.generated.resources.scritch_logo
+import scritch.composeapp.generated.resources.settings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -100,7 +105,7 @@ fun HomeScreen(
                             modifier = Modifier.size(24.dp)
                         )
                         Text(
-                            text = "Scritch",
+                            text = stringResource(Res.string.app_name),
                             style = MaterialTheme.typography.headlineSmall
                                 .copy(fontWeight = FontWeight.Bold)
                         )
@@ -112,7 +117,7 @@ fun HomeScreen(
                         content = {
                             Icon(
                                 imageVector = Icons.Default.Settings,
-                                contentDescription = "Settings",
+                                contentDescription = stringResource(Res.string.settings),
                             )
                         }
                     )
@@ -320,7 +325,7 @@ private fun PromptButton(
                 contentDescription = null,
             )
             Spacer(Modifier.width(8.dp))
-            Text(text = "Generate prompt")
+            Text(text = stringResource(Res.string.generate_prompt))
         },
         onClick = onClick,
         shape = MaterialTheme.shapes.small
