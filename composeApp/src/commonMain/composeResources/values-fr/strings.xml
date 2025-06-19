@@ -1,0 +1,61 @@
+<resources>
+    <string name="about">À propos</string>
+    <string name="app_name">Scritch</string>
+    <string name="back">Retour</string>
+    <string name="back_to_home">Retour à l'accueil</string>
+    <string name="back_to_settings">Retour aux paramètres</string>
+    <plurals name="category_art_medium">
+        <item quantity="one">Médium artistique</item>
+        <item quantity="other">Médiums artistiques</item>
+    </plurals>
+    <plurals name="category_constraint">
+        <item quantity="one">Contrainte</item>
+        <item quantity="other">Contraintes</item>
+    </plurals>
+    <string name="category_description_3">Ils n’apparaîtront plus dans les défis. Vous pouvez toujours changer cela dans les paramètres plus tard</string>
+    <string name="category_description_constraint_1">Scritch ajoutera des contraintes aux défis. </string>
+    <string name="category_description_constraint_2">Désélectionnez celles que vous ne souhaitez pas voir ou que vous trouvez inintéressantes. </string>
+    <string name="category_description_medium_1">Scritch vous proposera d’utiliser différents médiums artistiques. </string>
+    <string name="category_description_medium_2">Désélectionnez les médiums que vous ne possédez pas ou que vous ne souhaitez pas utiliser. </string>
+    <string name="category_description_support_1">Scritch vous proposera d’utiliser différents supports. </string>
+    <string name="category_description_support_2">Désélectionnez les supports que vous ne possédez pas ou que vous ne souhaitez pas utiliser. </string>
+    <string name="category_description_topic_1">Scritch vous proposera différents sujets de dessin. </string>
+    <string name="category_description_topic_2">Désélectionnez ceux que vous ne souhaitez pas voir dans les défis. </string>
+    <plurals name="category_support">
+        <item quantity="one">Support</item>
+        <item quantity="other">Supports</item>
+    </plurals>
+    <plurals name="category_topic">
+        <item quantity="one">Sujet</item>
+        <item quantity="other">Sujets</item>
+    </plurals>
+    <string name="concept_and_design">Concept et design : %1$s</string>
+    <string name="continue_word">Continuer</string>
+    <string name="development">Développement : %1$s</string>
+    <string name="feedback_questions">Des retours ou des suggestions ?</string>
+    <string name="generate_prompt">Générer un défi</string>
+    <string name="landing_screen_description_1">Scritch est une appli conçue pour inspirer vos dessins et </string>
+    <string name="landing_screen_description_2">vous aider à développer de nouvelles compétences </string>
+    <string name="landing_screen_description_3">en vous lançant des défis créatifs qui </string>
+    <string name="landing_screen_description_4">vous poussent hors de votre zone de confort</string>
+    <string name="landing_screen_description_5">.</string>
+    <string name="landing_screen_header">Envie d’inspiration et de développer de nouvelles compétences ?</string>
+    <string name="landing_screen_second_description_1">Les défis impliquent différents médiums et supports. Vous ne les avez pas ou ne voulez pas les utiliser ? Aucun souci, </string>
+    <string name="landing_screen_second_description_2">vous pouvez tout personnaliser dans les paramètres !</string>
+    <string name="no_category_imposed">Aucune %1$s imposée</string>
+    <string name="other">Autre</string>
+    <string name="prompt_settings">Paramètres des défis</string>
+    <string name="send_us_an_email">Envoyez-nous un email !</string>
+    <string name="settings">Paramètres</string>
+    <string name="unselect_all">Tout désélectionner</string>
+    <string name="unselect_options_description">Désélectionnez les %1$s que vous ne voulez plus voir apparaître dans les défis</string>
+    <string name="unknown">Inconnu</string>
+    <string name="version">Version : %1$s</string>
+    <string name="version_history">Historique des versions</string>
+    <string name="version_notes_0_10">Corrections de bugs liés aux défis et ajout de la page À propos dans les paramètres</string>
+    <string name="version_notes_0_11">Ajout d’un bouton de contact sur la page À propos</string>
+    <string name="version_notes_0_12">Application traduite en espagnol et en français</string>
+    <string name="version_notes_0_7">Thème noir appliqué, style des défis modifié et icône de l'app ajoutée, correction de la déconnexion</string>
+    <string name="version_notes_0_8">Nouvel écran d’accueil, titres corrigés dans les paramètres, nouveau format pour les astuces</string>
+    <string name="version_notes_0_9">Modifications de la logique des défis et corrections de bugs pour iOS</string>
+</resources>

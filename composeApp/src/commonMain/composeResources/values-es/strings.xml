@@ -1,0 +1,61 @@
+<resources>
+    <string name="about">Acerca de</string>
+    <string name="app_name">Scritch</string>
+    <string name="back">Atrás</string>
+    <string name="back_to_home">Volver al inicio</string>
+    <string name="back_to_settings">Volver a ajustes</string>
+    <plurals name="category_art_medium">
+        <item quantity="one">Medio artístico</item>
+        <item quantity="other">Medios artísticos</item>
+    </plurals>
+    <plurals name="category_constraint">
+        <item quantity="one">Restricción</item>
+        <item quantity="other">Restricciones</item>
+    </plurals>
+    <string name="category_description_3">No los verás en los retos. Siempre puedes cambiarlo después en ajustes</string>
+    <string name="category_description_constraint_1">Scritch añadirá restricciones a los retos. </string>
+    <string name="category_description_constraint_2">Deselecciona las que no quieras ver o no te parezcan interesantes. </string>
+    <string name="category_description_medium_1">Scritch te sugerirá usar distintos medios artísticos. </string>
+    <string name="category_description_medium_2">Deselecciona los medios que no tienes o no quieres usar. </string>
+    <string name="category_description_support_1">Scritch te propondrá usar distintos soportes. </string>
+    <string name="category_description_support_2">Deselecciona los soportes que no tienes o no quieres usar. </string>
+    <string name="category_description_topic_1">Scritch te propondrá diferentes temas para tus dibujos. </string>
+    <string name="category_description_topic_2">Deselecciona los que no quieras que aparezcan en los retos. </string>
+    <plurals name="category_support">
+        <item quantity="one">Soporte</item>
+        <item quantity="other">Soportes</item>
+    </plurals>
+    <plurals name="category_topic">
+        <item quantity="one">Tema</item>
+        <item quantity="other">Temas</item>
+    </plurals>
+    <string name="concept_and_design">Concepto y diseño: %1$s</string>
+    <string name="continue_word">Continuar</string>
+    <string name="development">Desarrollo: %1$s</string>
+    <string name="feedback_questions">¿Sugerencias o comentarios?</string>
+    <string name="generate_prompt">Generar reto</string>
+    <string name="landing_screen_description_1">Scritch es una app pensada para inspirar tus dibujos y </string>
+    <string name="landing_screen_description_2">ayudarte a desarrollar nuevas habilidades </string>
+    <string name="landing_screen_description_3">desafiándote con restricciones creativas que </string>
+    <string name="landing_screen_description_4">te sacarán de tu zona de confort</string>
+    <string name="landing_screen_description_5">.</string>
+    <string name="landing_screen_header">¿Buscas inspiración y desarrollar nuevas habilidades?</string>
+    <string name="landing_screen_second_description_1">Los retos se basan en usar distintos medios y soportes. ¿No tienes algunos o no los quieres usar? No pasa nada, </string>
+    <string name="landing_screen_second_description_2">¡puedes personalizar todo desde ajustes!</string>
+    <string name="no_category_imposed">Sin %1$s impuesta</string>
+    <string name="other">Otro</string>
+    <string name="prompt_settings">Configuración de retos</string>
+    <string name="send_us_an_email">¡Envíanos un correo!</string>
+    <string name="settings">Ajustes</string>
+    <string name="unselect_all">Deseleccionar todo</string>
+    <string name="unselect_options_description">Deselecciona los %1$s que no quieres que vuelvan a aparecer en los retos</string>
+    <string name="unknown">Desconocido</string>
+    <string name="version">Versión: %1$s</string>
+    <string name="version_history">Historial de versiones</string>
+    <string name="version_notes_0_10">Se corrigieron errores relacionados con los retos y se añadió la sección Acerca de en ajustes</string>
+    <string name="version_notes_0_11">Se añadió un botón de contacto en la página Acerca de</string>
+    <string name="version_notes_0_12">La app ahora está disponible en español y francés</string>
+    <string name="version_notes_0_7">Tema oscuro aplicado, se estilizaron los retos y se añadió el icono de la app, se corrigió el cierre de sesión</string>
+    <string name="version_notes_0_8">Nueva pantalla de introducción, títulos corregidos en ajustes, nuevo formato para los consejos</string>
+    <string name="version_notes_0_9">Cambios en la lógica de retos y correcciones de errores para iOS</string>
+</resources>
