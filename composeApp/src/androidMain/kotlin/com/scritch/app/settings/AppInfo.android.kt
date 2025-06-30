@@ -3,6 +3,7 @@ package com.scritch.app.settings
 import android.content.pm.PackageManager
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.intl.Locale
 import org.jetbrains.compose.resources.stringResource
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.unknown
@@ -19,7 +20,7 @@ actual fun getAppVersionWithBuildNumber(): String {
             @Suppress("DEPRECATION")
             pInfo.versionCode.toLong()
         }
-        "Android $versionName ($versionCode)"
+        "Android $versionName ($versionCode) - ${Locale.current.language}"
     } catch (e: PackageManager.NameNotFoundException) {
         stringResource(Res.string.unknown)
     }
