@@ -9,8 +9,10 @@ private const val OPTIONS_COLLECTION = "options"
 
 class CategoryRepository {
 
-    suspend fun getOptions(category: Category): List<OptionDto>{
-        val locale = Locale.current.language
+    suspend fun getOptions(
+        category: Category,
+        locale: String = Locale.current.language,
+    ): List<OptionDto> {
         val optionDocsLocalised = Firebase
             .firestore
             .collection(CATEGORY_COLLECTION)
@@ -18,7 +20,7 @@ class CategoryRepository {
             .collection("$OPTIONS_COLLECTION-$locale")
             .get()
             .documents
-        val optionDocs = if (optionDocsLocalised.isEmpty()){
+        val optionDocs = if (optionDocsLocalised.isEmpty()) {
             Firebase
                 .firestore
                 .collection(CATEGORY_COLLECTION)
@@ -35,7 +37,7 @@ class CategoryRepository {
         }
     }
 
-    private fun Category.toDbName() = when (this){
+    private fun Category.toDbName() = when (this) {
         Category.Medium -> "medium"
         Category.Support -> "support"
         Category.Topic -> "topic"
