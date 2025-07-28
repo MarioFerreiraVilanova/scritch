@@ -55,6 +55,7 @@
     <string name="version_notes_0_10">Se corrigieron errores relacionados con los retos y se añadió la sección Acerca de en ajustes</string>
     <string name="version_notes_0_11">Se añadió un botón de contacto en la página Acerca de</string>
     <string name="version_notes_0_12">La app ahora está disponible en español y francés</string>
+    <string name="version_notes_0_13">Mejoras en las traducciones a español y francés</string>
     <string name="version_notes_0_7">Tema oscuro aplicado, se estilizaron los retos y se añadió el icono de la app, se corrigió el cierre de sesión</string>
     <string name="version_notes_0_8">Nueva pantalla de introducción, títulos corregidos en ajustes, nuevo formato para los consejos</string>
     <string name="version_notes_0_9">Cambios en la lógica de retos y correcciones de errores para iOS</string>

@@ -55,6 +55,7 @@
     <string name="version_notes_0_10">Corrections de bugs liés aux défis et ajout de la page À propos dans les paramètres</string>
     <string name="version_notes_0_11">Ajout d’un bouton de contact sur la page À propos</string>
     <string name="version_notes_0_12">Application traduite en espagnol et en français</string>
+    <string name="version_notes_0_13">Traductions espagnoles et françaises améliorées</string>
     <string name="version_notes_0_7">Thème noir appliqué, style des défis modifié et icône de l'app ajoutée, correction de la déconnexion</string>
     <string name="version_notes_0_8">Nouvel écran d’accueil, titres corrigés dans les paramètres, nouveau format pour les astuces</string>
     <string name="version_notes_0_9">Modifications de la logique des défis et corrections de bugs pour iOS</string>

@@ -75,6 +75,7 @@ fun VersionHistoryScreen(
 
 @Composable
 private fun generateVersionHistory(): List<Pair<String, String>> = listOf(
+    "0.13" to stringResource(Res.string.version_notes_0_12),
     "0.12" to stringResource(Res.string.version_notes_0_12),
     "0.11" to stringResource(Res.string.version_notes_0_11),
     "0.10" to stringResource(Res.string.version_notes_0_10),
