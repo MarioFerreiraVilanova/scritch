@@ -16,7 +16,7 @@
     <string name="category_description_constraint_1">Scritch añadirá restricciones a los retos. </string>
     <string name="category_description_constraint_2">Deselecciona las que no quieras ver o no te parezcan interesantes. </string>
     <string name="category_description_medium_1">Scritch te sugerirá usar distintos medios artísticos. </string>
-    <string name="category_description_medium_2">Deselecciona los medios que no tienes o no quieres usar. </string>
+    <string name="category_description_medium_2">Deselecciona los medios artísticos que no tienes o no quieres usar. </string>
     <string name="category_description_support_1">Scritch te propondrá usar distintos soportes. </string>
     <string name="category_description_support_2">Deselecciona los soportes que no tienes o no quieres usar. </string>
     <string name="category_description_topic_1">Scritch te propondrá diferentes temas para tus dibujos. </string>
@@ -40,7 +40,7 @@
     <string name="landing_screen_description_4">te sacarán de tu zona de confort</string>
     <string name="landing_screen_description_5">.</string>
     <string name="landing_screen_header">¿Buscas inspiración y desarrollar nuevas habilidades?</string>
-    <string name="landing_screen_second_description_1">Los retos se basan en usar distintos medios y soportes. ¿No tienes algunos o no los quieres usar? No pasa nada, </string>
+    <string name="landing_screen_second_description_1">Los retos se basan en usar distintos medios artísticos y soportes. ¿No tienes algunos o no los quieres usar? No pasa nada, </string>
     <string name="landing_screen_second_description_2">¡puedes personalizar todo desde ajustes!</string>
     <string name="no_category_imposed">Sin %1$s impuesta</string>
     <string name="other">Otro</string>

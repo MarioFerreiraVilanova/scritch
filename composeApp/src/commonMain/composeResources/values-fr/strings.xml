@@ -5,22 +5,22 @@
     <string name="back_to_home">Retour à l'accueil</string>
     <string name="back_to_settings">Retour aux paramètres</string>
     <plurals name="category_art_medium">
-        <item quantity="one">Médium artistique</item>
-        <item quantity="other">Médiums artistiques</item>
+        <item quantity="one">Médium</item>
+        <item quantity="other">Médiums</item>
     </plurals>
     <plurals name="category_constraint">
         <item quantity="one">Contrainte</item>
         <item quantity="other">Contraintes</item>
     </plurals>
-    <string name="category_description_3">Ils n’apparaîtront plus dans les défis. Vous pouvez toujours changer cela dans les paramètres plus tard</string>
-    <string name="category_description_constraint_1">Scritch ajoutera des contraintes aux défis. </string>
-    <string name="category_description_constraint_2">Désélectionnez celles que vous ne souhaitez pas voir ou que vous trouvez inintéressantes. </string>
+    <string name="category_description_3">Ils n’apparaîtront plus dans les suggestions. Vous pouvez toujours modifier ces paramètres plus tard</string>
+    <string name="category_description_constraint_1">Scritch ajoutera des contraintes aux suggestions. </string>
+    <string name="category_description_constraint_2">Désélectionnez celles que vous ne souhaitez plus voir apparaître dans les suggestions. </string>
     <string name="category_description_medium_1">Scritch vous proposera d’utiliser différents médiums artistiques. </string>
-    <string name="category_description_medium_2">Désélectionnez les médiums que vous ne possédez pas ou que vous ne souhaitez pas utiliser. </string>
+    <string name="category_description_medium_2">Désélectionnez les médiums que vous ne possédez pas ou que vous ne souhaitez plus voir apparaître dans les suggestions. </string>
     <string name="category_description_support_1">Scritch vous proposera d’utiliser différents supports. </string>
-    <string name="category_description_support_2">Désélectionnez les supports que vous ne possédez pas ou que vous ne souhaitez pas utiliser. </string>
+    <string name="category_description_support_2">Désélectionnez les supports que vous ne possédez pas ou que vous ne souhaitez plus voir apparaître dans les suggestions. </string>
     <string name="category_description_topic_1">Scritch vous proposera différents sujets de dessin. </string>
-    <string name="category_description_topic_2">Désélectionnez ceux que vous ne souhaitez pas voir dans les défis. </string>
+    <string name="category_description_topic_2">Désélectionnez ceux que vous ne souhaitez plus voir apparaître dans les suggestions. </string>
     <plurals name="category_support">
         <item quantity="one">Support</item>
         <item quantity="other">Supports</item>
@@ -33,8 +33,8 @@
     <string name="continue_word">Continuer</string>
     <string name="development">Développement : %1$s</string>
     <string name="feedback_questions">Des retours ou des suggestions ?</string>
-    <string name="generate_prompt">Générer un défi</string>
-    <string name="landing_screen_description_1">Scritch est une appli conçue pour inspirer vos dessins et </string>
+    <string name="generate_prompt">Générer une idée</string>
+    <string name="landing_screen_description_1">Scritch est une appli conçue pour vous inspirer dans votre pratique du dessin et </string>
     <string name="landing_screen_description_2">vous aider à développer de nouvelles compétences </string>
     <string name="landing_screen_description_3">en vous lançant des défis créatifs qui </string>
     <string name="landing_screen_description_4">vous poussent hors de votre zone de confort</string>
@@ -44,11 +44,11 @@
     <string name="landing_screen_second_description_2">vous pouvez tout personnaliser dans les paramètres !</string>
     <string name="no_category_imposed">Aucune %1$s imposée</string>
     <string name="other">Autre</string>
-    <string name="prompt_settings">Paramètres des défis</string>
+    <string name="prompt_settings">Paramètres du générateur d'idées</string>
     <string name="send_us_an_email">Envoyez-nous un email !</string>
     <string name="settings">Paramètres</string>
     <string name="unselect_all">Tout désélectionner</string>
-    <string name="unselect_options_description">Désélectionnez les %1$s que vous ne voulez plus voir apparaître dans les défis</string>
+    <string name="unselect_options_description">Désélectionnez les %1$s que vous ne voulez plus voir apparaître dans les suggestions.</string>
     <string name="unknown">Inconnu</string>
     <string name="version">Version : %1$s</string>
     <string name="version_history">Historique des versions</string>
