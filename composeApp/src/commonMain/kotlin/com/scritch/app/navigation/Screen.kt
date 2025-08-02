@@ -50,3 +50,9 @@ import kotlinx.serialization.Serializable
         }
     }
 }
+
+@Serializable
+object HomeScreen {
+    @Serializable object SoloMode
+    @Serializable object WeeklyJam
+}
