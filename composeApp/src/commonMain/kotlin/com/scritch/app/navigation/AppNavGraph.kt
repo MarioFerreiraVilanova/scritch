@@ -12,7 +12,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.scritch.app.app.AppViewModel
 import com.scritch.app.app.AppViewState
-import com.scritch.app.home.HomeScreen
+import com.scritch.app.solomode.SoloScreen
 import com.scritch.app.landing.LandingScreen
 import com.scritch.app.settings.SettingsScreen
 import com.scritch.app.settings.about.AboutScreen
@@ -89,7 +89,7 @@ private fun NavGraphBuilder.authenticatedSubGraph(
         startDestination = Authenticated.Home,
     ) {
         composable<Authenticated.Home> {
-            HomeScreen(
+            SoloScreen(
                 onGoToSettings = {
                     navController.navigate(Authenticated.Settings)
                 }

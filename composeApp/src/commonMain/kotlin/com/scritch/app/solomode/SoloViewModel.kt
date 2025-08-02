@@ -1,4 +1,4 @@
-package com.scritch.app.home
+package com.scritch.app.solomode
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,14 +13,14 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HomeViewModel(
+class SoloViewModel(
     private val loadUserOptions: LoadUserOptionsUseCase,
     private val loadUserData: LoadUserDataUseCase,
     private val analyticsRepository: AnalyticsRepository,
 ) : ViewModel() {
 
     private val mutableViewState = MutableStateFlow(
-        HomeScreenViewState(
+        SoloViewState(
             topic = null,
             medium = null,
             support = null,

@@ -5,7 +5,7 @@ import com.scritch.app.app.AppViewModel
 import com.scritch.app.auth.AuthenticationRepository
 import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.LoadUserOptionsUseCase
-import com.scritch.app.home.HomeViewModel
+import com.scritch.app.solomode.SoloViewModel
 import com.scritch.app.landing.LandingViewModel
 import com.scritch.app.settings.about.AboutViewModel
 import com.scritch.app.splash.SplashViewModel
@@ -25,7 +25,7 @@ val appModule = module {
 
     viewModelOf(::AboutViewModel)
     viewModelOf(::AppViewModel)
-    viewModelOf(::HomeViewModel)
+    viewModelOf(::SoloViewModel)
     viewModelOf(::LandingViewModel)
     viewModelOf(::SplashViewModel)
     viewModelOf(::WizardScreenViewModel)

@@ -1,4 +1,4 @@
-package com.scritch.app.home
+package com.scritch.app.solomode
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

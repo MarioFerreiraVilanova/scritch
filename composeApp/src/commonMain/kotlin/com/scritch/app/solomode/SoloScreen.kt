@@ -1,4 +1,4 @@
-package com.scritch.app.home
+package com.scritch.app.solomode
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -52,16 +52,15 @@ import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.app_name
 import scritch.composeapp.generated.resources.arrows_repeat
 import scritch.composeapp.generated.resources.generate_prompt
-import scritch.composeapp.generated.resources.landing_screen_description_1
 import scritch.composeapp.generated.resources.scritch_logo
 import scritch.composeapp.generated.resources.settings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
+fun SoloScreen(
     onGoToSettings: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = koinViewModel(),
+    viewModel: SoloViewModel = koinViewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
     val sheetState = rememberModalBottomSheetState()
@@ -202,7 +201,7 @@ fun HomeScreen(
 
 @Composable
 private fun promptFromViewState(
-    viewState: HomeScreenViewState,
+    viewState: SoloViewState,
 ): AnnotatedString? {
     if (viewState.medium == null && viewState.support == null) return null
 
