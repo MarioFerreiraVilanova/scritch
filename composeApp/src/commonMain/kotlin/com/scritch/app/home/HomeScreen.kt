@@ -16,9 +16,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.scritch.app.jam.JamScreen
 import com.scritch.app.navigation.HomeScreen
@@ -33,7 +35,8 @@ fun HomeScreen(
     onGoToSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val navController = rememberNavController()
+    val rootNavController = rememberNavController()
+    val navBackStackEntry by rootNavController.currentBackStackEntryAsState()
     var selectedDestination by rememberSaveable { mutableIntStateOf(0) }
 
     Scaffold(
@@ -43,7 +46,13 @@ fun HomeScreen(
                 NavigationBarItem(
                     selected = selectedDestination == 0,
                     onClick = {
-                        navController.navigate(route = HomeScreen.SoloMode)
+                        rootNavController.navigate(route = HomeScreen.SoloMode){
+                            popUpTo(HomeScreen.SoloMode){
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                         selectedDestination = 0
                     },
                     icon = {
@@ -57,7 +66,13 @@ fun HomeScreen(
                 NavigationBarItem(
                     selected = selectedDestination == 1,
                     onClick = {
-                        navController.navigate(route = HomeScreen.WeeklyJam)
+                        rootNavController.navigate(route = HomeScreen.WeeklyJam){
+                            popUpTo(HomeScreen.SoloMode){
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                         selectedDestination = 1
                     },
                     icon = {
@@ -72,7 +87,7 @@ fun HomeScreen(
         }
     ) { contentPadding ->
         HomeNavGraph(
-            navController = navController,
+            navController = rootNavController,
             onGoToSettings = onGoToSettings,
             modifier = Modifier.padding(contentPadding)
         )
