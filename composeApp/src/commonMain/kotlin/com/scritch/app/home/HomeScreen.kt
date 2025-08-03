@@ -1,5 +1,6 @@
 package com.scritch.app.home
 
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
@@ -16,11 +17,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.scritch.app.jam.JamScreen
 import com.scritch.app.navigation.HomeScreen
@@ -36,28 +35,35 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
 ) {
     val rootNavController = rememberNavController()
-    val navBackStackEntry by rootNavController.currentBackStackEntryAsState()
     var selectedDestination by rememberSaveable { mutableIntStateOf(0) }
+
+    fun onBottomTabClick(
+        index: Int,
+    ) {
+        rootNavController.navigate(route = HomeScreen.SoloMode) {
+            popUpTo(HomeScreen.SoloMode) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+        selectedDestination = index
+    }
 
     Scaffold(
         modifier = modifier,
         bottomBar = {
-            NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
+            NavigationBar(
+                windowInsets = NavigationBarDefaults.windowInsets,
+            ) {
                 NavigationBarItem(
                     selected = selectedDestination == 0,
                     onClick = {
-                        rootNavController.navigate(route = HomeScreen.SoloMode){
-                            popUpTo(HomeScreen.SoloMode){
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                        selectedDestination = 0
+                        onBottomTabClick(0)
                     },
                     icon = {
                         Icon(
-                            Icons.Default.Favorite,
+                            imageVector = Icons.Default.Favorite,
                             contentDescription = stringResource(Res.string.solo_mode)
                         )
                     },
@@ -66,18 +72,11 @@ fun HomeScreen(
                 NavigationBarItem(
                     selected = selectedDestination == 1,
                     onClick = {
-                        rootNavController.navigate(route = HomeScreen.WeeklyJam){
-                            popUpTo(HomeScreen.SoloMode){
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                        selectedDestination = 1
+                        onBottomTabClick(1)
                     },
                     icon = {
                         Icon(
-                            Icons.Default.Call,
+                            imageVector = Icons.Default.Call,
                             contentDescription = stringResource(Res.string.weekly_jam)
                         )
                     },
@@ -89,7 +88,9 @@ fun HomeScreen(
         HomeNavGraph(
             navController = rootNavController,
             onGoToSettings = onGoToSettings,
-            modifier = Modifier.padding(contentPadding)
+            modifier = Modifier
+                .consumeWindowInsets(contentPadding)
+                .padding(contentPadding)
         )
     }
 }
