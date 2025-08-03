@@ -131,16 +131,11 @@ fun SoloScreen(
                 )
             ) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surfaceContainer),
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center,
                 ) {
                     PromptButton(
-                        modifier = Modifier.padding(
-                            top = 16.dp,
-                            bottom = 48.dp,
-                        ),
+                        modifier = Modifier.padding(16.dp),
                         onClick = viewModel::onGeneratePrompt
                     )
                 }

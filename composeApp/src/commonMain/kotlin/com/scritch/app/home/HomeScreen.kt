@@ -2,10 +2,8 @@ package com.scritch.app.home
 
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
@@ -24,10 +22,14 @@ import androidx.navigation.compose.rememberNavController
 import com.scritch.app.jam.JamScreen
 import com.scritch.app.navigation.HomeScreen
 import com.scritch.app.solomode.SoloScreen
+import com.scritch.app.theme.NavigationBarItemColors
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.solo_mode
+import scritch.composeapp.generated.resources.users
 import scritch.composeapp.generated.resources.weekly_jam
+import scritch.composeapp.generated.resources.zap
 
 @Composable
 fun HomeScreen(
@@ -36,11 +38,18 @@ fun HomeScreen(
 ) {
     val rootNavController = rememberNavController()
     var selectedDestination by rememberSaveable { mutableIntStateOf(0) }
+    val navigationBarItemColors = NavigationBarItemColors()
 
     fun onBottomTabClick(
         index: Int,
     ) {
-        rootNavController.navigate(route = HomeScreen.SoloMode) {
+        rootNavController.navigate(
+            route = when (index) {
+                0 -> HomeScreen.SoloMode
+                1 -> HomeScreen.WeeklyJam
+                else -> throw IllegalArgumentException("Invalid index: $index")
+            },
+        ) {
             popUpTo(HomeScreen.SoloMode) {
                 saveState = true
             }
@@ -55,6 +64,7 @@ fun HomeScreen(
         bottomBar = {
             NavigationBar(
                 windowInsets = NavigationBarDefaults.windowInsets,
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
             ) {
                 NavigationBarItem(
                     selected = selectedDestination == 0,
@@ -63,11 +73,12 @@ fun HomeScreen(
                     },
                     icon = {
                         Icon(
-                            imageVector = Icons.Default.Favorite,
+                            painter = painterResource(Res.drawable.zap),
                             contentDescription = stringResource(Res.string.solo_mode)
                         )
                     },
-                    label = { Text(stringResource(Res.string.solo_mode)) }
+                    label = { Text(stringResource(Res.string.solo_mode)) },
+                    colors = navigationBarItemColors,
                 )
                 NavigationBarItem(
                     selected = selectedDestination == 1,
@@ -76,11 +87,12 @@ fun HomeScreen(
                     },
                     icon = {
                         Icon(
-                            imageVector = Icons.Default.Call,
-                            contentDescription = stringResource(Res.string.weekly_jam)
+                            painter = painterResource(Res.drawable.users),
+                            contentDescription = stringResource(Res.string.weekly_jam),
                         )
                     },
-                    label = { Text(stringResource(Res.string.weekly_jam)) }
+                    label = { Text(stringResource(Res.string.weekly_jam)) },
+                    colors = navigationBarItemColors,
                 )
             }
         }
