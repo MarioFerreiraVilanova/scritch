@@ -185,7 +185,6 @@ fun SoloScreen(
         ) {
             viewState.selectedOption?.tips?.let { tips ->
                 Tips(
-                    title = viewState.selectedOption?.name ?: "",
                     tips = tips
                 )
             }

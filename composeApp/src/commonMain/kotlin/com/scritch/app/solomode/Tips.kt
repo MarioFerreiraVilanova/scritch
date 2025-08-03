@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Tips(
-    title: String,
     tips: Map<String, String>,
 ) {
     LazyColumn(
