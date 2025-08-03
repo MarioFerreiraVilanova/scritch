@@ -47,6 +47,7 @@
     <string name="prompt_settings">Paramètres du générateur d'idées</string>
     <string name="send_us_an_email">Envoyez-nous un email !</string>
     <string name="settings">Paramètres</string>
+    <string name="solo_mode">Mode Solo</string>
     <string name="unselect_all">Tout désélectionner</string>
     <string name="unselect_options_description">Désélectionnez les %1$s que vous ne voulez plus voir apparaître dans les suggestions.</string>
     <string name="unknown">Inconnu</string>
@@ -59,4 +60,5 @@
     <string name="version_notes_0_7">Thème noir appliqué, style des défis modifié et icône de l'app ajoutée, correction de la déconnexion</string>
     <string name="version_notes_0_8">Nouvel écran d’accueil, titres corrigés dans les paramètres, nouveau format pour les astuces</string>
     <string name="version_notes_0_9">Modifications de la logique des défis et corrections de bugs pour iOS</string>
+    <string name="weekly_jam">Jam hebdomadaire</string>
 </resources>

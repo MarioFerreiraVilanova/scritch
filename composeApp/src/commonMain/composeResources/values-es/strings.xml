@@ -47,6 +47,7 @@
     <string name="prompt_settings">Configuración de retos</string>
     <string name="send_us_an_email">¡Envíanos un correo!</string>
     <string name="settings">Ajustes</string>
+    <string name="solo_mode">Modo Solo</string>
     <string name="unselect_all">Deseleccionar todo</string>
     <string name="unselect_options_description">Deselecciona los %1$s que no quieres que vuelvan a aparecer en los retos</string>
     <string name="unknown">Desconocido</string>
@@ -59,4 +60,5 @@
     <string name="version_notes_0_7">Tema oscuro aplicado, se estilizaron los retos y se añadió el icono de la app, se corrigió el cierre de sesión</string>
     <string name="version_notes_0_8">Nueva pantalla de introducción, títulos corregidos en ajustes, nuevo formato para los consejos</string>
     <string name="version_notes_0_9">Cambios en la lógica de retos y correcciones de errores para iOS</string>
+    <string name="weekly_jam">Jam Semanal</string>
 </resources>
