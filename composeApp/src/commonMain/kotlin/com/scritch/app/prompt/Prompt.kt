@@ -1,6 +1,5 @@
 package com.scritch.app.prompt
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -12,7 +11,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withAnnotation
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.dp
 import com.scritch.app.categories.OptionState
 
 @Composable
@@ -20,7 +18,7 @@ fun Prompt(
     viewState: PromptViewState,
     onCategoryClick: (String) -> Unit,
     modifier: Modifier = Modifier,
-){
+) {
     promptFromViewState(
         viewState = viewState,
     )?.let { prompt ->

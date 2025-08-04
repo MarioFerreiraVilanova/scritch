@@ -37,6 +37,41 @@ class CategoryRepository {
         }
     }
 
+    suspend fun getOption(
+        category: Category,
+        optionId: String,
+        locale: String = Locale.current.language,
+    ): OptionDto? {
+        val localisedOptionDoc = Firebase
+            .firestore
+            .collection(CATEGORY_COLLECTION)
+            .document(category.toDbName())
+            .collection("$OPTIONS_COLLECTION-$locale")
+            .document(optionId)
+            .get()
+
+        return if (localisedOptionDoc.exists) {
+            OptionDto(
+                documentSnapshot = localisedOptionDoc,
+            )
+        } else {
+            val defaultDoc = Firebase
+                .firestore
+                .collection(CATEGORY_COLLECTION)
+                .document(category.toDbName())
+                .collection(OPTIONS_COLLECTION)
+                .document(optionId)
+                .get()
+            if (defaultDoc.exists) {
+                OptionDto(
+                    documentSnapshot = defaultDoc,
+                )
+            } else {
+                null
+            }
+        }
+    }
+
     private fun Category.toDbName() = when (this) {
         Category.Medium -> "medium"
         Category.Support -> "support"
