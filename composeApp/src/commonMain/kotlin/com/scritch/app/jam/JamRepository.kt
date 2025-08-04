@@ -8,7 +8,7 @@ private const val JAM_COLLECTION = "weekly_jam"
 class JamRepository {
 
     suspend fun loadLatestJam(): JamDto? {
-        val snapshot = Firebase
+        Firebase
             .firestore
             .collection(JAM_COLLECTION)
             .get()

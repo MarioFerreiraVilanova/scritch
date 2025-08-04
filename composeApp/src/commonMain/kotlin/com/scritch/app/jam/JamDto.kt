@@ -1,6 +1,9 @@
 package com.scritch.app.jam
 
 import dev.gitlive.firebase.firestore.DocumentSnapshot
+import dev.gitlive.firebase.firestore.Timestamp
+import dev.gitlive.firebase.firestore.toMilliseconds
+import kotlinx.datetime.Instant
 
 data class JamDto(
     val id: String,
@@ -8,6 +11,7 @@ data class JamDto(
     val medium: String?,
     val support: String?,
     val topic: String?,
+    val endDate: Instant?
 ){
     constructor(documentSnapshot: DocumentSnapshot): this(
         id = documentSnapshot.id,
@@ -15,5 +19,8 @@ data class JamDto(
         medium = documentSnapshot.get<String?>("medium"),
         support = documentSnapshot.get<String?>("support"),
         topic = documentSnapshot.get<String?>("topic"),
+        endDate = documentSnapshot.get<Timestamp?>("endDate")?.let {
+            Instant.fromEpochMilliseconds(it.toMilliseconds().toLong())
+        }
     )
 }
