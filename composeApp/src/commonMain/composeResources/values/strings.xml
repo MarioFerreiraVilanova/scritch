@@ -61,4 +61,7 @@
     <string name="version_notes_0_8">New onboarding screen, fixed titles on setting screens, new formatting for tips</string>
     <string name="version_notes_0_9">Changes in prompt logic and bux fixes towards iOS</string>
     <string name="weekly_jam">Weekly Jam</string>
+    <string name="weekly_jam_description">Each week, Scritch features a special prompt — the Weekly Jam! Everyone sees the same challenge, so you can sketch alongside other artists around the world. It’s a fun way to get inspired, push your creativity, and share your work with the community. Ready to jam?</string>
+    <string name="weekly_jam_not_available">There’s no weekly jam at the moment — check back soon for the next challenge!</string>
+
 </resources>

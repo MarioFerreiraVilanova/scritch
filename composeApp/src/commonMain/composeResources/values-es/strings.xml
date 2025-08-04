@@ -61,4 +61,6 @@
     <string name="version_notes_0_8">Nueva pantalla de introducción, títulos corregidos en ajustes, nuevo formato para los consejos</string>
     <string name="version_notes_0_9">Cambios en la lógica de retos y correcciones de errores para iOS</string>
     <string name="weekly_jam">Jam Semanal</string>
+    <string name="weekly_jam_description">Cada semana, Scritch presenta un reto especial: ¡el Jam Semanal! Todos ven el mismo desafío, así que puedes dibujar junto a otros artistas de todo el mundo. Es una forma divertida de inspirarte, poner a prueba tu creatividad y compartir tu obra con la comunidad. ¿Listo para jamear?</string>
+    <string name="weekly_jam_not_available">De momento no hay ningún jam activo. ¡Vuelve pronto para descubrir el próximo reto!</string>
 </resources>

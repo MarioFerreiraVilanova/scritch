@@ -3,9 +3,11 @@ package com.scritch.app.jam
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -19,7 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.weekly_jam_description
+import scritch.composeapp.generated.resources.weekly_jam_not_available
 
 @Composable
 fun JamScreen(
@@ -30,30 +36,32 @@ fun JamScreen(
     Scaffold(
         modifier = modifier,
     ) { contentPadding ->
-        Box(
+        LazyColumn(
             modifier = modifier
                 .fillMaxSize()
                 .consumeWindowInsets(contentPadding)
                 .padding(contentPadding),
-        ){
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(16.dp),
-            ) {
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            item {
                 Text(
-                    text = "Weekly jams are drawing challenges for all Scritch users. Updated every Sundays.",
+                    text = stringResource(Res.string.weekly_jam_description),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
+            }
+            item {
                 HorizontalDivider()
+            }
+            item {
                 when (viewState.loadingState){
                     LoadingState.LOADING -> {
                         CircularProgressIndicator()
                     }
                     LoadingState.NO_JAM -> {
                         Text(
-                            text = "No jams available",
+                            text = stringResource(Res.string.weekly_jam_not_available),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onBackground,
                         )
