@@ -6,6 +6,7 @@ import com.scritch.app.analytics.AnalyticsRepository
 import com.scritch.app.categories.Category
 import com.scritch.app.categories.LoadUserOptionsUseCase
 import com.scritch.app.categories.OptionState
+import com.scritch.app.prompt.PromptViewState
 import com.scritch.app.userdata.LoadUserDataUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +21,7 @@ class SoloViewModel(
 ) : ViewModel() {
 
     private val mutableViewState = MutableStateFlow(
-        SoloViewState(
+        PromptViewState(
             topic = null,
             medium = null,
             support = null,
