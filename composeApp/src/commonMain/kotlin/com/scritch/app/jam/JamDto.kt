@@ -11,6 +11,7 @@ data class JamDto(
     val medium: String?,
     val support: String?,
     val topic: String?,
+    val startDate: Instant?,
     val endDate: Instant?
 ){
     constructor(documentSnapshot: DocumentSnapshot): this(
@@ -19,6 +20,9 @@ data class JamDto(
         medium = documentSnapshot.get<String?>("medium"),
         support = documentSnapshot.get<String?>("support"),
         topic = documentSnapshot.get<String?>("topic"),
+        startDate = documentSnapshot.get<Timestamp?>("startDate")?.let {
+            Instant.fromEpochMilliseconds(it.toMilliseconds().toLong())
+        },
         endDate = documentSnapshot.get<Timestamp?>("endDate")?.let {
             Instant.fromEpochMilliseconds(it.toMilliseconds().toLong())
         }
