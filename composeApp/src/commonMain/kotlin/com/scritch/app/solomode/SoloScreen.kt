@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.scritch.app.prompt.Prompt
+import com.scritch.app.prompt.TipsSheet
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -55,18 +56,6 @@ fun SoloScreen(
     viewModel: SoloViewModel = koinViewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
-    val sheetState = rememberModalBottomSheetState()
-
-    LaunchedEffect(viewState.selectedOption) {
-        if (viewState.selectedOption != null) {
-            sheetState.show()
-        }
-    }
-    LaunchedEffect(sheetState.isVisible) {
-        if (!sheetState.isVisible) {
-            viewModel.onTipDisplayed()
-        }
-    }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifecycleState by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
@@ -161,21 +150,10 @@ fun SoloScreen(
         }
     }
 
-    if (viewState.selectedOption != null) {
-        ModalBottomSheet(
-            sheetState = sheetState,
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            onDismissRequest = {
-                viewModel.onTipDisplayed()
-            },
-        ) {
-            viewState.selectedOption?.tips?.let { tips ->
-                Tips(
-                    tips = tips
-                )
-            }
-        }
-    }
+    TipsSheet(
+        viewState = viewState,
+        onTipDisplayed = viewModel::onTipDisplayed,
+    )
 }
 
 @Composable
