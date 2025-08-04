@@ -1,8 +1,6 @@
 package com.scritch.app.jam
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.scritch.app.prompt.Prompt
@@ -51,14 +48,24 @@ fun JamScreen(
                     color = MaterialTheme.colorScheme.onBackground,
                 )
             }
+            viewState.endDate?.let { endDate ->
+                item {
+                    Text(
+                        text = "The jam will end on ${endDate.dayOfWeek} at ${endDate.hour}:${endDate.minute}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
+            }
             item {
                 HorizontalDivider()
             }
             item {
-                when (viewState.loadingState){
+                when (viewState.loadingState) {
                     LoadingState.LOADING -> {
                         CircularProgressIndicator()
                     }
+
                     LoadingState.NO_JAM -> {
                         Text(
                             text = stringResource(Res.string.weekly_jam_not_available),
@@ -66,6 +73,7 @@ fun JamScreen(
                             color = MaterialTheme.colorScheme.onBackground,
                         )
                     }
+
                     LoadingState.LOADED,
                     LoadingState.REFRESHING -> {
                         Prompt(

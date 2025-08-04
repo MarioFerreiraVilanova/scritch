@@ -10,24 +10,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 class JamViewModel(
     private val jamRepository: JamRepository,
     private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
 
-    private val mutableViewState = MutableStateFlow(
-        JamViewState(
-            loadingState = LoadingState.LOADING,
-            promptViewState = PromptViewState(
-                topic = null,
-                medium = null,
-                support = null,
-                constraint = null,
-                selectedOption = null,
-            )
-        )
-    )
+    private val mutableViewState = MutableStateFlow(JamViewState.EMPTY)
     val viewState = mutableViewState.asStateFlow()
 
     init {
@@ -52,15 +44,8 @@ class JamViewModel(
 
         if (jamDto == null) {
             mutableViewState.update {
-                it.copy(
+                JamViewState.EMPTY.copy(
                     loadingState = LoadingState.NO_JAM,
-                    promptViewState = PromptViewState(
-                        topic = null,
-                        medium = null,
-                        support = null,
-                        constraint = null,
-                        selectedOption = null,
-                    )
                 )
             }
         } else {
@@ -106,6 +91,7 @@ class JamViewModel(
             mutableViewState.update {
                 it.copy(
                     loadingState = LoadingState.LOADED,
+                    endDate = jamDto.endDate?.toLocalDateTime(TimeZone.currentSystemDefault()),
                     promptViewState = PromptViewState(
                         topic = topic,
                         medium = medium,

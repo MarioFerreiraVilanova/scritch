@@ -10,4 +10,14 @@ data class PromptViewState(
     val selectedOption: OptionState?,
 ){
     val valid = medium != null || support != null
+
+    companion object {
+        val EMPTY = PromptViewState(
+            topic = null,
+            medium = null,
+            support = null,
+            constraint = null,
+            selectedOption = null,
+        )
+    }
 }
