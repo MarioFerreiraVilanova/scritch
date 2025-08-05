@@ -63,4 +63,12 @@
     <string name="weekly_jam">Jam Semanal</string>
     <string name="weekly_jam_description">Cada semana, Scritch presenta un reto especial: ¡el Jam Semanal! Todos ven el mismo desafío, así que puedes dibujar junto a otros artistas de todo el mundo. Es una forma divertida de inspirarte, poner a prueba tu creatividad y compartir tu obra con la comunidad. ¿Listo para jamear?</string>
     <string name="weekly_jam_not_available">De momento no hay ningún jam activo. ¡Vuelve pronto para descubrir el próximo reto!</string>
+    <string name="weekly_jam_end_time">La jam acaba el %1$s a las %2$s</string>
+    <string name="monday">Lunes</string>
+    <string name="tuesday">Martes</string>
+    <string name="wednesday">Miércoles</string>
+    <string name="thursday">Jueves</string>
+    <string name="friday">Viernes</string>
+    <string name="saturday">Sábado</string>
+    <string name="sunday">Domingo</string>
 </resources>

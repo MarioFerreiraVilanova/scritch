@@ -18,10 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
+import com.scritch.app.util.dayOfWeekString
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.weekly_jam_description
+import scritch.composeapp.generated.resources.weekly_jam_end_time
 import scritch.composeapp.generated.resources.weekly_jam_not_available
 
 @Composable
@@ -50,8 +52,9 @@ fun JamScreen(
             }
             viewState.endDate?.let { endDate ->
                 item {
+                    val dayOfWeek = dayOfWeekString(day = endDate.dayOfWeek)
                     Text(
-                        text = "The jam will end on ${endDate.dayOfWeek} at ${endDate.hour}:${endDate.minute}",
+                        text = stringResource(Res.string.weekly_jam_end_time, dayOfWeek, "${endDate.hour}:${endDate.minute}"),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
