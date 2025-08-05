@@ -61,9 +61,9 @@
     <string name="version_notes_0_8">Nouvel écran d’accueil, titres corrigés dans les paramètres, nouveau format pour les astuces</string>
     <string name="version_notes_0_9">Modifications de la logique des défis et corrections de bugs pour iOS</string>
     <string name="weekly_jam">Jam hebdomadaire</string>
-    <string name="weekly_jam_description">Chaque semaine, Scritch propose un défi spécial : le Jam Hebdo ! Tout le monde reçoit le même prompt, alors vous pouvez dessiner aux côtés d’artistes du monde entier. C’est une façon amusante de trouver l’inspiration, de stimuler votre créativité et de partager vos créations avec la communauté. Prêt·e à jammer ?</string>
+    <string name="weekly_jam_description">Participe à la Jam Hebdo ! Un défi commun pour stimuler ta créativité et te connecter avec des artistes du monde entier.</string>
     <string name="weekly_jam_not_available">Il n’y a pas de jam en cours cette semaine. Revenez bientôt pour découvrir le prochain défi !</string>
-    <string name="weekly_jam_end_time">La jam se termine le %1$s à %2$s</string>
+    <string name="weekly_jam_end_time">Cette jam se termine le %1$s à %2$s</string>
     <string name="monday">Lundi</string>
     <string name="tuesday">Mardi</string>
     <string name="wednesday">Mercredi</string>
