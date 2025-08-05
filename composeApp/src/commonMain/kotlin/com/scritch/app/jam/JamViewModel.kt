@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -40,7 +39,7 @@ class JamViewModel(
             )
         }
 
-        val jamDto = jamRepository.loadLatestJam()
+        val jamDto = jamRepository.loadCurrentJam()
 
         if (jamDto == null) {
             mutableViewState.update {
