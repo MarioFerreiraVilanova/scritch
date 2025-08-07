@@ -1,12 +1,15 @@
 package com.scritch.app.jam
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -35,7 +38,9 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.camera
 import scritch.composeapp.generated.resources.clock
+import scritch.composeapp.generated.resources.share_your_work
 import scritch.composeapp.generated.resources.weekly_jam_description
 import scritch.composeapp.generated.resources.weekly_jam_end_time
 import scritch.composeapp.generated.resources.weekly_jam_not_available
@@ -55,78 +60,89 @@ fun JamScreen(
     Scaffold(
         modifier = modifier,
     ) { contentPadding ->
-        LazyColumn(
+        Column(
             modifier = modifier
                 .fillMaxSize()
                 .consumeWindowInsets(contentPadding)
-                .padding(contentPadding),
-            contentPadding = PaddingValues(16.dp),
+                .padding(contentPadding)
+                .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            item {
-                Text(
-                    text = stringResource(Res.string.weekly_jam_description),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
-                )
-            }
+            Text(
+                text = stringResource(Res.string.weekly_jam_description),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
             viewState.endDate?.let { endDate ->
-                item {
-                    val dayOfWeek = dayOfWeekString(day = endDate.dayOfWeek)
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.clock),
-                            contentDescription = null,
-                        )
-                        Text(
-                            text = stringResource(
-                                Res.string.weekly_jam_end_time,
-                                dayOfWeek,
-                                "${endDate.hour}:${endDate.minute}"
-                            ),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-                    }
+
+                val dayOfWeek = dayOfWeekString(day = endDate.dayOfWeek)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.clock),
+                        contentDescription = null,
+                    )
+                    Text(
+                        text = stringResource(
+                            Res.string.weekly_jam_end_time,
+                            dayOfWeek,
+                            "${endDate.hour}:${endDate.minute}"
+                        ),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
                 }
             }
-            item {
-                HorizontalDivider()
-            }
-            item {
-                when (viewState.loadingState) {
-                    LoadingState.LOADING -> {
+            HorizontalDivider()
+            when (viewState.loadingState) {
+                LoadingState.LOADING -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
                         CircularProgressIndicator()
                     }
+                }
 
-                    LoadingState.NO_JAM -> {
-                        Text(
-                            text = stringResource(Res.string.weekly_jam_not_available),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-                    }
+                LoadingState.NO_JAM -> {
+                    Text(
+                        text = stringResource(Res.string.weekly_jam_not_available),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                }
 
-                    LoadingState.LOADED,
-                    LoadingState.REFRESHING -> {
-                        Prompt(
-                            viewState = viewState.promptViewState,
-                            onCategoryClick = viewModel::onCategoryClick,
-                        )
-                    }
+                LoadingState.LOADED,
+                LoadingState.REFRESHING -> {
+                    Prompt(
+                        viewState = viewState.promptViewState,
+                        onCategoryClick = viewModel::onCategoryClick,
+                    )
                 }
             }
-            item {
-                Button(
-                    onClick = {
-                        showCamera = true
-                        //showGallery = true
-                    }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            if (viewState.loadingState == LoadingState.LOADED) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    Text("Submit entry")
+                    Button(
+                        onClick = {
+                            showCamera = true
+                            //showGallery = true
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.camera),
+                            contentDescription = null,
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(text = stringResource(Res.string.share_your_work))
+                    }
                 }
             }
         }

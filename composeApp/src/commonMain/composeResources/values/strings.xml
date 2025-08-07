@@ -47,6 +47,7 @@
     <string name="prompt_settings">Prompt settings</string>
     <string name="send_us_an_email">Send us an email!</string>
     <string name="settings">Settings</string>
+    <string name="share_your_work">Share your work</string>
     <string name="solo_mode">Solo Mode</string>
     <string name="unselect_all">Unselect all</string>
     <string name="unselect_options_description">Unselect the %1$s that you don't want to see appear in the prompts anymore</string>
