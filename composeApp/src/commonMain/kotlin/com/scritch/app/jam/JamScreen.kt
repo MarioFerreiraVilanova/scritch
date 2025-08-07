@@ -19,9 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -29,9 +26,6 @@ import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
 import com.scritch.app.uicomponents.Button
 import com.scritch.app.util.dayOfWeekString
-import io.github.ismoy.imagepickerkmp.CameraPhotoHandler
-import io.github.ismoy.imagepickerkmp.GalleryPhotoHandler
-import io.github.ismoy.imagepickerkmp.GalleryPickerLauncher
 import io.github.ismoy.imagepickerkmp.ImagePickerConfig
 import io.github.ismoy.imagepickerkmp.ImagePickerLauncher
 import org.jetbrains.compose.resources.painterResource
@@ -51,8 +45,6 @@ fun JamScreen(
     viewModel: JamViewModel = koinViewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
-    var showCamera by remember { mutableStateOf(false) }
-    var capturedPhoto by remember { mutableStateOf<CameraPhotoHandler.PhotoResult?>(null) }
 
 
     Scaffold(
@@ -129,10 +121,7 @@ fun JamScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     Button(
-                        onClick = {
-                            showCamera = true
-                            //showGallery = true
-                        }
+                        onClick = viewModel::onSubmitWork
                     ) {
                         Icon(
                             painter = painterResource(Res.drawable.camera),
@@ -146,19 +135,12 @@ fun JamScreen(
         }
     }
 
-    if (showCamera) {
+    if (viewState.showCamera) {
         ImagePickerLauncher(
             config = ImagePickerConfig(
-                onPhotoCaptured = { result ->
-                    capturedPhoto = result
-                    showCamera = false
-                },
-                onError = {
-                    showCamera = false
-                },
-                onDismiss = {
-                    showCamera = false // Reset state when user doesn't select anything
-                }
+                onPhotoCaptured = viewModel::onImageCaptured,
+                onError = viewModel::onImageCaptureError,
+                onDismiss = viewModel::onImageCaptureDismiss,
             )
         )
     }

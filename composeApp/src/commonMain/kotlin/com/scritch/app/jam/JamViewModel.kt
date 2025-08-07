@@ -6,6 +6,7 @@ import com.scritch.app.categories.Category
 import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.OptionState
 import com.scritch.app.prompt.PromptViewState
+import io.github.ismoy.imagepickerkmp.CameraPhotoHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -127,6 +128,40 @@ class JamViewModel(
                 promptViewState = it.promptViewState.copy(
                     selectedOption = null,
                 ),
+            )
+        }
+    }
+
+    fun onSubmitWork(){
+        mutableViewState.update {
+            it.copy(
+                showCamera = true,
+            )
+        }
+    }
+
+    fun onImageCaptureError(e: Exception){
+        mutableViewState.update {
+            it.copy(
+                showCamera = false,
+            )
+        }
+    }
+
+    fun onImageCaptured(result: CameraPhotoHandler.PhotoResult){
+        //TODO save the image somewhere
+        mutableViewState.update {
+            it.copy(
+                submission = result,
+                showCamera = false,
+            )
+        }
+    }
+
+    fun onImageCaptureDismiss(){
+        mutableViewState.update {
+            it.copy(
+                showCamera = false,
             )
         }
     }
