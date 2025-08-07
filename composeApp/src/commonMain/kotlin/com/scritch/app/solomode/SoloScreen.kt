@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,6 +35,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
+import com.scritch.app.uicomponents.Button
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -170,6 +170,5 @@ private fun PromptButton(
             Text(text = stringResource(Res.string.generate_prompt))
         },
         onClick = onClick,
-        shape = MaterialTheme.shapes.small
     )
 }

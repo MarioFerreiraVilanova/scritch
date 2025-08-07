@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -25,9 +24,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
+import com.scritch.app.uicomponents.Button
 import com.scritch.app.util.dayOfWeekString
+import io.github.ismoy.imagepickerkmp.CameraPhotoHandler
 import io.github.ismoy.imagepickerkmp.GalleryPhotoHandler
 import io.github.ismoy.imagepickerkmp.GalleryPickerLauncher
+import io.github.ismoy.imagepickerkmp.ImagePickerConfig
+import io.github.ismoy.imagepickerkmp.ImagePickerLauncher
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -45,6 +48,9 @@ fun JamScreen(
     val viewState by viewModel.viewState.collectAsState()
     var showGallery by remember { mutableStateOf(false) }
     var selectedImages by remember { mutableStateOf<List<GalleryPhotoHandler.PhotoResult>>(emptyList()) }
+    var showCamera by remember { mutableStateOf(false) }
+    var capturedPhoto by remember { mutableStateOf<CameraPhotoHandler.PhotoResult?>(null) }
+
 
     Scaffold(
         modifier = modifier,
@@ -116,7 +122,8 @@ fun JamScreen(
             item {
                 Button(
                     onClick = {
-                        showGallery = true
+                        showCamera = true
+                        //showGallery = true
                     }
                 ) {
                     Text("Submit entry")
@@ -140,6 +147,23 @@ fun JamScreen(
             },
             allowMultiple = true, // False for single selection
             mimeTypes = listOf("image/jpeg", "image/png") // Optional: filter by type
+        )
+    }
+
+    if (showCamera) {
+        ImagePickerLauncher(
+            config = ImagePickerConfig(
+                onPhotoCaptured = { result ->
+                    capturedPhoto = result
+                    showCamera = false
+                },
+                onError = {
+                    showCamera = false
+                },
+                onDismiss = {
+                    showCamera = false // Reset state when user doesn't select anything
+                }
+            )
         )
     }
 

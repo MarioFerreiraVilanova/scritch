@@ -4,7 +4,9 @@ import dev.gitlive.firebase.firestore.DocumentSnapshot
 import dev.gitlive.firebase.firestore.Timestamp
 import dev.gitlive.firebase.firestore.toMilliseconds
 import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 data class JamDto(
     val id: String,
     val constraint: String?,

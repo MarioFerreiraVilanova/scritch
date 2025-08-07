@@ -23,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.scritch.app.settings.getAppVersionWithBuildNumber
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
@@ -31,7 +30,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.about
 import scritch.composeapp.generated.resources.app_name
-import scritch.composeapp.generated.resources.back_to_home
 import scritch.composeapp.generated.resources.back_to_settings
 import scritch.composeapp.generated.resources.concept_and_design
 import scritch.composeapp.generated.resources.development
