@@ -51,8 +51,6 @@ fun JamScreen(
     viewModel: JamViewModel = koinViewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
-    var showGallery by remember { mutableStateOf(false) }
-    var selectedImages by remember { mutableStateOf<List<GalleryPhotoHandler.PhotoResult>>(emptyList()) }
     var showCamera by remember { mutableStateOf(false) }
     var capturedPhoto by remember { mutableStateOf<CameraPhotoHandler.PhotoResult?>(null) }
 
@@ -146,24 +144,6 @@ fun JamScreen(
                 }
             }
         }
-    }
-
-    if (showGallery) {
-        GalleryPickerLauncher(
-            onPhotosSelected = { photos ->
-                selectedImages = photos
-                showGallery = false
-            },
-            onError = { error ->
-                showGallery = false
-            },
-            onDismiss = {
-                println("User cancelled or dismissed the picker")
-                showGallery = false // Reset state when user doesn't select anything
-            },
-            allowMultiple = true, // False for single selection
-            mimeTypes = listOf("image/jpeg", "image/png") // Optional: filter by type
-        )
     }
 
     if (showCamera) {
