@@ -8,6 +8,7 @@ androidx-lifecycle = "2.8.2"
 androidx-navigation-compose = "2.8.0-alpha10"
 compose-plugin = "1.6.11"
 htmlconverter = "1.0.3"
+image-picker-kmp = "1.0.1"
 kotlin = "2.1.20"
 kotlinx-datetime = "0.6.0"
 kotlinx-serialization-json = "1.7.3"
@@ -23,9 +24,10 @@ androidx-navigation-compose = { group = "org.jetbrains.androidx.navigation", nam
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+digitalia-htmlconverter = { group = "be.digitalia.compose.htmlconverter", name = "htmlconverter", version.ref = "htmlconverter" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
-digitalia-htmlconverter = { group = "be.digitalia.compose.htmlconverter", name = "htmlconverter", version.ref = "htmlconverter" }
+image-picker-kmp = { group = "io.github.ismoy", name = "imagepickerkmp", version.ref = "image-picker-kmp" }
 
 #Gitlive
 gitlive-firebase-kotlin-crashlytics = { module = "dev.gitlive:firebase-crashlytics", version.ref = "firebase-gitlive-sdk" }

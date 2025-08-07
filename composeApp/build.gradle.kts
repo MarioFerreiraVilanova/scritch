@@ -77,6 +77,7 @@ kotlin {
             implementation(libs.gitlive.firebase.kotlin.auth)
             implementation(libs.gitlive.firebase.kotlin.firestore)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.image.picker.kmp)
             api(libs.gitlive.firebase.kotlin.crashlytics)
             // Koin
             api(libs.koin.core)
