@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -21,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
@@ -28,6 +31,8 @@ import com.scritch.app.uicomponents.Button
 import com.scritch.app.util.dayOfWeekString
 import io.github.ismoy.imagepickerkmp.ImagePickerConfig
 import io.github.ismoy.imagepickerkmp.ImagePickerLauncher
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -116,9 +121,13 @@ fun JamScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             if (viewState.loadingState == LoadingState.LOADED) {
-                Box(
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center,
+                    horizontalArrangement = Arrangement.spacedBy(
+                        8.dp,
+                        Alignment.CenterHorizontally
+                    ),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Button(
                         onClick = viewModel::onSubmitWork
@@ -129,6 +138,15 @@ fun JamScreen(
                         )
                         Spacer(Modifier.width(8.dp))
                         Text(text = stringResource(Res.string.share_your_work))
+                    }
+                    viewState.submission?.let { submission ->
+                        KamelImage(
+                            resource = {
+                                asyncPainterResource(submission.uri)
+                            },
+                            contentDescription = null,
+                            modifier = Modifier.size(32.dp).clip(CircleShape)
+                        )
                     }
                 }
             }

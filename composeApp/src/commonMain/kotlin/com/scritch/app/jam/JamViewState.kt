@@ -10,6 +10,7 @@ data class JamViewState (
     val endDate: LocalDateTime?,
     val showCamera: Boolean,
     val submission: CameraPhotoHandler.PhotoResult?,
+    val showPreview: Boolean,
 ){
     companion object {
         val EMPTY = JamViewState(
@@ -18,6 +19,7 @@ data class JamViewState (
             endDate = null,
             showCamera = false,
             submission = null,
+            showPreview = false,
         )
     }
 }
