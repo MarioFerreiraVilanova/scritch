@@ -9,8 +9,7 @@ data class JamViewState (
     val promptViewState: PromptViewState,
     val endDate: LocalDateTime?,
     val showCamera: Boolean,
-    val submission: CameraPhotoHandler.PhotoResult?,
-    val showPreview: Boolean,
+    val submissionState: SubmissionViewState,
 ){
     companion object {
         val EMPTY = JamViewState(
@@ -18,8 +17,7 @@ data class JamViewState (
             promptViewState = PromptViewState.EMPTY,
             endDate = null,
             showCamera = false,
-            submission = null,
-            showPreview = false,
+            submissionState = SubmissionViewState.NotSubmitted,
         )
     }
 }

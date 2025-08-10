@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
@@ -121,34 +122,10 @@ fun JamScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             if (viewState.loadingState == LoadingState.LOADED) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(
-                        8.dp,
-                        Alignment.CenterHorizontally
-                    ),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Button(
-                        onClick = viewModel::onSubmitWork
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.camera),
-                            contentDescription = null,
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(text = stringResource(Res.string.share_your_work))
-                    }
-                    viewState.submission?.let { submission ->
-                        KamelImage(
-                            resource = {
-                                asyncPainterResource(submission.uri)
-                            },
-                            contentDescription = null,
-                            modifier = Modifier.size(32.dp).clip(CircleShape)
-                        )
-                    }
-                }
+                SubmissionButtons(
+                    viewState = viewState.submissionState,
+                    onSubmitWork = viewModel::onSubmitWork,
+                )
             }
         }
     }
@@ -167,4 +144,43 @@ fun JamScreen(
         viewState = viewState.promptViewState,
         onTipDisplayed = viewModel::onTipDisplayed,
     )
+}
+
+@Composable
+private fun SubmissionButtons (
+    viewState: SubmissionViewState,
+    onSubmitWork: () -> Unit,
+){
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(
+            8.dp,
+            Alignment.CenterHorizontally
+        ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Button(
+            onClick = onSubmitWork
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.camera),
+                contentDescription = null,
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(text = stringResource(Res.string.share_your_work))
+        }
+        if (viewState is SubmissionViewState.ImageTaken){
+            Box(
+                modifier = Modifier.size(40.dp).clip(CircleShape)
+            ){
+                KamelImage(
+                    resource = {
+                        asyncPainterResource(viewState.image.uri)
+                    },
+                    contentDescription = null,
+                    modifier = Modifier.scale(1.5f)
+                )
+            }
+        }
+    }
 }

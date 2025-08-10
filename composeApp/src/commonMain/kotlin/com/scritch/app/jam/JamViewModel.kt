@@ -33,7 +33,7 @@ class JamViewModel(
     private suspend fun loadJamData() {
         mutableViewState.update {
             it.copy(
-                loadingState = when (it.loadingState){
+                loadingState = when (it.loadingState) {
                     LoadingState.LOADING -> LoadingState.LOADING
                     LoadingState.LOADED -> LoadingState.REFRESHING
                     LoadingState.NO_JAM -> LoadingState.REFRESHING
@@ -132,7 +132,7 @@ class JamViewModel(
         }
     }
 
-    fun onSubmitWork(){
+    fun onSubmitWork() {
         mutableViewState.update {
             it.copy(
                 showCamera = true,
@@ -140,7 +140,7 @@ class JamViewModel(
         }
     }
 
-    fun onImageCaptureError(e: Exception){
+    fun onImageCaptureError(e: Exception) {
         mutableViewState.update {
             it.copy(
                 showCamera = false,
@@ -148,17 +148,20 @@ class JamViewModel(
         }
     }
 
-    fun onImageCaptured(result: CameraPhotoHandler.PhotoResult){
+    fun onImageCaptured(result: CameraPhotoHandler.PhotoResult) {
         //TODO save the image somewhere
         mutableViewState.update {
             it.copy(
-                submission = result,
+                submissionState = SubmissionViewState.ImageTaken(
+                    image = result,
+                    uploadStatus = SubmissionUploadState.Uploading(null),
+                ),
                 showCamera = false,
             )
         }
     }
 
-    fun onImageCaptureDismiss(){
+    fun onImageCaptureDismiss() {
         mutableViewState.update {
             it.copy(
                 showCamera = false,
