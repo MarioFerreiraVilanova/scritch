@@ -10,6 +10,7 @@ data class JamViewState (
     val endDate: LocalDateTime?,
     val showCamera: Boolean,
     val submissionState: SubmissionViewState,
+    val dialog: JamScreenDialog?,
 ){
     companion object {
         val EMPTY = JamViewState(
@@ -18,6 +19,7 @@ data class JamViewState (
             endDate = null,
             showCamera = false,
             submissionState = SubmissionViewState.NotSubmitted,
+            dialog = null,
         )
     }
 }
@@ -27,4 +29,8 @@ enum class LoadingState {
     LOADED,
     NO_JAM,
     REFRESHING,
+}
+
+enum class JamScreenDialog {
+    SubmissionPreview,
 }

@@ -14,6 +14,7 @@ kotlin = "2.2.0"
 kotlinx-datetime = "0.7.1"
 kotlinx-serialization-json = "1.9.0"
 koin = "4.1.0"
+material-icons = "1.7.3"
 #Gradle
 gradlePlugins-crashlytics = "3.0.5"
 gradlePlugins-google-services = "4.4.3"
@@ -30,6 +31,7 @@ kamel-image = { group = "media.kamel", name = "kamel-image-default", version.ref
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 image-picker-kmp = { group = "io.github.ismoy", name = "imagepickerkmp", version.ref = "image-picker-kmp" }
+material-icons-extended = { group = "org.jetbrains.compose.material", name = "material-icons-extended", version.ref = "material-icons" }
 
 #Gitlive
 gitlive-firebase-kotlin-crashlytics = { module = "dev.gitlive:firebase-crashlytics", version.ref = "firebase-gitlive-sdk" }

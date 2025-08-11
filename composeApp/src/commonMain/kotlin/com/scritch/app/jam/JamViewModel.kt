@@ -140,6 +140,31 @@ class JamViewModel(
         }
     }
 
+    fun onRemoveSubmission(){
+        //TODO show a dialog asking for confirmation first
+        mutableViewState.update {
+            it.copy(
+                submissionState = SubmissionViewState.NotSubmitted,
+            )
+        }
+    }
+
+    fun onShowPreview(){
+        mutableViewState.update {
+            it.copy(
+                dialog = JamScreenDialog.SubmissionPreview,
+            )
+        }
+    }
+
+    fun onDismissDialog(){
+        mutableViewState.update {
+            it.copy(
+                dialog = null,
+            )
+        }
+    }
+
     fun onImageCaptureError(e: Exception) {
         mutableViewState.update {
             it.copy(

@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -23,9 +26,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
 import com.scritch.app.uicomponents.Button
@@ -125,6 +128,8 @@ fun JamScreen(
                 SubmissionButtons(
                     viewState = viewState.submissionState,
                     onSubmitWork = viewModel::onSubmitWork,
+                    onRemoveSubmission = viewModel::onRemoveSubmission,
+                    onShowPreview = viewModel::onShowPreview,
                 )
             }
         }
@@ -144,12 +149,27 @@ fun JamScreen(
         viewState = viewState.promptViewState,
         onTipDisplayed = viewModel::onTipDisplayed,
     )
+
+    when (viewState.dialog){
+        JamScreenDialog.SubmissionPreview -> {
+            (viewState.submissionState as? SubmissionViewState.ImageTaken)?.let { submission ->
+                SubmissionPreviewDialog(
+                    viewState = submission,
+                    onDismissRequest = viewModel::onDismissDialog,
+                    onRemoveSubmission = viewModel::onRemoveSubmission,
+                )
+            }
+        }
+        null -> {}
+    }
 }
 
 @Composable
 private fun SubmissionButtons (
     viewState: SubmissionViewState,
     onSubmitWork: () -> Unit,
+    onRemoveSubmission: () -> Unit,
+    onShowPreview: () -> Unit,
 ){
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -159,28 +179,66 @@ private fun SubmissionButtons (
         ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Button(
-            onClick = onSubmitWork
-        ) {
-            Icon(
-                painter = painterResource(Res.drawable.camera),
-                contentDescription = null,
-            )
-            Spacer(Modifier.width(8.dp))
-            Text(text = stringResource(Res.string.share_your_work))
-        }
-        if (viewState is SubmissionViewState.ImageTaken){
-            Box(
-                modifier = Modifier.size(40.dp).clip(CircleShape)
-            ){
-                KamelImage(
-                    resource = {
-                        asyncPainterResource(viewState.image.uri)
-                    },
-                    contentDescription = null,
-                    modifier = Modifier.scale(1.5f)
-                )
+        when (viewState){
+            is SubmissionViewState.ImageTaken -> {
+                FilledIconButton(
+                    onClick = onShowPreview,
+                ){
+                    KamelImage(
+                        resource = {
+                            asyncPainterResource(viewState.image.uri)
+                        },
+                        contentDescription = null,
+                        modifier = Modifier.scale(1.5f)
+                    )
+                }
+                FilledIconButton(
+                    onClick = onSubmitWork
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Repeat,
+                        contentDescription = null,
+                    )
+                }
+                IconButton(
+                    onClick = onRemoveSubmission,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = null,
+                    )
+                }
+            }
+            SubmissionViewState.NotSubmitted -> {
+                Button(
+                    onClick = onSubmitWork
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.camera),
+                        contentDescription = null,
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(text = stringResource(Res.string.share_your_work))
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun SubmissionPreviewDialog (
+    viewState: SubmissionViewState.ImageTaken,
+    onDismissRequest: () -> Unit,
+    onRemoveSubmission: () -> Unit,
+){
+    Dialog(
+        onDismissRequest = onDismissRequest,
+    ){
+        KamelImage(
+            resource = {
+                asyncPainterResource(viewState.image.uri)
+            },
+            contentDescription = null,
+        )
     }
 }
