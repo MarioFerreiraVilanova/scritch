@@ -221,6 +221,10 @@ private fun SubmissionButtons (
                     Text(text = stringResource(Res.string.share_your_work))
                 }
             }
+
+            is SubmissionViewState.Submitted -> {
+
+            }
         }
     }
 }

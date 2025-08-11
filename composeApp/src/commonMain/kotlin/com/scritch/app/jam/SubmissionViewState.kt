@@ -8,6 +8,9 @@ sealed class SubmissionViewState {
         val image: CameraPhotoHandler.PhotoResult,
         val uploadStatus: SubmissionUploadState
     ) : SubmissionViewState()
+    data class Submitted(
+        val imageUrl: String,
+    ) : SubmissionViewState()
 }
 
 sealed class SubmissionUploadState {

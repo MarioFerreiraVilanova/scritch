@@ -7,7 +7,6 @@ import dev.gitlive.firebase.firestore.Timestamp
 import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.storage.storage
 import dev.gitlive.firebase.storage.storageMetadata
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 private const val JAM_COLLECTION = "weekly_jam"
@@ -39,9 +38,8 @@ class JamRepository {
         caption: String? = null,
         mimeType: String = "image/jpeg",
         onProgress: ((Int) -> Unit)? = null
-    ): String {
-        val ts = Clock.System.now().toEpochMilliseconds()
-        val storagePath = "weekly_jam/$jamId/$uid/$ts.jpg"
+    ): SubmissionDto {
+        val storagePath = "weekly_jam/$jamId/$uid.jpg"
 
         val ref = Firebase.storage.reference(storagePath)
         val file = storageFileFromString(pathOrUri)
@@ -59,21 +57,22 @@ class JamRepository {
         val downloadUrl = ref.getDownloadUrl()
 
         // Write/merge submission metadata (doc id == uid → one per user per week)
+        val submission = SubmissionDto(
+            userId = uid,
+            storagePath = storagePath,
+            imageUrl = downloadUrl,
+            caption = caption,
+            createdAt = serverTimestamp
+        )
         Firebase.firestore
             .collection("weekly_jam").document(jamId)
             .collection("submissions").document(uid)
             .set(
-                mapOf(
-                    "userId" to uid,
-                    "storagePath" to storagePath,
-                    "imageUrl" to downloadUrl,
-                    "caption" to caption,
-                    "createdAt" to serverTimestamp,
-                ),
-                merge = true
+                submission,
+                merge = false,
             )
 
         onProgress?.invoke(100)
-        return downloadUrl
+        return submission
     }
 }

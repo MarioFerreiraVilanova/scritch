@@ -203,7 +203,7 @@ class JamViewModel(
                     showCamera = false,
                 )
             }
-            jamRepository.submitWeeklyJamImageResumable(
+            val submission = jamRepository.submitWeeklyJamImageResumable(
                 jamId = viewState.value.jamId ?: return,
                 uid = Firebase.auth.currentUser?.uid ?: return,
                 pathOrUri = image.uri,
@@ -218,15 +218,15 @@ class JamViewModel(
                     }
                 }
             )
+
             mutableViewState.update {
                 it.copy(
-                    submissionState = SubmissionViewState.ImageTakenLocally(
-                        image = image,
-                        uploadStatus = SubmissionUploadState.Success,
+                    submissionState = SubmissionViewState.Submitted(
+                        imageUrl = submission.imageUrl ?: throw IllegalStateException("Missing image url"),
                     )
                 )
             }
-        }catch (exception: IllegalStateException){
+        }catch (exception: Exception){
             mutableViewState.update {
                 it.copy(
                     submissionState = SubmissionViewState.ImageTakenLocally(
