@@ -4,7 +4,7 @@ import io.github.ismoy.imagepickerkmp.CameraPhotoHandler
 
 sealed class SubmissionViewState {
     object NotSubmitted : SubmissionViewState()
-    data class ImageTaken(
+    data class ImageTakenLocally(
         val image: CameraPhotoHandler.PhotoResult,
         val uploadStatus: SubmissionUploadState
     ) : SubmissionViewState()

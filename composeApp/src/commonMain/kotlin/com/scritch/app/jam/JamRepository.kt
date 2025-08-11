@@ -2,6 +2,7 @@ package com.scritch.app.jam
 
 import com.scritch.app.util.storageFileFromString
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.firestore.FieldValue.Companion.serverTimestamp
 import dev.gitlive.firebase.firestore.Timestamp
 import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.storage.storage
@@ -67,7 +68,7 @@ class JamRepository {
                     "storagePath" to storagePath,
                     "imageUrl" to downloadUrl,
                     "caption" to caption,
-                    //"createdAt" to serverTimestamp()
+                    "createdAt" to serverTimestamp,
                 ),
                 merge = true
             )

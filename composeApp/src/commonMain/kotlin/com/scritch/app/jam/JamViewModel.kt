@@ -6,6 +6,8 @@ import com.scritch.app.categories.Category
 import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.OptionState
 import com.scritch.app.prompt.PromptViewState
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.auth
 import io.github.ismoy.imagepickerkmp.CameraPhotoHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -93,6 +95,7 @@ class JamViewModel(
             mutableViewState.update {
                 it.copy(
                     loadingState = LoadingState.LOADED,
+                    jamId = jamDto.id,
                     endDate = jamDto.endDate?.toLocalDateTime(TimeZone.currentSystemDefault()),
                     promptViewState = PromptViewState(
                         topic = topic,
@@ -174,15 +177,8 @@ class JamViewModel(
     }
 
     fun onImageCaptured(result: CameraPhotoHandler.PhotoResult) {
-        //TODO save the image somewhere
-        mutableViewState.update {
-            it.copy(
-                submissionState = SubmissionViewState.ImageTaken(
-                    image = result,
-                    uploadStatus = SubmissionUploadState.Uploading(null),
-                ),
-                showCamera = false,
-            )
+        viewModelScope.launch {
+            uploadSubmission(result)
         }
     }
 
@@ -191,6 +187,54 @@ class JamViewModel(
             it.copy(
                 showCamera = false,
             )
+        }
+    }
+
+    private suspend fun uploadSubmission(
+        image: CameraPhotoHandler.PhotoResult,
+    ){
+        try{
+            mutableViewState.update {
+                it.copy(
+                    submissionState = SubmissionViewState.ImageTakenLocally(
+                        image = image,
+                        uploadStatus = SubmissionUploadState.Uploading(null),
+                    ),
+                    showCamera = false,
+                )
+            }
+            jamRepository.submitWeeklyJamImageResumable(
+                jamId = viewState.value.jamId ?: return,
+                uid = Firebase.auth.currentUser?.uid ?: return,
+                pathOrUri = image.uri,
+                onProgress = { pct ->
+                    mutableViewState.update {
+                        it.copy(
+                            submissionState = SubmissionViewState.ImageTakenLocally(
+                                image = image,
+                                uploadStatus = SubmissionUploadState.Uploading(pct.toFloat()),
+                            )
+                        )
+                    }
+                }
+            )
+            mutableViewState.update {
+                it.copy(
+                    submissionState = SubmissionViewState.ImageTakenLocally(
+                        image = image,
+                        uploadStatus = SubmissionUploadState.Success,
+                    )
+                )
+            }
+        }catch (exception: IllegalStateException){
+            mutableViewState.update {
+                it.copy(
+                    submissionState = SubmissionViewState.ImageTakenLocally(
+                        image = image,
+                        uploadStatus = SubmissionUploadState.Error(exception),
+                    )
+                )
+            }
         }
     }
 }

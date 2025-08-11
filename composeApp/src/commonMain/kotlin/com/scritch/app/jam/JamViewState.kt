@@ -6,6 +6,7 @@ import kotlinx.datetime.LocalDateTime
 
 data class JamViewState (
     val loadingState: LoadingState,
+    val jamId: String?,
     val promptViewState: PromptViewState,
     val endDate: LocalDateTime?,
     val showCamera: Boolean,
@@ -16,6 +17,7 @@ data class JamViewState (
         val EMPTY = JamViewState(
             loadingState = LoadingState.LOADING,
             promptViewState = PromptViewState.EMPTY,
+            jamId = null,
             endDate = null,
             showCamera = false,
             submissionState = SubmissionViewState.NotSubmitted,

@@ -152,7 +152,7 @@ fun JamScreen(
 
     when (viewState.dialog){
         JamScreenDialog.SubmissionPreview -> {
-            (viewState.submissionState as? SubmissionViewState.ImageTaken)?.let { submission ->
+            (viewState.submissionState as? SubmissionViewState.ImageTakenLocally)?.let { submission ->
                 SubmissionPreviewDialog(
                     viewState = submission,
                     onDismissRequest = viewModel::onDismissDialog,
@@ -180,7 +180,7 @@ private fun SubmissionButtons (
         verticalAlignment = Alignment.CenterVertically,
     ) {
         when (viewState){
-            is SubmissionViewState.ImageTaken -> {
+            is SubmissionViewState.ImageTakenLocally -> {
                 FilledIconButton(
                     onClick = onShowPreview,
                 ){
@@ -227,7 +227,7 @@ private fun SubmissionButtons (
 
 @Composable
 private fun SubmissionPreviewDialog (
-    viewState: SubmissionViewState.ImageTaken,
+    viewState: SubmissionViewState.ImageTakenLocally,
     onDismissRequest: () -> Unit,
     onRemoveSubmission: () -> Unit,
 ){
