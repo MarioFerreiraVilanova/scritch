@@ -75,4 +75,67 @@ class JamRepository {
         onProgress?.invoke(100)
         return submission
     }
+
+    /**
+     * Deletes the user's weekly jam submission:
+     * - Storage: weekly_jam/{jamId}/{uid}.jpg
+     * - Firestore: /weekly_jam/{jamId}/submissions/{uid}
+     *
+     * Works from shared (common) code with GitLive SDK.
+     * TODO this code should just delete the document in firebase, then a trigger should delete the file from storage
+     */
+    suspend fun deleteWeeklyJamSubmission(
+        jamId: String,
+        uid: String
+    ) {
+        val storagePath = "weekly_jam/$jamId/$uid.jpg"
+        val storageRef = Firebase.storage.reference(storagePath)
+        val docRef = Firebase.firestore
+            .collection("weekly_jam").document(jamId)
+            .collection("submissions").document(uid)
+
+        var storageOk = false
+        var docOk = false
+        var storageErr: Throwable? = null
+        var docErr: Throwable? = null
+
+        // 1) Delete Storage object (ignore not-found)
+        try {
+            storageRef.delete()
+            storageOk = true
+        } catch (t: Throwable) {
+            // Many SDKs surface 404 as an exception; treat it as fine.
+            val msg = t.message?.lowercase() ?: ""
+            if ("object does not exist" in msg || "not found" in msg || "404" in msg) {
+                storageOk = true
+            } else {
+                storageErr = t
+            }
+        }
+
+        // 2) Delete Firestore doc (ignore not-found)
+        try {
+            docRef.delete()
+            docOk = true
+        } catch (t: Throwable) {
+            val msg = t.message?.lowercase() ?: ""
+            if ("not found" in msg) {
+                docOk = true
+            } else {
+                docErr = t
+            }
+        }
+
+        // If both failed for unexpected reasons, surface a helpful error
+        if (!storageOk && !docOk) {
+            throw IllegalStateException(
+                buildString {
+                    append("Failed to delete submission. ")
+                    storageErr?.let { append("Storage error: ${it.message}. ") }
+                    docErr?.let { append("Firestore error: ${it.message}.") }
+                }
+            )
+        }
+    }
+
 }

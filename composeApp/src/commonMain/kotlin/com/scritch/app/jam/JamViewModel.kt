@@ -145,10 +145,16 @@ class JamViewModel(
 
     fun onRemoveSubmission(){
         //TODO show a dialog asking for confirmation first
-        mutableViewState.update {
-            it.copy(
-                submissionState = SubmissionViewState.NotSubmitted,
+        viewModelScope.launch {
+            jamRepository.deleteWeeklyJamSubmission(
+                jamId = viewState.value.jamId ?: return@launch,
+                uid = Firebase.auth.currentUser?.uid ?: return@launch,
             )
+            mutableViewState.update {
+                it.copy(
+                    submissionState = SubmissionViewState.NotSubmitted,
+                )
+            }
         }
     }
 
