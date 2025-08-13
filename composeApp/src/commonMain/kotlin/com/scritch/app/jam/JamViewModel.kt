@@ -91,7 +91,17 @@ class JamViewModel(
                     category = Category.Constraint,
                     optionId = constraintId,
                 )
-            }?.let { constraintDto -> OptionState.fromDto(constraintDto, false) }
+            }?.let { constraintDto ->
+                OptionState.fromDto(constraintDto, false)
+            }
+
+            val submission = Firebase.auth.currentUser?.uid?.let { uid ->
+                jamRepository.getUserSubmission(
+                    jamId = jamDto.id,
+                    uid = Firebase.auth.currentUser?.uid ?: return,
+                )
+            }
+
             mutableViewState.update {
                 it.copy(
                     loadingState = LoadingState.LOADED,
@@ -103,7 +113,14 @@ class JamViewModel(
                         support = support,
                         constraint = constraint,
                         selectedOption = null,
-                    )
+                    ),
+                    submissionState = if (submission == null || submission.imageUrl == null) {
+                        SubmissionViewState.NotSubmitted
+                    } else {
+                        SubmissionViewState.Submitted(
+                            imageUrl = submission.imageUrl
+                        )
+                    }
                 )
             }
         }

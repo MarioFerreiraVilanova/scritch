@@ -2,7 +2,7 @@ package com.scritch.app.jam
 
 import com.scritch.app.util.storageFileFromString
 import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.firestore.FieldValue.Companion.serverTimestamp
+import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.Timestamp
 import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.storage.storage
@@ -10,6 +10,7 @@ import dev.gitlive.firebase.storage.storageMetadata
 import kotlin.time.ExperimentalTime
 
 private const val JAM_COLLECTION = "weekly_jam"
+private const val SUBMISSIONS_COLLECTION = "submissions"
 
 class JamRepository {
 
@@ -39,7 +40,7 @@ class JamRepository {
         mimeType: String = "image/jpeg",
         onProgress: ((Int) -> Unit)? = null
     ): SubmissionDto {
-        val storagePath = "weekly_jam/$jamId/$uid.jpg"
+        val storagePath = "$JAM_COLLECTION/$jamId/$uid.jpg"
 
         val ref = Firebase.storage.reference(storagePath)
         val file = storageFileFromString(pathOrUri)
@@ -62,14 +63,21 @@ class JamRepository {
             storagePath = storagePath,
             imageUrl = downloadUrl,
             caption = caption,
-            createdAt = serverTimestamp
+            createdAt = null,
         )
         Firebase.firestore
-            .collection("weekly_jam").document(jamId)
+            .collection(JAM_COLLECTION).document(jamId)
             .collection("submissions").document(uid)
             .set(
                 submission,
                 merge = false,
+            )
+
+        Firebase.firestore
+            .collection(JAM_COLLECTION).document(jamId)
+            .collection("submissions").document(uid)
+            .update(
+                "createdAt" to FieldValue.serverTimestamp,
             )
 
         onProgress?.invoke(100)
@@ -88,11 +96,11 @@ class JamRepository {
         jamId: String,
         uid: String
     ) {
-        val storagePath = "weekly_jam/$jamId/$uid.jpg"
+        val storagePath = "$JAM_COLLECTION/$jamId/$uid.jpg"
         val storageRef = Firebase.storage.reference(storagePath)
         val docRef = Firebase.firestore
-            .collection("weekly_jam").document(jamId)
-            .collection("submissions").document(uid)
+            .collection(JAM_COLLECTION).document(jamId)
+            .collection(SUBMISSIONS_COLLECTION).document(uid)
 
         var storageOk = false
         var docOk = false
@@ -135,6 +143,24 @@ class JamRepository {
                     docErr?.let { append("Firestore error: ${it.message}.") }
                 }
             )
+        }
+    }
+
+    suspend fun getUserSubmission(
+        jamId: String,
+        uid: String,
+    ): SubmissionDto? {
+        val docRef = Firebase.firestore
+            .collection(JAM_COLLECTION)
+            .document(jamId)
+            .collection(SUBMISSIONS_COLLECTION)
+            .document(uid)
+
+        val snapshot = docRef.get()
+        return if (snapshot.exists) {
+            snapshot.data<SubmissionDto>()
+        } else {
+            null
         }
     }
 

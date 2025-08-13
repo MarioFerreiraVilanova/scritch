@@ -125,7 +125,7 @@ fun JamScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             if (viewState.loadingState == LoadingState.LOADED) {
-                SubmissionButtons(
+                SubmissionState(
                     viewState = viewState.submissionState,
                     onSubmitWork = viewModel::onSubmitWork,
                     onRemoveSubmission = viewModel::onRemoveSubmission,
@@ -165,7 +165,7 @@ fun JamScreen(
 }
 
 @Composable
-private fun SubmissionButtons (
+private fun SubmissionState (
     viewState: SubmissionViewState,
     onSubmitWork: () -> Unit,
     onRemoveSubmission: () -> Unit,
