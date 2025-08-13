@@ -1,5 +1,6 @@
 package com.scritch.app.jam
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,9 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Try
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
@@ -31,7 +35,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -157,27 +160,42 @@ fun JamScreen(
         onTipDisplayed = viewModel::onTipDisplayed,
     )
 
-    when (viewState.dialog){
+    when (viewState.dialog) {
         JamScreenDialog.SubmissionPreview -> {
             (viewState.submissionState as? SubmissionViewState.Submitted)?.let { submission ->
                 SubmissionPreviewDialog(
                     viewState = submission,
                     onDismissRequest = viewModel::onDismissDialog,
+                    onRetakeSubmission = viewModel::onSubmitWork,
                     onRemoveSubmission = viewModel::onRemoveSubmission,
                 )
             }
         }
+
         null -> {}
     }
 }
 
 @Composable
-private fun SubmissionState (
+private fun SubmissionState(
     viewState: SubmissionViewState,
     onSubmitWork: () -> Unit,
     onRetry: () -> Unit,
     onShowPreview: () -> Unit,
-){
+) {
+    val animatedProgress by animateFloatAsState(
+        targetValue = when (viewState) {
+            is SubmissionViewState.ImageTakenLocally -> {
+                when (viewState.uploadStatus) {
+                    is SubmissionUploadState.Uploading -> viewState.uploadStatus.progress ?: 0f
+                    SubmissionUploadState.Success -> 1f
+                    else -> 0f
+                }
+            }
+
+            else -> 0f
+        }
+    )
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(
@@ -186,13 +204,13 @@ private fun SubmissionState (
         ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        when (viewState){
+        when (viewState) {
             is SubmissionViewState.ImageTakenLocally -> {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                ){
-                    when (viewState.uploadStatus){
+                ) {
+                    when (viewState.uploadStatus) {
                         is SubmissionUploadState.Error -> FilledIconButton(
                             onClick = onRetry,
                         ) {
@@ -201,22 +219,26 @@ private fun SubmissionState (
                                 contentDescription = null,
                             )
                         }
+
                         SubmissionUploadState.Success -> CircularProgressIndicator()
                         is SubmissionUploadState.Uploading -> CircularProgressIndicator(
-                            progress = { viewState.uploadStatus.progress ?: 0f },
+                            progress = {
+                                animatedProgress
+                            },
                         )
                     }
                     Text(
-                        text = when (viewState.uploadStatus){
+                        text = when (viewState.uploadStatus) {
                             is SubmissionUploadState.Error -> "Upload failed"
                             SubmissionUploadState.Success -> "Upload complete."
-                            is SubmissionUploadState.Uploading -> "Uploading your submission..."
+                            is SubmissionUploadState.Uploading -> "Uploading your image..."
                         },
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
                 }
             }
+
             SubmissionViewState.NotSubmitted -> {
                 Button(
                     onClick = onSubmitWork
@@ -231,26 +253,19 @@ private fun SubmissionState (
             }
 
             is SubmissionViewState.Submitted -> {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ){
+                TextButton(
+                    onClick = onShowPreview
+                ) {
                     Text(
-                        text = "Submitted!",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        text = "Edit your participation",
                     )
-                    FilledIconButton(
-                        onClick = onShowPreview,
-                    ) {
-                        KamelImage(
-                            modifier = Modifier.scale(1.5f),
-                            resource = {
-                                asyncPainterResource(viewState.imageUrl)
-                            },
-                            contentDescription = null,
-                        )
-                    }
+                    Spacer(
+                        Modifier.width(8.dp)
+                    )
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = null,
+                    )
                 }
             }
         }
@@ -261,6 +276,7 @@ private fun SubmissionState (
 private fun SubmissionPreviewDialog(
     viewState: SubmissionViewState.Submitted,
     onDismissRequest: () -> Unit,
+    onRetakeSubmission: () -> Unit,
     onRemoveSubmission: () -> Unit,
 ) {
     Dialog(
@@ -298,12 +314,61 @@ private fun SubmissionPreviewDialog(
                         contentScale = ContentScale.Fit,        // don’t fill; keep aspect
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(min = 160.dp, max = 420.dp) // cap height so button stays visible
-                            .clip(MaterialTheme.shapes.medium)
+                            .heightIn(
+                                min = 160.dp,
+                                max = 420.dp
+                            ) // cap height so button stays visible
+                            .clip(MaterialTheme.shapes.medium),
+                        onLoading = { progress ->
+                            // progress in [0f..1f] or null
+                            Column(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = 160.dp, max = 420.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(
+                                    8.dp,
+                                    Alignment.CenterVertically
+                                )
+                            ) {
+                                val animatedProgress by animateFloatAsState(progress)
+                                CircularProgressIndicator(
+                                    progress = {
+                                        animatedProgress
+                                    }
+                                )
+                                Text(
+                                    text = "Loading...",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                )
+                            }
+                        }
                     )
 
+                    TextButton(onClick = onRetakeSubmission) {
+                        Text("Take a different picture")
+                        Spacer(
+                            Modifier.width(8.dp)
+                        )
+                        Icon(
+                            imageVector = Icons.Default.Repeat,
+                            contentDescription = null,
+                        )
+                    }
                     TextButton(onClick = onRemoveSubmission) {
-                        Text("Remove submission")
+                        Text(
+                            text = "Delete",
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                        Spacer(
+                            Modifier.width(8.dp)
+                        )
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error,
+                        )
                     }
                 }
             }

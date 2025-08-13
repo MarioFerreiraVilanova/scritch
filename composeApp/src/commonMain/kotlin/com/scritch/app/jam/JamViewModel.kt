@@ -155,6 +155,7 @@ class JamViewModel(
     fun onSubmitWork() {
         mutableViewState.update {
             it.copy(
+                dialog = null,
                 showCamera = true,
             )
         }
