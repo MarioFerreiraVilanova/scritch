@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Try
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.HorizontalDivider
@@ -165,13 +166,20 @@ fun JamScreen(
             (viewState.submissionState as? SubmissionViewState.Submitted)?.let { submission ->
                 SubmissionPreviewDialog(
                     viewState = submission,
-                    onDismissRequest = viewModel::onDismissDialog,
+                    onDismissRequest = {
+                        viewModel.onDismissDialog(JamScreenDialog.SubmissionPreview)
+                    },
                     onRetakeSubmission = viewModel::onSubmitWork,
                     onRemoveSubmission = viewModel::onRemoveSubmission,
                 )
             }
         }
-
+        JamScreenDialog.SubmissionDeleteConfirmation -> SubmissionDeleteConfirmationDialog(
+            onDismissRequest = {
+                viewModel.onDismissDialog(JamScreenDialog.SubmissionDeleteConfirmation)
+            },
+            onConfirm = viewModel::onRemoveSubmission,
+        )
         null -> {}
     }
 }
@@ -296,14 +304,13 @@ private fun SubmissionPreviewDialog(
         ) {
             Surface(
                 shape = MaterialTheme.shapes.large,
-                tonalElevation = 8.dp,
+                color = MaterialTheme.colorScheme.surfaceContainer,
                 modifier = Modifier
                     .fillMaxWidth()
                     .widthIn(max = 560.dp)                 // cap width for tablets
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(16.dp)
                         .verticalScroll(rememberScrollState()), // safety if content gets tall
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -311,14 +318,13 @@ private fun SubmissionPreviewDialog(
                     KamelImage(
                         resource = { asyncPainterResource(viewState.imageUrl) },
                         contentDescription = "Submission preview",
-                        contentScale = ContentScale.Fit,        // don’t fill; keep aspect
+                        contentScale = ContentScale.FillWidth,        // don’t fill; keep aspect
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(
                                 min = 160.dp,
                                 max = 420.dp
-                            ) // cap height so button stays visible
-                            .clip(MaterialTheme.shapes.medium),
+                            ), // cap height so button stays visible
                         onLoading = { progress ->
                             // progress in [0f..1f] or null
                             Column(
@@ -374,5 +380,31 @@ private fun SubmissionPreviewDialog(
             }
         }
     }
+}
+
+@Composable
+private fun SubmissionDeleteConfirmationDialog(
+    onDismissRequest: () -> Unit,
+    onConfirm: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = {
+            Text(text = "Delete submission")
+        },
+        text = {
+            Text(text = "Are you sure you want to delete your submission?")
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(text = "Yes, delete it")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text(text = "Cancel")
+            }
+        }
+    )
 }
 

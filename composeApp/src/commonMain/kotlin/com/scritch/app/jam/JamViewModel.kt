@@ -162,17 +162,24 @@ class JamViewModel(
     }
 
     fun onRemoveSubmission(){
-        //TODO show a dialog asking for confirmation first
-        viewModelScope.launch {
-            jamRepository.deleteWeeklyJamSubmission(
-                jamId = viewState.value.jamId ?: return@launch,
-                uid = Firebase.auth.currentUser?.uid ?: return@launch,
-            )
+        if (viewState.value.dialog != JamScreenDialog.SubmissionDeleteConfirmation) {
             mutableViewState.update {
                 it.copy(
-                    dialog = null,
-                    submissionState = SubmissionViewState.NotSubmitted,
+                    dialog = JamScreenDialog.SubmissionDeleteConfirmation,
                 )
+            }
+        } else {
+            viewModelScope.launch {
+                jamRepository.deleteWeeklyJamSubmission(
+                    jamId = viewState.value.jamId ?: return@launch,
+                    uid = Firebase.auth.currentUser?.uid ?: return@launch,
+                )
+                mutableViewState.update {
+                    it.copy(
+                        dialog = null,
+                        submissionState = SubmissionViewState.NotSubmitted,
+                    )
+                }
             }
         }
     }
@@ -193,10 +200,15 @@ class JamViewModel(
         }
     }
 
-    fun onDismissDialog(){
+    fun onDismissDialog(
+        dialog: JamScreenDialog,
+    ){
         mutableViewState.update {
             it.copy(
-                dialog = null,
+                dialog = when (dialog){
+                    JamScreenDialog.SubmissionPreview -> null
+                    JamScreenDialog.SubmissionDeleteConfirmation -> JamScreenDialog.SubmissionPreview
+                },
             )
         }
     }

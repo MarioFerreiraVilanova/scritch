@@ -35,4 +35,5 @@ enum class LoadingState {
 
 enum class JamScreenDialog {
     SubmissionPreview,
+    SubmissionDeleteConfirmation,
 }
