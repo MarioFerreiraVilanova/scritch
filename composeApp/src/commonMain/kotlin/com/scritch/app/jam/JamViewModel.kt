@@ -169,6 +169,7 @@ class JamViewModel(
             )
             mutableViewState.update {
                 it.copy(
+                    dialog = null,
                     submissionState = SubmissionViewState.NotSubmitted,
                 )
             }
@@ -243,7 +244,7 @@ class JamViewModel(
                         it.copy(
                             submissionState = SubmissionViewState.ImageTakenLocally(
                                 image = image,
-                                uploadStatus = SubmissionUploadState.Uploading(pct.toFloat()),
+                                uploadStatus = SubmissionUploadState.Uploading(pct.div(100f)),
                             )
                         )
                     }
