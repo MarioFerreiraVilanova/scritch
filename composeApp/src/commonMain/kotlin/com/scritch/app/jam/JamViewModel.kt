@@ -175,6 +175,14 @@ class JamViewModel(
         }
     }
 
+    fun onRetryUpload(){
+        (viewState.value.submissionState as? SubmissionViewState.ImageTakenLocally)?.let {
+            viewModelScope.launch {
+                uploadSubmission(it.image)
+            }
+        }
+    }
+
     fun onShowPreview(){
         mutableViewState.update {
             it.copy(
