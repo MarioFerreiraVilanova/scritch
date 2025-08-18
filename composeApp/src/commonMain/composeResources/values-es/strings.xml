@@ -60,10 +60,10 @@
     <string name="version_notes_0_7">Tema oscuro aplicado, se estilizaron los retos y se añadió el icono de la app, se corrigió el cierre de sesión</string>
     <string name="version_notes_0_8">Nueva pantalla de introducción, títulos corregidos en ajustes, nuevo formato para los consejos</string>
     <string name="version_notes_0_9">Cambios en la lógica de retos y correcciones de errores para iOS</string>
-    <string name="weekly_jam">Jam Semanal</string>
-    <string name="weekly_jam_description">¡Únete a la Jam Semanal! Un reto compartido para despertar tu creatividad y conectar con artistas de todo el mundo.</string>
-    <string name="weekly_jam_not_available">De momento no hay ningún jam activo. ¡Vuelve pronto para descubrir el próximo reto!</string>
-    <string name="weekly_jam_end_time">Esta jam acaba el %1$s a las %2$s</string>
+    <string name="weekly_jam">Scritch Semanal</string>
+    <string name="weekly_jam_description">¡Únete al Scritch Semanal! Un reto compartido para despertar tu creatividad y conectar con artistas de todo el mundo.</string>
+    <string name="weekly_jam_not_available">No hay ningun Scritch Semanal en este momento. ¡Vuelve pronto para descubrir el próximo reto!</string>
+    <string name="weekly_jam_end_time">Este Scritch acaba el %1$s a las %2$s</string>
     <string name="monday">Lunes</string>
     <string name="tuesday">Martes</string>
     <string name="wednesday">Miércoles</string>

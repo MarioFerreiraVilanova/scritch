@@ -61,10 +61,10 @@
     <string name="version_notes_0_7">Themed the app black, styled prompt and added an app icon, fixed logout</string>
     <string name="version_notes_0_8">New onboarding screen, fixed titles on setting screens, new formatting for tips</string>
     <string name="version_notes_0_9">Changes in prompt logic and bux fixes towards iOS</string>
-    <string name="weekly_jam">Weekly Jam</string>
-    <string name="weekly_jam_description">Join the Weekly Jam! A shared challenge to spark creativity and connect with artists worldwide.</string>
+    <string name="weekly_jam">Weekly Scritch</string>
+    <string name="weekly_jam_description">Join the Weekly Scritch! A shared challenge to spark creativity and connect with artists worldwide.</string>
     <string name="weekly_jam_not_available">There’s no weekly jam at the moment — check back soon for the next challenge!</string>
-    <string name="weekly_jam_end_time">This jam will end on %1$s at %2$s</string>
+    <string name="weekly_jam_end_time">This Scritch will end on %1$s at %2$s</string>
     <string name="monday">Monday</string>
     <string name="tuesday">Tuesday</string>
     <string name="wednesday">Wednesday</string>
