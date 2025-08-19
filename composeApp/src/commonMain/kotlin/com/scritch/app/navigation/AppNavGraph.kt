@@ -154,6 +154,11 @@ private fun NavGraphBuilder.authenticatedSubGraph(
         }
 
         composable<Authenticated.Camera> {
+            // Clear the chosen image file path from the previous screen
+            navController.previousBackStackEntry?.savedStateHandle?.set(
+                key = CHOSEN_IMAGE_FILE_PATH,
+                value = null,
+            )
             FullScreenCamera(
                 onPhotoCaptured = { result ->
                     navController.previousBackStackEntry?.savedStateHandle?.set(
