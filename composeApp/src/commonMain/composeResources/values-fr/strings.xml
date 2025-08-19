@@ -1,4 +1,14 @@
 <resources>
+    <!-- Weekdays -->
+    <string name="monday">Lundi</string>
+    <string name="tuesday">Mardi</string>
+    <string name="wednesday">Mercredi</string>
+    <string name="thursday">Jeudi</string>
+    <string name="friday">Vendredi</string>
+    <string name="saturday">Samedi</string>
+    <string name="sunday">Dimanche</string>
+
+    <!-- Strings -->
     <string name="about">À propos</string>
     <string name="app_name">Scritch</string>
     <string name="back">Retour</string>
@@ -64,11 +74,18 @@
     <string name="weekly_jam_description">Participe à la Scritch Hebdo ! Un défi commun pour stimuler ta créativité et te connecter avec des artistes du monde entier.</string>
     <string name="weekly_jam_not_available">Il n’y a pas de Scritch en cours cette semaine. Revenez bientôt pour découvrir le prochain défi !</string>
     <string name="weekly_jam_end_time">Cette Scritch se termine le %1$s à %2$s</string>
-    <string name="monday">Lundi</string>
-    <string name="tuesday">Mardi</string>
-    <string name="wednesday">Mercredi</string>
-    <string name="thursday">Jeudi</string>
-    <string name="friday">Vendredi</string>
-    <string name="saturday">Samedi</string>
-    <string name="sunday">Dimanche</string>
+    <string name="upload_failed">Échec du téléversement</string>
+    <string name="upload_complete">Téléversement terminé.</string>
+    <string name="uploading_your_image">Téléversement de votre image...</string>
+    <string name="edit_your_entry">Modifier votre participation</string>
+    <string name="submission_preview">Aperçu de la participation</string>
+    <string name="take_a_different_picture">Prendre une autre photo</string>
+    <string name="delete">Supprimer</string>
+    <string name="delete_entry">Supprimer la participation</string>
+    <string name="are_you_sure_delete_entry">Voulez-vous vraiment supprimer cette participation&nbsp;?</string>
+    <string name="yes_delete_it">Oui, supprimer</string>
+    <string name="cancel">Annuler</string>
+    <string name="take_a_picture">Prendre une photo</string>
+    <string name="pick_one_from_the_gallery">Choisir depuis la galerie</string>
+
 </resources>

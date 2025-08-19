@@ -59,12 +59,25 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.are_you_sure_delete_entry
 import scritch.composeapp.generated.resources.camera
+import scritch.composeapp.generated.resources.cancel
 import scritch.composeapp.generated.resources.clock
+import scritch.composeapp.generated.resources.delete
+import scritch.composeapp.generated.resources.delete_entry
+import scritch.composeapp.generated.resources.edit_your_entry
+import scritch.composeapp.generated.resources.pick_one_from_the_gallery
 import scritch.composeapp.generated.resources.share_your_work
+import scritch.composeapp.generated.resources.submission_preview
+import scritch.composeapp.generated.resources.take_a_different_picture
+import scritch.composeapp.generated.resources.take_a_picture
+import scritch.composeapp.generated.resources.upload_complete
+import scritch.composeapp.generated.resources.upload_failed
+import scritch.composeapp.generated.resources.uploading_your_image
 import scritch.composeapp.generated.resources.weekly_jam_description
 import scritch.composeapp.generated.resources.weekly_jam_end_time
 import scritch.composeapp.generated.resources.weekly_jam_not_available
+import scritch.composeapp.generated.resources.yes_delete_it
 
 @Composable
 fun JamScreen(
@@ -273,9 +286,9 @@ private fun SubmissionState(
                     }
                     Text(
                         text = when (viewState.uploadStatus) {
-                            is SubmissionUploadState.Error -> "Upload failed"
-                            SubmissionUploadState.Success -> "Upload complete."
-                            is SubmissionUploadState.Uploading -> "Uploading your image..."
+                            is SubmissionUploadState.Error -> stringResource(Res.string.upload_failed)
+                            SubmissionUploadState.Success -> stringResource(Res.string.upload_complete)
+                            is SubmissionUploadState.Uploading -> stringResource(Res.string.uploading_your_image)
                         },
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -301,7 +314,7 @@ private fun SubmissionState(
                     onClick = onShowPreview
                 ) {
                     Text(
-                        text = "Edit your entry",
+                        text = stringResource(Res.string.edit_your_entry),
                     )
                     Spacer(
                         Modifier.width(8.dp)
@@ -353,7 +366,7 @@ private fun SubmissionPreviewDialog(
                 ) {
                     KamelImage(
                         resource = { asyncPainterResource(viewState.imageUrl) },
-                        contentDescription = "Submission preview",
+                        contentDescription = stringResource(Res.string.submission_preview),
                         contentScale = ContentScale.FillWidth,        // don’t fill; keep aspect
                         modifier = Modifier
                             .fillMaxWidth()
@@ -389,7 +402,7 @@ private fun SubmissionPreviewDialog(
                     )
 
                     TextButton(onClick = onRetakeSubmission) {
-                        Text("Take a different picture")
+                        Text(stringResource(Res.string.take_a_different_picture))
                         Spacer(
                             Modifier.width(8.dp)
                         )
@@ -400,7 +413,7 @@ private fun SubmissionPreviewDialog(
                     }
                     TextButton(onClick = onRemoveSubmission) {
                         Text(
-                            text = "Delete",
+                            text = stringResource(Res.string.delete),
                             color = MaterialTheme.colorScheme.error,
                         )
                         Spacer(
@@ -426,19 +439,19 @@ private fun SubmissionDeleteConfirmationDialog(
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
-            Text(text = "Delete entry")
+            Text(text = stringResource(Res.string.delete_entry))
         },
         text = {
-            Text(text = "Are you sure you want to delete your entry?")
+            Text(text = stringResource(Res.string.are_you_sure_delete_entry))
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text(text = "Yes, delete it")
+                Text(text = stringResource(Res.string.yes_delete_it))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text(text = "Cancel")
+                Text(text = stringResource(Res.string.cancel))
             }
         }
     )
@@ -475,7 +488,7 @@ private fun ImageSourcePickerSheet(
             Column {
                 ListItem(
                     headlineContent = {
-                        Text("Take a picture")
+                        Text(stringResource(Res.string.take_a_picture))
                     },
                     leadingContent = {
                         Icon(
@@ -492,7 +505,7 @@ private fun ImageSourcePickerSheet(
                 )
                 ListItem(
                     headlineContent = {
-                        Text("Pick one from gallery")
+                        Text(stringResource(Res.string.pick_one_from_the_gallery))
                     },
                     leadingContent = {
                         Icon(

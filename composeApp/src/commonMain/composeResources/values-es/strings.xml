@@ -1,4 +1,14 @@
 <resources>
+    <!-- Weekdays -->
+    <string name="monday">Lunes</string>
+    <string name="tuesday">Martes</string>
+    <string name="wednesday">Miércoles</string>
+    <string name="thursday">Jueves</string>
+    <string name="friday">Viernes</string>
+    <string name="saturday">Sábado</string>
+    <string name="sunday">Domingo</string>
+
+    <!-- Strings -->
     <string name="about">Acerca de</string>
     <string name="app_name">Scritch</string>
     <string name="back">Atrás</string>
@@ -64,11 +74,17 @@
     <string name="weekly_jam_description">¡Únete al Scritch Semanal! Un reto compartido para despertar tu creatividad y conectar con artistas de todo el mundo.</string>
     <string name="weekly_jam_not_available">No hay ningun Scritch Semanal en este momento. ¡Vuelve pronto para descubrir el próximo reto!</string>
     <string name="weekly_jam_end_time">Este Scritch acaba el %1$s a las %2$s</string>
-    <string name="monday">Lunes</string>
-    <string name="tuesday">Martes</string>
-    <string name="wednesday">Miércoles</string>
-    <string name="thursday">Jueves</string>
-    <string name="friday">Viernes</string>
-    <string name="saturday">Sábado</string>
-    <string name="sunday">Domingo</string>
+    <string name="upload_failed">Error al subir</string>
+    <string name="upload_complete">Subida completada.</string>
+    <string name="uploading_your_image">Subiendo tu imagen...</string>
+    <string name="edit_your_entry">Editar tu participación</string>
+    <string name="submission_preview">Vista previa de la participación</string>
+    <string name="take_a_different_picture">Haz otra foto</string>
+    <string name="delete">Eliminar</string>
+    <string name="delete_entry">Eliminar participación</string>
+    <string name="are_you_sure_delete_entry">¿Seguro que quieres eliminar esta participación?</string>
+    <string name="yes_delete_it">Sí, eliminar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="take_a_picture">Haz una foto</string>
+    <string name="pick_one_from_the_gallery">Elegir de la galería</string>
 </resources>
