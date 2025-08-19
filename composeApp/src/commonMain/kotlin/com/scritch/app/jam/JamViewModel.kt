@@ -155,6 +155,23 @@ class JamViewModel(
     fun onSubmitWork() {
         mutableViewState.update {
             it.copy(
+                dialog = JamScreenDialog.ImageSourceSheet,
+            )
+        }
+    }
+
+    /*fun onCameraSelectedAsSource() {
+        mutableViewState.update {
+            it.copy(
+                dialog = null,
+                showCamera = true,
+            )
+        }
+    }*/
+
+    fun onGallerySelectedAsSource() {
+        mutableViewState.update {
+            it.copy(
                 dialog = null,
                 showCamera = true,
             )
@@ -208,6 +225,7 @@ class JamViewModel(
                 dialog = when (dialog){
                     JamScreenDialog.SubmissionPreview -> null
                     JamScreenDialog.SubmissionDeleteConfirmation -> JamScreenDialog.SubmissionPreview
+                    JamScreenDialog.ImageSourceSheet -> null
                 },
             )
         }

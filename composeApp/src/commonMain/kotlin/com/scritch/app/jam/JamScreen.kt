@@ -1,6 +1,7 @@
 package com.scritch.app.jam
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,26 +17,34 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BrowseGallery
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Try
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -61,6 +70,7 @@ import scritch.composeapp.generated.resources.weekly_jam_not_available
 
 @Composable
 fun JamScreen(
+    onOpenCamera: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: JamViewModel = koinViewModel(),
 ) {
@@ -161,6 +171,15 @@ fun JamScreen(
         onTipDisplayed = viewModel::onTipDisplayed,
     )
 
+    ImageSourcePickerSheet(
+        viewState = viewState,
+        onCameraSelected = onOpenCamera,
+        onGallerySelected = {},
+        onDismissRequest = {
+            viewModel.onDismissDialog(JamScreenDialog.ImageSourceSheet)
+        }
+    )
+
     when (viewState.dialog) {
         JamScreenDialog.SubmissionPreview -> {
             (viewState.submissionState as? SubmissionViewState.Submitted)?.let { submission ->
@@ -174,12 +193,15 @@ fun JamScreen(
                 )
             }
         }
+
         JamScreenDialog.SubmissionDeleteConfirmation -> SubmissionDeleteConfirmationDialog(
             onDismissRequest = {
                 viewModel.onDismissDialog(JamScreenDialog.SubmissionDeleteConfirmation)
             },
             onConfirm = viewModel::onRemoveSubmission,
         )
+
+        JamScreenDialog.ImageSourceSheet,
         null -> {}
     }
 }
@@ -265,7 +287,7 @@ private fun SubmissionState(
                     onClick = onShowPreview
                 ) {
                     Text(
-                        text = "Edit your participation",
+                        text = "Edit your entry",
                     )
                     Spacer(
                         Modifier.width(8.dp)
@@ -390,10 +412,10 @@ private fun SubmissionDeleteConfirmationDialog(
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
-            Text(text = "Delete submission")
+            Text(text = "Delete entry")
         },
         text = {
-            Text(text = "Are you sure you want to delete your submission?")
+            Text(text = "Are you sure you want to delete your entry?")
         },
         confirmButton = {
             TextButton(onClick = onConfirm) {
@@ -406,5 +428,69 @@ private fun SubmissionDeleteConfirmationDialog(
             }
         }
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ImageSourcePickerSheet(
+    viewState: JamViewState,
+    onCameraSelected: () -> Unit,
+    onGallerySelected: () -> Unit,
+    onDismissRequest: () -> Unit,
+) {
+    val sheetState = rememberModalBottomSheetState()
+
+    LaunchedEffect(viewState.dialog){
+        if (viewState.dialog == JamScreenDialog.ImageSourceSheet){
+            sheetState.show()
+        }
+    }
+
+    LaunchedEffect(sheetState.isVisible) {
+        if (!sheetState.isVisible) {
+            onDismissRequest()
+        }
+    }
+
+    if (viewState.dialog == JamScreenDialog.ImageSourceSheet){
+        ModalBottomSheet(
+            onDismissRequest = {},
+            sheetState = sheetState,
+        ){
+            Column(){
+                ListItem (
+                    headlineContent = {
+                        Text("Take a picture")
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Default.CameraAlt,
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable(
+                        onClick = onCameraSelected
+                    ),
+                    colors = ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    ),
+                )
+                ListItem (
+                    headlineContent = {
+                        Text("Pick one from gallery")
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Default.Image,
+                            contentDescription = null,
+                        )
+                    },
+                    colors = ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    ),
+                )
+            }
+        }
+    }
 }
 

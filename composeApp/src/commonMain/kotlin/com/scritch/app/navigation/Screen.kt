@@ -11,6 +11,7 @@ import kotlinx.serialization.Serializable
 }
 @Serializable object Authenticated {
     @Serializable object About
+    @Serializable object Camera
     @Serializable object Home
     @Serializable object Settings
     @Serializable object VersionHistory

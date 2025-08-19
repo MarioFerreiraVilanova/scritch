@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.scritch.app.app.AppViewModel
 import com.scritch.app.app.AppViewState
 import com.scritch.app.home.HomeScreen
+import com.scritch.app.jam.FullScreenCamera
 import com.scritch.app.landing.LandingScreen
 import com.scritch.app.settings.SettingsScreen
 import com.scritch.app.settings.about.AboutScreen
@@ -92,6 +93,9 @@ private fun NavGraphBuilder.authenticatedSubGraph(
             HomeScreen(
                 onGoToSettings = {
                     navController.navigate(Authenticated.Settings)
+                },
+                onOpenCamera = {
+                    navController.navigate(Authenticated.Camera)
                 }
             )
         }
@@ -143,6 +147,14 @@ private fun NavGraphBuilder.authenticatedSubGraph(
                 onBackPress = {
                     navController.popBackStack()
                 }
+            )
+        }
+
+        composable<Authenticated.Camera> {
+            FullScreenCamera(
+                onPhotoCaptured = { _ -> },
+                onError = { _ -> },
+                onDismiss = {},
             )
         }
     }

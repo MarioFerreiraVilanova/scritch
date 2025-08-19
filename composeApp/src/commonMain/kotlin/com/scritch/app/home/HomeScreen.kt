@@ -34,6 +34,7 @@ import scritch.composeapp.generated.resources.zap
 @Composable
 fun HomeScreen(
     onGoToSettings: () -> Unit,
+    onOpenCamera: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val rootNavController = rememberNavController()
@@ -100,6 +101,7 @@ fun HomeScreen(
         HomeNavGraph(
             navController = rootNavController,
             onGoToSettings = onGoToSettings,
+            onOpenCamera = onOpenCamera,
             modifier = Modifier
                 .consumeWindowInsets(contentPadding)
                 .padding(contentPadding)
@@ -111,6 +113,7 @@ fun HomeScreen(
 private fun HomeNavGraph(
     navController: NavHostController,
     onGoToSettings: () -> Unit,
+    onOpenCamera: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -124,7 +127,9 @@ private fun HomeNavGraph(
             )
         }
         composable<HomeScreen.WeeklyJam> {
-            JamScreen()
+            JamScreen(
+                onOpenCamera = onOpenCamera,
+            )
         }
     }
 }
