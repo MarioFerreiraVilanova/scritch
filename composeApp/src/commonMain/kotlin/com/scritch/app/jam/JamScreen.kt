@@ -52,6 +52,7 @@ import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
 import com.scritch.app.uicomponents.Button
 import com.scritch.app.util.dayOfWeekString
+import io.github.ismoy.imagepickerkmp.GalleryPickerLauncher
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import org.jetbrains.compose.resources.painterResource
@@ -168,7 +169,7 @@ fun JamScreen(
             viewModel.onCameraSelectedAsSource()
             onOpenCamera()
         },
-        onGallerySelected = {},
+        onGallerySelected = viewModel::onGallerySelectedAsSource,
         onDismissRequest = {
             viewModel.onDismissDialog(JamScreenDialog.ImageSourceSheet)
         }
@@ -197,6 +198,24 @@ fun JamScreen(
 
         JamScreenDialog.ImageSourceSheet,
         null -> {
+        }
+
+        JamScreenDialog.GalleryPicker -> {
+            GalleryPickerLauncher(
+                allowMultiple = false,
+                onPhotosSelected = { images ->
+                    images.firstOrNull()?.let { chosenImage ->
+                        viewModel.onImageCaptured(chosenImage.uri)
+                    }
+                },
+                onDismiss = {
+                    viewModel.onDismissDialog(JamScreenDialog.GalleryPicker)
+                },
+                onError = { _ ->
+                    // TODO handle the error, maybe show a snack bar or something
+                    viewModel.onDismissDialog(JamScreenDialog.GalleryPicker)
+                }
+            )
         }
     }
 }
@@ -451,8 +470,9 @@ private fun ImageSourcePickerSheet(
         ModalBottomSheet(
             onDismissRequest = {},
             sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
         ) {
-            Column() {
+            Column {
                 ListItem(
                     headlineContent = {
                         Text("Take a picture")
@@ -482,6 +502,9 @@ private fun ImageSourcePickerSheet(
                     },
                     colors = ListItemDefaults.colors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    ),
+                    modifier = Modifier.clickable(
+                        onClick = onGallerySelected
                     ),
                 )
             }

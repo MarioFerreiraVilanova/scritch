@@ -171,7 +171,7 @@ class JamViewModel(
     fun onGallerySelectedAsSource() {
         mutableViewState.update {
             it.copy(
-                dialog = null,
+                dialog = JamScreenDialog.GalleryPicker,
             )
         }
     }
@@ -224,6 +224,7 @@ class JamViewModel(
                     JamScreenDialog.SubmissionPreview -> null
                     JamScreenDialog.SubmissionDeleteConfirmation -> JamScreenDialog.SubmissionPreview
                     JamScreenDialog.ImageSourceSheet -> null
+                    JamScreenDialog.GalleryPicker -> null
                 },
             )
         }
