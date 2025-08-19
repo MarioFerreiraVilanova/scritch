@@ -1,5 +1,6 @@
 package com.scritch.app.jam
 
+import androidx.core.uri.UriUtils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.scritch.app.categories.Category
@@ -8,7 +9,6 @@ import com.scritch.app.categories.OptionState
 import com.scritch.app.prompt.PromptViewState
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
-import io.github.ismoy.imagepickerkmp.CameraPhotoHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -160,25 +160,23 @@ class JamViewModel(
         }
     }
 
-    /*fun onCameraSelectedAsSource() {
+    fun onCameraSelectedAsSource() {
         mutableViewState.update {
             it.copy(
                 dialog = null,
-                showCamera = true,
             )
         }
-    }*/
+    }
 
     fun onGallerySelectedAsSource() {
         mutableViewState.update {
             it.copy(
                 dialog = null,
-                showCamera = true,
             )
         }
     }
 
-    fun onRemoveSubmission(){
+    fun onRemoveSubmission() {
         if (viewState.value.dialog != JamScreenDialog.SubmissionDeleteConfirmation) {
             mutableViewState.update {
                 it.copy(
@@ -201,15 +199,15 @@ class JamViewModel(
         }
     }
 
-    fun onRetryUpload(){
+    fun onRetryUpload() {
         (viewState.value.submissionState as? SubmissionViewState.ImageTakenLocally)?.let {
             viewModelScope.launch {
-                uploadSubmission(it.image)
+                uploadSubmission(it.imageUri.toString())
             }
         }
     }
 
-    fun onShowPreview(){
+    fun onShowPreview() {
         mutableViewState.update {
             it.copy(
                 dialog = JamScreenDialog.SubmissionPreview,
@@ -219,10 +217,10 @@ class JamViewModel(
 
     fun onDismissDialog(
         dialog: JamScreenDialog,
-    ){
+    ) {
         mutableViewState.update {
             it.copy(
-                dialog = when (dialog){
+                dialog = when (dialog) {
                     JamScreenDialog.SubmissionPreview -> null
                     JamScreenDialog.SubmissionDeleteConfirmation -> JamScreenDialog.SubmissionPreview
                     JamScreenDialog.ImageSourceSheet -> null
@@ -231,50 +229,34 @@ class JamViewModel(
         }
     }
 
-    fun onImageCaptureError(e: Exception) {
-        mutableViewState.update {
-            it.copy(
-                showCamera = false,
-            )
-        }
-    }
-
-    fun onImageCaptured(result: CameraPhotoHandler.PhotoResult) {
+    fun onImageCaptured(imagePath: String) {
         viewModelScope.launch {
-            uploadSubmission(result)
-        }
-    }
-
-    fun onImageCaptureDismiss() {
-        mutableViewState.update {
-            it.copy(
-                showCamera = false,
-            )
+            uploadSubmission(imagePath)
         }
     }
 
     private suspend fun uploadSubmission(
-        image: CameraPhotoHandler.PhotoResult,
-    ){
-        try{
+        imagePath: String,
+    ) {
+        val imageUri = UriUtils.parse(imagePath)
+        try {
             mutableViewState.update {
                 it.copy(
                     submissionState = SubmissionViewState.ImageTakenLocally(
-                        image = image,
+                        imageUri = imageUri,
                         uploadStatus = SubmissionUploadState.Uploading(null),
                     ),
-                    showCamera = false,
                 )
             }
             val submission = jamRepository.submitWeeklyJamImageResumable(
                 jamId = viewState.value.jamId ?: return,
                 uid = Firebase.auth.currentUser?.uid ?: return,
-                pathOrUri = image.uri,
+                pathOrUri = imagePath,
                 onProgress = { pct ->
                     mutableViewState.update {
                         it.copy(
                             submissionState = SubmissionViewState.ImageTakenLocally(
-                                image = image,
+                                imageUri = imageUri,
                                 uploadStatus = SubmissionUploadState.Uploading(pct.div(100f)),
                             )
                         )
@@ -285,15 +267,16 @@ class JamViewModel(
             mutableViewState.update {
                 it.copy(
                     submissionState = SubmissionViewState.Submitted(
-                        imageUrl = submission.imageUrl ?: throw IllegalStateException("Missing image url"),
+                        imageUrl = submission.imageUrl
+                            ?: throw IllegalStateException("Missing image url"),
                     )
                 )
             }
-        }catch (exception: Exception){
+        } catch (exception: Exception) {
             mutableViewState.update {
                 it.copy(
                     submissionState = SubmissionViewState.ImageTakenLocally(
-                        image = image,
+                        imageUri = imageUri,
                         uploadStatus = SubmissionUploadState.Error(exception),
                     )
                 )

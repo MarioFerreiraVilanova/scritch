@@ -9,7 +9,6 @@ data class JamViewState (
     val jamId: String?,
     val promptViewState: PromptViewState,
     val endDate: LocalDateTime?,
-    val showCamera: Boolean,
     val submissionState: SubmissionViewState,
     val dialog: JamScreenDialog?,
 ){
@@ -19,7 +18,6 @@ data class JamViewState (
             promptViewState = PromptViewState.EMPTY,
             jamId = null,
             endDate = null,
-            showCamera = false,
             submissionState = SubmissionViewState.NotSubmitted,
             dialog = null,
         )

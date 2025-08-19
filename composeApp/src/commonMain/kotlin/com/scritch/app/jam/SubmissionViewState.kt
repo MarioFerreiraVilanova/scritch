@@ -1,13 +1,14 @@
 package com.scritch.app.jam
 
-import io.github.ismoy.imagepickerkmp.CameraPhotoHandler
+import androidx.core.uri.Uri
 
 sealed class SubmissionViewState {
     object NotSubmitted : SubmissionViewState()
     data class ImageTakenLocally(
-        val image: CameraPhotoHandler.PhotoResult,
+        val imageUri: Uri,
         val uploadStatus: SubmissionUploadState
     ) : SubmissionViewState()
+
     data class Submitted(
         val imageUrl: String,
     ) : SubmissionViewState()
@@ -17,6 +18,7 @@ sealed class SubmissionUploadState {
     data class Uploading(
         val progress: Float?
     ) : SubmissionUploadState()
+
     data class Error(val error: Throwable) : SubmissionUploadState()
     object Success : SubmissionUploadState()
 }

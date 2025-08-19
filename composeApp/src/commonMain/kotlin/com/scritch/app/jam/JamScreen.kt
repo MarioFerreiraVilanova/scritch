@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.BrowseGallery
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -53,8 +52,6 @@ import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
 import com.scritch.app.uicomponents.Button
 import com.scritch.app.util.dayOfWeekString
-import io.github.ismoy.imagepickerkmp.ImagePickerConfig
-import io.github.ismoy.imagepickerkmp.ImagePickerLauncher
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import org.jetbrains.compose.resources.painterResource
@@ -70,12 +67,16 @@ import scritch.composeapp.generated.resources.weekly_jam_not_available
 
 @Composable
 fun JamScreen(
+    chosenImagePath: String?,
     onOpenCamera: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: JamViewModel = koinViewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
 
+    LaunchedEffect(chosenImagePath) {
+        viewModel.onImageCaptured(chosenImagePath ?: return@LaunchedEffect)
+    }
 
     Scaffold(
         modifier = modifier,
@@ -156,16 +157,6 @@ fun JamScreen(
         }
     }
 
-    if (viewState.showCamera) {
-        ImagePickerLauncher(
-            config = ImagePickerConfig(
-                onPhotoCaptured = viewModel::onImageCaptured,
-                onError = viewModel::onImageCaptureError,
-                onDismiss = viewModel::onImageCaptureDismiss,
-            )
-        )
-    }
-
     TipsSheet(
         viewState = viewState.promptViewState,
         onTipDisplayed = viewModel::onTipDisplayed,
@@ -173,7 +164,10 @@ fun JamScreen(
 
     ImageSourcePickerSheet(
         viewState = viewState,
-        onCameraSelected = onOpenCamera,
+        onCameraSelected = {
+            viewModel.onCameraSelectedAsSource()
+            onOpenCamera()
+        },
         onGallerySelected = {},
         onDismissRequest = {
             viewModel.onDismissDialog(JamScreenDialog.ImageSourceSheet)
@@ -202,7 +196,8 @@ fun JamScreen(
         )
 
         JamScreenDialog.ImageSourceSheet,
-        null -> {}
+        null -> {
+        }
     }
 }
 
@@ -440,8 +435,8 @@ private fun ImageSourcePickerSheet(
 ) {
     val sheetState = rememberModalBottomSheetState()
 
-    LaunchedEffect(viewState.dialog){
-        if (viewState.dialog == JamScreenDialog.ImageSourceSheet){
+    LaunchedEffect(viewState.dialog) {
+        if (viewState.dialog == JamScreenDialog.ImageSourceSheet) {
             sheetState.show()
         }
     }
@@ -452,13 +447,13 @@ private fun ImageSourcePickerSheet(
         }
     }
 
-    if (viewState.dialog == JamScreenDialog.ImageSourceSheet){
+    if (viewState.dialog == JamScreenDialog.ImageSourceSheet) {
         ModalBottomSheet(
             onDismissRequest = {},
             sheetState = sheetState,
-        ){
-            Column(){
-                ListItem (
+        ) {
+            Column() {
+                ListItem(
                     headlineContent = {
                         Text("Take a picture")
                     },
@@ -475,7 +470,7 @@ private fun ImageSourcePickerSheet(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
                     ),
                 )
-                ListItem (
+                ListItem(
                     headlineContent = {
                         Text("Pick one from gallery")
                     },

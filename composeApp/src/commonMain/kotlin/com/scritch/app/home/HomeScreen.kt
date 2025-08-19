@@ -36,6 +36,7 @@ fun HomeScreen(
     onGoToSettings: () -> Unit,
     onOpenCamera: () -> Unit,
     modifier: Modifier = Modifier,
+    chosenImagePath: String? = null,
 ) {
     val rootNavController = rememberNavController()
     var selectedDestination by rememberSaveable { mutableIntStateOf(0) }
@@ -100,6 +101,7 @@ fun HomeScreen(
     ) { contentPadding ->
         HomeNavGraph(
             navController = rootNavController,
+            chosenImagePath = chosenImagePath,
             onGoToSettings = onGoToSettings,
             onOpenCamera = onOpenCamera,
             modifier = Modifier
@@ -112,6 +114,7 @@ fun HomeScreen(
 @Composable
 private fun HomeNavGraph(
     navController: NavHostController,
+    chosenImagePath: String?,
     onGoToSettings: () -> Unit,
     onOpenCamera: () -> Unit,
     modifier: Modifier = Modifier,
@@ -128,6 +131,7 @@ private fun HomeNavGraph(
         }
         composable<HomeScreen.WeeklyJam> {
             JamScreen(
+                chosenImagePath = chosenImagePath,
                 onOpenCamera = onOpenCamera,
             )
         }

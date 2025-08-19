@@ -22,6 +22,8 @@ import com.scritch.app.splash.SplashScreen
 import com.scritch.app.wizard.WizardScreen
 import org.koin.compose.viewmodel.koinViewModel
 
+const val CHOSEN_IMAGE_FILE_PATH = "chosen_image_file_path"
+
 @Composable
 fun AppNavGraph(
     viewModel: AppViewModel = koinViewModel<AppViewModel>(),
@@ -89,14 +91,15 @@ private fun NavGraphBuilder.authenticatedSubGraph(
     navigation<Authenticated>(
         startDestination = Authenticated.Home,
     ) {
-        composable<Authenticated.Home> {
+        composable<Authenticated.Home> { entry ->
             HomeScreen(
                 onGoToSettings = {
                     navController.navigate(Authenticated.Settings)
                 },
                 onOpenCamera = {
                     navController.navigate(Authenticated.Camera)
-                }
+                },
+                chosenImagePath = entry.savedStateHandle.get<String>(CHOSEN_IMAGE_FILE_PATH),
             )
         }
 
@@ -152,9 +155,20 @@ private fun NavGraphBuilder.authenticatedSubGraph(
 
         composable<Authenticated.Camera> {
             FullScreenCamera(
-                onPhotoCaptured = { _ -> },
-                onError = { _ -> },
-                onDismiss = {},
+                onPhotoCaptured = { result ->
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        key = CHOSEN_IMAGE_FILE_PATH,
+                        value = result.uri,
+                    )
+                    navController.popBackStack()
+                },
+                onError = { _ ->
+                    // TODO handle error
+                    navController.popBackStack()
+                },
+                onDismiss = {
+                    navController.popBackStack()
+                },
             )
         }
     }
