@@ -1,5 +1,6 @@
 package com.scritch.app.jam
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -18,8 +19,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
@@ -28,7 +29,6 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Try
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -57,7 +57,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -91,7 +90,6 @@ import scritch.composeapp.generated.resources.ends_in_s
 import scritch.composeapp.generated.resources.pick_one_from_the_gallery
 import scritch.composeapp.generated.resources.share_your_work
 import scritch.composeapp.generated.resources.submission_preview
-import scritch.composeapp.generated.resources.take_a_different_picture
 import scritch.composeapp.generated.resources.take_a_picture
 import scritch.composeapp.generated.resources.upload_complete
 import scritch.composeapp.generated.resources.upload_failed
@@ -118,7 +116,7 @@ fun JamScreen(
     Scaffold(
         modifier = modifier,
     ) { contentPadding ->
-        Column(
+        LazyColumn(
             modifier = modifier
                 .fillMaxSize()
                 .consumeWindowInsets(contentPadding)
@@ -126,60 +124,84 @@ fun JamScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Text(
-                text = stringResource(Res.string.weekly_jam_description),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            viewState.endDate?.let { endDate ->
-                JamEndCountdown(
-                    endDate = endDate
+            item {
+                Text(
+                    text = stringResource(Res.string.weekly_jam_description),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
                 )
             }
-            HorizontalDivider()
-            when (viewState.loadingState) {
-                LoadingState.LOADING -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator()
+
+            item {
+                AnimatedVisibility(viewState.endDate != null) {
+                    JamEndCountdown(
+                        endDate = viewState.endDate ?: return@AnimatedVisibility
+                    )
+                }
+                viewState.endDate?.let { endDate ->
+
+                }
+            }
+
+            item {
+                HorizontalDivider()
+            }
+
+            item {
+                when (viewState.loadingState) {
+                    LoadingState.LOADING -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    LoadingState.NO_JAM -> {
+                        Text(
+                            text = stringResource(Res.string.weekly_jam_not_available),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+
+                    LoadingState.LOADED,
+                    LoadingState.REFRESHING -> {
+                        Prompt(
+                            viewState = viewState.promptViewState,
+                            onCategoryClick = viewModel::onCategoryClick,
+                        )
                     }
                 }
+            }
 
-                LoadingState.NO_JAM -> {
-                    Text(
-                        text = stringResource(Res.string.weekly_jam_not_available),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onBackground,
-                    )
-                }
-
-                LoadingState.LOADED,
-                LoadingState.REFRESHING -> {
-                    Prompt(
-                        viewState = viewState.promptViewState,
-                        onCategoryClick = viewModel::onCategoryClick,
+            item {
+                val submitted = viewState.submissionState as? SubmissionViewState.Submitted
+                AnimatedVisibility(
+                    visible = submitted != null,
+                ) {
+                    EntryPreview(
+                        viewState = submitted ?: return@AnimatedVisibility,
+                        onRetakeImage = viewModel::onSubmitWork,
+                        onDeleteImage = viewModel::onRemoveSubmission,
                     )
                 }
             }
 
-            (viewState.submissionState as? SubmissionViewState.Submitted)?.let {
-                EntryPreview(
-                    viewState = it,
-                    onRetakeImage = viewModel::onSubmitWork,
-                    onDeleteImage = viewModel::onRemoveSubmission,
-                )
-            }
+            //Spacer(modifier = Modifier.weight(1f))
 
-            Spacer(modifier = Modifier.weight(1f))
-
-            if (viewState.loadingState == LoadingState.LOADED) {
-                SubmissionActions(
-                    viewState = viewState.submissionState,
-                    onSubmitWork = viewModel::onSubmitWork,
-                    onRetry = viewModel::onRetryUpload,
-                )
+            item {
+                AnimatedVisibility(
+                    viewState.loadingState == LoadingState.LOADED,
+                ) {
+                    SubmissionActions(
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        viewState = viewState.submissionState,
+                        onSubmitWork = viewModel::onSubmitWork,
+                        onRetry = viewModel::onRetryUpload,
+                    )
+                }
             }
         }
     }
@@ -250,59 +272,62 @@ fun EntryPreview(
     onRetakeImage: () -> Unit,
     onDeleteImage: () -> Unit,
 ) {
-    var imageLoaded by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .animateContentSize(),
+            .animateContentSize()
+            .clip(MaterialTheme.shapes.medium),
         contentAlignment = Alignment.BottomEnd,
     ) {
-        if (!imageLoaded) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f) // keep space reserved; adjust if you prefer 4/3, 3/2, etc.
-                    .clip(MaterialTheme.shapes.medium)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-            )
-        }
 
         // 2) Real image (fades/scales in over the skeleton)
         KamelImage(
             resource = { asyncPainterResource(viewState.imageUrl) },
             contentDescription = null,
             contentScale = ContentScale.FillWidth,
-            animationSpec = tween(),
-            onLoading = { progress -> if (progress >= 1f) imageLoaded = true },
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.medium)
+            animationSpec = tween(600),
+            onLoading = { progress ->
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f) // keep space reserved; adjust if you prefer 4/3, 3/2, etc.
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                ) {
+                    CircularProgressIndicator(
+                        progress = {
+                            progress
+                        },
+                    )
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
         )
 
         // 3) Action buttons only after image is visible
-        if (imageLoaded) {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+        Row(
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            FilledTonalIconButton(
+                onClick = onDeleteImage,
+                colors = IconButtonDefaults.filledTonalIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                )
             ) {
-                FilledTonalIconButton(
-                    onClick = onDeleteImage,
-                    colors = IconButtonDefaults.filledTonalIconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
-                        contentColor = MaterialTheme.colorScheme.onErrorContainer
-                    )
-                ) {
-                    Icon(Icons.Default.Delete, contentDescription = stringResource(Res.string.delete))
-                }
-                FilledIconButton(onClick = onRetakeImage) {
-                    Icon(imageVector = Icons.Default.Repeat, contentDescription = null)
-                }
+                Icon(
+                    Icons.Default.Delete,
+                    contentDescription = stringResource(Res.string.delete)
+                )
+            }
+            FilledIconButton(onClick = onRetakeImage) {
+                Icon(imageVector = Icons.Default.Repeat, contentDescription = null)
             }
         }
     }
 }
-
 
 
 @OptIn(ExperimentalTime::class)
@@ -361,6 +386,7 @@ private fun SubmissionActions(
     viewState: SubmissionViewState,
     onSubmitWork: () -> Unit,
     onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val animatedProgress by animateFloatAsState(
         targetValue = when (viewState) {
@@ -376,7 +402,7 @@ private fun SubmissionActions(
         }
     )
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(
             8.dp,
             Alignment.CenterHorizontally
@@ -531,12 +557,11 @@ private fun SubmissionDeleteConfirmationDialog(
         confirmButton = {
             Button(
                 onClick = onConfirm,
-                shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.error,
                     contentColor = MaterialTheme.colorScheme.onError
                 ),
-                ) {
+            ) {
                 Text(text = stringResource(Res.string.yes_delete_it))
             }
         },
