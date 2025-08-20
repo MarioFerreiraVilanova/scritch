@@ -207,22 +207,13 @@ class JamViewModel(
         }
     }
 
-    fun onShowPreview() {
-        mutableViewState.update {
-            it.copy(
-                dialog = JamScreenDialog.SubmissionPreview,
-            )
-        }
-    }
-
     fun onDismissDialog(
         dialog: JamScreenDialog,
     ) {
         mutableViewState.update {
             it.copy(
                 dialog = when (dialog) {
-                    JamScreenDialog.SubmissionPreview -> null
-                    JamScreenDialog.SubmissionDeleteConfirmation -> JamScreenDialog.SubmissionPreview
+                    JamScreenDialog.SubmissionDeleteConfirmation -> null
                     JamScreenDialog.ImageSourceSheet -> null
                     JamScreenDialog.GalleryPicker -> null
                 },

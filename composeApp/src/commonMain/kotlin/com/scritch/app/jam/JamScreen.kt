@@ -29,6 +29,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -45,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -152,14 +154,21 @@ fun JamScreen(
                 }
             }
 
+            (viewState.submissionState as? SubmissionViewState.Submitted)?.let {
+                EntryPreview(
+                    viewState = it,
+                    onRetakeImage = viewModel::onSubmitWork,
+                    onDeleteImage = viewModel::onRemoveSubmission,
+                )
+            }
+
             Spacer(modifier = Modifier.weight(1f))
 
             if (viewState.loadingState == LoadingState.LOADED) {
-                SubmissionState(
+                SubmissionActions(
                     viewState = viewState.submissionState,
                     onSubmitWork = viewModel::onSubmitWork,
                     onRetry = viewModel::onRetryUpload,
-                    onShowPreview = viewModel::onShowPreview,
                 )
             }
         }
@@ -183,19 +192,6 @@ fun JamScreen(
     )
 
     when (viewState.dialog) {
-        JamScreenDialog.SubmissionPreview -> {
-            (viewState.submissionState as? SubmissionViewState.Submitted)?.let { submission ->
-                SubmissionPreviewDialog(
-                    viewState = submission,
-                    onDismissRequest = {
-                        viewModel.onDismissDialog(JamScreenDialog.SubmissionPreview)
-                    },
-                    onRetakeSubmission = viewModel::onSubmitWork,
-                    onRemoveSubmission = viewModel::onRemoveSubmission,
-                )
-            }
-        }
-
         JamScreenDialog.SubmissionDeleteConfirmation -> SubmissionDeleteConfirmationDialog(
             onDismissRequest = {
                 viewModel.onDismissDialog(JamScreenDialog.SubmissionDeleteConfirmation)
@@ -223,6 +219,49 @@ fun JamScreen(
                     viewModel.onDismissDialog(JamScreenDialog.GalleryPicker)
                 }
             )
+        }
+    }
+}
+
+@Composable
+fun EntryPreview(
+    viewState: SubmissionViewState.Submitted,
+    onRetakeImage: () -> Unit,
+    onDeleteImage: () -> Unit,
+){
+    Box (
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.BottomEnd,
+    ){
+        KamelImage(
+            resource = { asyncPainterResource(viewState.imageUrl) },
+            contentDescription = null,
+            contentScale = ContentScale.FillWidth,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.medium)
+        )
+
+        Row(
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ){
+            FilledIconButton(
+                onClick = onDeleteImage,
+            ){
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = null,
+                )
+            }
+            FilledIconButton(
+                onClick = onRetakeImage,
+            ){
+                Icon(
+                    imageVector = Icons.Default.Repeat,
+                    contentDescription = null,
+                )
+            }
         }
     }
 }
@@ -280,11 +319,10 @@ fun JamEndCountdown(
 }
 
 @Composable
-private fun SubmissionState(
+private fun SubmissionActions(
     viewState: SubmissionViewState,
     onSubmitWork: () -> Unit,
     onRetry: () -> Unit,
-    onShowPreview: () -> Unit,
 ) {
     val animatedProgress by animateFloatAsState(
         targetValue = when (viewState) {
@@ -355,124 +393,7 @@ private fun SubmissionState(
                 }
             }
 
-            is SubmissionViewState.Submitted -> {
-                TextButton(
-                    onClick = onShowPreview
-                ) {
-                    Text(
-                        text = stringResource(Res.string.edit_your_entry),
-                    )
-                    Spacer(
-                        Modifier.width(8.dp)
-                    )
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = null,
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun SubmissionPreviewDialog(
-    viewState: SubmissionViewState.Submitted,
-    onDismissRequest: () -> Unit,
-    onRetakeSubmission: () -> Unit,
-    onRemoveSubmission: () -> Unit,
-) {
-    Dialog(
-        onDismissRequest = onDismissRequest,
-        properties = DialogProperties(
-            usePlatformDefaultWidth = false, // so we can control size on large screens
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true,
-        )
-    ) {
-        // Full-screen box just to center the card
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Surface(
-                shape = MaterialTheme.shapes.large,
-                color = MaterialTheme.colorScheme.surfaceContainer,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .widthIn(max = 560.dp)                 // cap width for tablets
-            ) {
-                Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState()), // safety if content gets tall
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    KamelImage(
-                        resource = { asyncPainterResource(viewState.imageUrl) },
-                        contentDescription = stringResource(Res.string.submission_preview),
-                        contentScale = ContentScale.FillWidth,        // don’t fill; keep aspect
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(
-                                min = 160.dp,
-                                max = 420.dp
-                            ), // cap height so button stays visible
-                        onLoading = { progress ->
-                            // progress in [0f..1f] or null
-                            Column(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .heightIn(min = 160.dp, max = 420.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(
-                                    8.dp,
-                                    Alignment.CenterVertically
-                                )
-                            ) {
-                                val animatedProgress by animateFloatAsState(progress)
-                                CircularProgressIndicator(
-                                    progress = {
-                                        animatedProgress
-                                    }
-                                )
-                                Text(
-                                    text = "Loading...",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                )
-                            }
-                        }
-                    )
-
-                    TextButton(onClick = onRetakeSubmission) {
-                        Text(stringResource(Res.string.take_a_different_picture))
-                        Spacer(
-                            Modifier.width(8.dp)
-                        )
-                        Icon(
-                            imageVector = Icons.Default.Repeat,
-                            contentDescription = null,
-                        )
-                    }
-                    TextButton(onClick = onRemoveSubmission) {
-                        Text(
-                            text = stringResource(Res.string.delete),
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                        Spacer(
-                            Modifier.width(8.dp)
-                        )
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.error,
-                        )
-                    }
-                }
-            }
+            is SubmissionViewState.Submitted -> {}
         }
     }
 }
