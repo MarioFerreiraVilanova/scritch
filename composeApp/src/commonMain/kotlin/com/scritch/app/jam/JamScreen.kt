@@ -72,6 +72,10 @@ import scritch.composeapp.generated.resources.clock
 import scritch.composeapp.generated.resources.delete
 import scritch.composeapp.generated.resources.delete_entry
 import scritch.composeapp.generated.resources.edit_your_entry
+import scritch.composeapp.generated.resources.ends_in_d_h
+import scritch.composeapp.generated.resources.ends_in_h_m
+import scritch.composeapp.generated.resources.ends_in_m_s
+import scritch.composeapp.generated.resources.ends_in_s
 import scritch.composeapp.generated.resources.pick_one_from_the_gallery
 import scritch.composeapp.generated.resources.share_your_work
 import scritch.composeapp.generated.resources.submission_preview
@@ -236,6 +240,7 @@ fun JamEndCountdown(
         return now.until(end, DateTimeUnit.SECOND)
     }
 
+    @Composable
     fun format(sec: Long): String {
         if (sec <= 0) return "Ended"
 
@@ -245,9 +250,10 @@ fun JamEndCountdown(
         val seconds = sec % 60
 
         return when {
-            days >= 1   -> "Ends in ${days}d ${hours}h"
-            sec >= 3_600 -> "Ends in ${hours}h ${minutes}m"
-            else         -> "Ends in ${minutes}m ${seconds}s"
+            days >= 1 -> stringResource(Res.string.ends_in_d_h, days, hours)
+            sec >= 3_600 -> stringResource(Res.string.ends_in_h_m, hours, minutes)
+            sec >= 60 -> stringResource(Res.string.ends_in_m_s, minutes, seconds)
+            else -> stringResource(Res.string.ends_in_s, seconds)
         }
     }
 

@@ -64,6 +64,10 @@
     <string name="weekly_jam_end_time">This Scritch will end on %1$s at %2$s</string>
     <string name="weekly_jam_not_available">There’s no weekly jam at the moment — check back soon for the next challenge!</string>
     <string name="yes_delete_it">Yes, delete it</string>
+    <string name="ends_in_d_h">Ends in %1$dd %2$dh</string>
+    <string name="ends_in_h_m">Ends in %1$dh %2$dm</string>
+    <string name="ends_in_m_s">Ends in %1$dm %2$ds</string>
+    <string name="ends_in_s">Ends in %1$ds</string>
 
     <!-- Plurals -->
     <plurals name="category_art_medium">
