@@ -52,7 +52,6 @@ import androidx.compose.ui.window.DialogProperties
 import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
 import com.scritch.app.uicomponents.Button
-import com.scritch.app.util.dayOfWeekString
 import io.github.ismoy.imagepickerkmp.GalleryPickerLauncher
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
@@ -82,7 +81,6 @@ import scritch.composeapp.generated.resources.upload_complete
 import scritch.composeapp.generated.resources.upload_failed
 import scritch.composeapp.generated.resources.uploading_your_image
 import scritch.composeapp.generated.resources.weekly_jam_description
-import scritch.composeapp.generated.resources.weekly_jam_end_time
 import scritch.composeapp.generated.resources.weekly_jam_not_available
 import scritch.composeapp.generated.resources.yes_delete_it
 import kotlin.time.Clock
@@ -228,53 +226,49 @@ fun JamScreen(
 
 @OptIn(ExperimentalTime::class)
 @Composable
-private fun JamEndCountdown(endDate: LocalDateTime) {
-    val tz = TimeZone.currentSystemDefault()
-
-    fun compute(): Pair<Long, Long> {
-        // If endDate is already an Instant, skip the toInstant(tz) call and use it directly.
-        val endInstant = endDate.toInstant(tz)
+fun JamEndCountdown(
+    endDate: LocalDateTime, // if you have Instant, see note below
+    timeZone: TimeZone = TimeZone.currentSystemDefault()
+) {
+    fun remainingSeconds(): Long {
+        val end = endDate.toInstant(timeZone)
         val now = Clock.System.now()
-        val seconds = now.until(endInstant, DateTimeUnit.SECOND)
-
-        if (seconds <= 0) return 0L to 0L
-
-        val days = seconds / (24 * 3600)
-        val hours = (seconds % (24 * 3600)) / 3600
-        return days to hours
+        return now.until(end, DateTimeUnit.SECOND)
     }
 
-    // Recompute every minute so it “ticks”
-    val remaining by produceState(initialValue = compute()) {
-        while (true) {
-            value = compute()
-            delay(60_000)
+    fun format(sec: Long): String {
+        if (sec <= 0) return "Ended"
+
+        val days = sec / 86_400
+        val hours = (sec % 86_400) / 3_600
+        val minutes = (sec % 3_600) / 60
+        val seconds = sec % 60
+
+        return when {
+            days >= 1   -> "Ends in ${days}d ${hours}h"
+            sec >= 3_600 -> "Ends in ${hours}h ${minutes}m"
+            else         -> "Ends in ${minutes}m ${seconds}s"
         }
     }
 
-    val (days, hours) = remaining
+    val remaining by produceState(initialValue = remainingSeconds()) {
+        while (true) {
+            value = remainingSeconds()
+            // Tick every minute until last hour, then every second
+            val delayMs = if (value >= 3_600) 60_000L else 1_000L
+            delay(delayMs)
+        }
+    }
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icon(
-            painter = painterResource(Res.drawable.clock),
-            contentDescription = null,
-        )
+        Icon(painter = painterResource(Res.drawable.clock), contentDescription = null)
         Text(
-            text = if (days == 0L && hours == 0L) {
-                "Ended"
-            }
-            else if (days == 0L){
-                "Ends in ${hours}h"
-            }
-            else {
-                "Ends in ${days}d ${hours}h"
-            },
-            // Or use stringResource with two placeholders if you prefer.
+            text = format(remaining),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }
