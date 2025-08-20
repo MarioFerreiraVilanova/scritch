@@ -1,7 +1,6 @@
 package com.scritch.app.jam
 
 import com.scritch.app.prompt.PromptViewState
-import io.github.ismoy.imagepickerkmp.CameraPhotoHandler
 import kotlinx.datetime.LocalDateTime
 
 data class JamViewState (
@@ -32,6 +31,7 @@ enum class LoadingState {
 }
 
 enum class JamScreenDialog {
+    EntryPreview,
     SubmissionDeleteConfirmation,
     ImageSourceSheet,
     GalleryPicker

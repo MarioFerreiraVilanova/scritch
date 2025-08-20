@@ -1,12 +1,16 @@
 package com.scritch.app.jam
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,21 +19,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Try
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -43,10 +50,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -73,7 +84,6 @@ import scritch.composeapp.generated.resources.cancel
 import scritch.composeapp.generated.resources.clock
 import scritch.composeapp.generated.resources.delete
 import scritch.composeapp.generated.resources.delete_entry
-import scritch.composeapp.generated.resources.edit_your_entry
 import scritch.composeapp.generated.resources.ends_in_d_h
 import scritch.composeapp.generated.resources.ends_in_h_m
 import scritch.composeapp.generated.resources.ends_in_m_s
@@ -192,6 +202,17 @@ fun JamScreen(
     )
 
     when (viewState.dialog) {
+        JamScreenDialog.EntryPreview -> {
+            (viewState.submissionState as? SubmissionViewState.Submitted)?.let { submission ->
+                SubmissionPreviewDialog(
+                    viewState = submission,
+                    onDismissRequest = {
+                        viewModel.onDismissDialog(JamScreenDialog.EntryPreview)
+                    },
+                )
+            }
+        }
+
         JamScreenDialog.SubmissionDeleteConfirmation -> SubmissionDeleteConfirmationDialog(
             onDismissRequest = {
                 viewModel.onDismissDialog(JamScreenDialog.SubmissionDeleteConfirmation)
@@ -228,43 +249,60 @@ fun EntryPreview(
     viewState: SubmissionViewState.Submitted,
     onRetakeImage: () -> Unit,
     onDeleteImage: () -> Unit,
-){
-    Box (
-        modifier = Modifier.fillMaxWidth(),
+) {
+    var imageLoaded by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize(),
         contentAlignment = Alignment.BottomEnd,
-    ){
+    ) {
+        if (!imageLoaded) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f) // keep space reserved; adjust if you prefer 4/3, 3/2, etc.
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            )
+        }
+
+        // 2) Real image (fades/scales in over the skeleton)
         KamelImage(
             resource = { asyncPainterResource(viewState.imageUrl) },
             contentDescription = null,
             contentScale = ContentScale.FillWidth,
+            animationSpec = tween(),
+            onLoading = { progress -> if (progress >= 1f) imageLoaded = true },
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(MaterialTheme.shapes.medium)
         )
 
-        Row(
-            modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ){
-            FilledIconButton(
-                onClick = onDeleteImage,
-            ){
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = null,
-                )
-            }
-            FilledIconButton(
-                onClick = onRetakeImage,
-            ){
-                Icon(
-                    imageVector = Icons.Default.Repeat,
-                    contentDescription = null,
-                )
+        // 3) Action buttons only after image is visible
+        if (imageLoaded) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                FilledTonalIconButton(
+                    onClick = onDeleteImage,
+                    colors = IconButtonDefaults.filledTonalIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                ) {
+                    Icon(Icons.Default.Delete, contentDescription = stringResource(Res.string.delete))
+                }
+                FilledIconButton(onClick = onRetakeImage) {
+                    Icon(imageVector = Icons.Default.Repeat, contentDescription = null)
+                }
             }
         }
     }
 }
+
 
 
 @OptIn(ExperimentalTime::class)
@@ -399,6 +437,85 @@ private fun SubmissionActions(
 }
 
 @Composable
+private fun SubmissionPreviewDialog(
+    viewState: SubmissionViewState.Submitted,
+    onDismissRequest: () -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false, // so we can control size on large screens
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true,
+        )
+    ) {
+        // Full-screen box just to center the card
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Surface(
+                shape = MaterialTheme.shapes.large,
+                color = MaterialTheme.colorScheme.surfaceContainer,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .widthIn(max = 560.dp)                 // cap width for tablets
+            ) {
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState()), // safety if content gets tall
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    KamelImage(
+                        resource = { asyncPainterResource(viewState.imageUrl) },
+                        contentDescription = stringResource(Res.string.submission_preview),
+                        contentScale = ContentScale.FillWidth,        // don’t fill; keep aspect
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(
+                                min = 160.dp,
+                                max = 420.dp
+                            ), // cap height so button stays visible
+                        onLoading = { progress ->
+                            // progress in [0f..1f] or null
+                            Column(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = 160.dp, max = 420.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(
+                                    8.dp,
+                                    Alignment.CenterVertically
+                                )
+                            ) {
+                                val animatedProgress by animateFloatAsState(progress)
+                                CircularProgressIndicator(
+                                    progress = {
+                                        animatedProgress
+                                    }
+                                )
+                                Text(
+                                    text = "Loading...",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                )
+                            }
+                        }
+                    )
+
+                    Button(onClick = onDismissRequest) {
+                        Text("Ok")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun SubmissionDeleteConfirmationDialog(
     onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
@@ -412,7 +529,14 @@ private fun SubmissionDeleteConfirmationDialog(
             Text(text = stringResource(Res.string.are_you_sure_delete_entry))
         },
         confirmButton = {
-            TextButton(onClick = onConfirm) {
+            Button(
+                onClick = onConfirm,
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError
+                ),
+                ) {
                 Text(text = stringResource(Res.string.yes_delete_it))
             }
         },
