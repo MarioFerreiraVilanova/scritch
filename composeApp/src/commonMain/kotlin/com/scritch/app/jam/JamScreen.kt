@@ -42,6 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -55,6 +56,12 @@ import com.scritch.app.util.dayOfWeekString
 import io.github.ismoy.imagepickerkmp.GalleryPickerLauncher
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import kotlinx.coroutines.delay
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.until
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -78,6 +85,8 @@ import scritch.composeapp.generated.resources.weekly_jam_description
 import scritch.composeapp.generated.resources.weekly_jam_end_time
 import scritch.composeapp.generated.resources.weekly_jam_not_available
 import scritch.composeapp.generated.resources.yes_delete_it
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 @Composable
 fun JamScreen(
@@ -109,26 +118,9 @@ fun JamScreen(
                 color = MaterialTheme.colorScheme.onBackground,
             )
             viewState.endDate?.let { endDate ->
-
-                val dayOfWeek = dayOfWeekString(day = endDate.dayOfWeek)
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.clock),
-                        contentDescription = null,
-                    )
-                    Text(
-                        text = stringResource(
-                            Res.string.weekly_jam_end_time,
-                            dayOfWeek,
-                            "${endDate.hour}:${endDate.minute}"
-                        ),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onBackground,
-                    )
-                }
+                JamEndCountdown(
+                    endDate = endDate
+                )
             }
             HorizontalDivider()
             when (viewState.loadingState) {
@@ -230,6 +222,60 @@ fun JamScreen(
                 }
             )
         }
+    }
+}
+
+
+@OptIn(ExperimentalTime::class)
+@Composable
+private fun JamEndCountdown(endDate: LocalDateTime) {
+    val tz = TimeZone.currentSystemDefault()
+
+    fun compute(): Pair<Long, Long> {
+        // If endDate is already an Instant, skip the toInstant(tz) call and use it directly.
+        val endInstant = endDate.toInstant(tz)
+        val now = Clock.System.now()
+        val seconds = now.until(endInstant, DateTimeUnit.SECOND)
+
+        if (seconds <= 0) return 0L to 0L
+
+        val days = seconds / (24 * 3600)
+        val hours = (seconds % (24 * 3600)) / 3600
+        return days to hours
+    }
+
+    // Recompute every minute so it “ticks”
+    val remaining by produceState(initialValue = compute()) {
+        while (true) {
+            value = compute()
+            delay(60_000)
+        }
+    }
+
+    val (days, hours) = remaining
+
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            painter = painterResource(Res.drawable.clock),
+            contentDescription = null,
+        )
+        Text(
+            text = if (days == 0L && hours == 0L) {
+                "Ended"
+            }
+            else if (days == 0L){
+                "Ends in ${hours}h"
+            }
+            else {
+                "Ends in ${days}d ${hours}h"
+            },
+            // Or use stringResource with two placeholders if you prefer.
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
     }
 }
 
