@@ -107,6 +107,7 @@ import kotlin.time.ExperimentalTime
 fun JamScreen(
     chosenImagePath: String?,
     onOpenCamera: () -> Unit,
+    onImagePathReceived: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: JamViewModel = koinViewModel(),
 ) {
@@ -114,6 +115,7 @@ fun JamScreen(
 
     LaunchedEffect(chosenImagePath) {
         viewModel.onImageCaptured(chosenImagePath ?: return@LaunchedEffect)
+        onImagePathReceived()
     }
 
     Scaffold(

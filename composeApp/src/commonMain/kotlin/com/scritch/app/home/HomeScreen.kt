@@ -35,6 +35,7 @@ import scritch.composeapp.generated.resources.zap
 fun HomeScreen(
     onGoToSettings: () -> Unit,
     onOpenCamera: () -> Unit,
+    onImagePathReceived: () -> Unit,
     modifier: Modifier = Modifier,
     chosenImagePath: String? = null,
 ) {
@@ -104,6 +105,7 @@ fun HomeScreen(
             chosenImagePath = chosenImagePath,
             onGoToSettings = onGoToSettings,
             onOpenCamera = onOpenCamera,
+            onImagePathReceived = onImagePathReceived,
             modifier = Modifier
                 .consumeWindowInsets(contentPadding)
                 .padding(contentPadding)
@@ -117,6 +119,7 @@ private fun HomeNavGraph(
     chosenImagePath: String?,
     onGoToSettings: () -> Unit,
     onOpenCamera: () -> Unit,
+    onImagePathReceived: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -133,6 +136,7 @@ private fun HomeNavGraph(
             JamScreen(
                 chosenImagePath = chosenImagePath,
                 onOpenCamera = onOpenCamera,
+                onImagePathReceived = onImagePathReceived,
             )
         }
     }

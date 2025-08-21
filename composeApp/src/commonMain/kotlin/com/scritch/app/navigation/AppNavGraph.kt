@@ -100,6 +100,9 @@ private fun NavGraphBuilder.authenticatedSubGraph(
                     navController.navigate(Authenticated.Camera)
                 },
                 chosenImagePath = entry.savedStateHandle.get<String>(CHOSEN_IMAGE_FILE_PATH),
+                onImagePathReceived = {
+                    entry.savedStateHandle.remove<String>(CHOSEN_IMAGE_FILE_PATH)
+                }
             )
         }
 
