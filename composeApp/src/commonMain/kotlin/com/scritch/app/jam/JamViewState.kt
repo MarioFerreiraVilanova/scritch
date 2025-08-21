@@ -13,7 +13,7 @@ data class JamViewState (
 ){
     companion object {
         val EMPTY = JamViewState(
-            loadingState = LoadingState.LOADING,
+            loadingState = LoadingState.INITIAL_LOADING,
             promptViewState = PromptViewState.EMPTY,
             jamId = null,
             endDate = null,
@@ -24,7 +24,7 @@ data class JamViewState (
 }
 
 enum class LoadingState {
-    LOADING,
+    INITIAL_LOADING,
     LOADED,
     NO_JAM,
     REFRESHING,

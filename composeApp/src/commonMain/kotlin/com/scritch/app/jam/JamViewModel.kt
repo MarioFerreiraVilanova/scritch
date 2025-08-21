@@ -36,7 +36,7 @@ class JamViewModel(
         mutableViewState.update {
             it.copy(
                 loadingState = when (it.loadingState) {
-                    LoadingState.LOADING -> LoadingState.LOADING
+                    LoadingState.INITIAL_LOADING -> LoadingState.INITIAL_LOADING
                     LoadingState.LOADED -> LoadingState.REFRESHING
                     LoadingState.NO_JAM -> LoadingState.REFRESHING
                     LoadingState.REFRESHING -> LoadingState.REFRESHING

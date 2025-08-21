@@ -1,6 +1,7 @@
 package com.scritch.app.jam
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -9,12 +10,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -50,10 +54,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,11 +65,13 @@ import androidx.compose.ui.window.DialogProperties
 import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
 import com.scritch.app.uicomponents.Button
+import com.scritch.app.uicomponents.PageLoader
 import io.github.ismoy.imagepickerkmp.GalleryPickerLauncher
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.delay
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -120,87 +123,54 @@ fun JamScreen(
             modifier = modifier
                 .fillMaxSize()
                 .consumeWindowInsets(contentPadding)
-                .padding(contentPadding)
-                .padding(16.dp),
+                .padding(contentPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues.Absolute(
+                left = 16.dp,
+                right = 16.dp,
+                top = 16.dp,
+            )
         ) {
+            // Description / header
             item {
-                Text(
-                    text = stringResource(Res.string.weekly_jam_description),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground,
+                JamHeader(
+                    endDate = viewState.endDate,
                 )
             }
 
-            item {
-                AnimatedVisibility(viewState.endDate != null) {
-                    JamEndCountdown(
-                        endDate = viewState.endDate ?: return@AnimatedVisibility
-                    )
-                }
-                viewState.endDate?.let { endDate ->
-
-                }
-            }
-
-            item {
-                HorizontalDivider()
-            }
-
-            item {
-                when (viewState.loadingState) {
-                    LoadingState.LOADING -> {
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
-
-                    LoadingState.NO_JAM -> {
-                        Text(
-                            text = stringResource(Res.string.weekly_jam_not_available),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onBackground,
+            when (viewState.loadingState) {
+                LoadingState.INITIAL_LOADING -> {
+                    item {
+                        PageLoader(
+                            modifier = Modifier.padding(64.dp)
                         )
                     }
-
-                    LoadingState.LOADED,
-                    LoadingState.REFRESHING -> {
+                }
+                LoadingState.NO_JAM -> {
+                    item {
+                        NoJamView()
+                    }
+                }
+                else -> {
+                    // Prompt
+                    item {
                         Prompt(
                             viewState = viewState.promptViewState,
                             onCategoryClick = viewModel::onCategoryClick,
                         )
                     }
-                }
-            }
+                    // User section
+                    item {
+                        UserSection(
+                            submissionState = viewState.submissionState,
+                            onSubmitWork = viewModel::onSubmitWork,
+                            onRemoveSubmission = viewModel::onRemoveSubmission,
+                            onRetryUpload = viewModel::onRetryUpload,
+                        )
+                    }
+                    // Inspiration
 
-            item {
-                val submitted = viewState.submissionState as? SubmissionViewState.Submitted
-                AnimatedVisibility(
-                    visible = submitted != null,
-                ) {
-                    EntryPreview(
-                        viewState = submitted ?: return@AnimatedVisibility,
-                        onRetakeImage = viewModel::onSubmitWork,
-                        onDeleteImage = viewModel::onRemoveSubmission,
-                    )
-                }
-            }
-
-            //Spacer(modifier = Modifier.weight(1f))
-
-            item {
-                AnimatedVisibility(
-                    viewState.loadingState == LoadingState.LOADED,
-                ) {
-                    SubmissionActions(
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
-                        viewState = viewState.submissionState,
-                        onSubmitWork = viewModel::onSubmitWork,
-                        onRetry = viewModel::onRetryUpload,
-                    )
+                    // Other user's entries
                 }
             }
         }
@@ -267,8 +237,65 @@ fun JamScreen(
 }
 
 @Composable
-fun EntryPreview(
-    viewState: SubmissionViewState.Submitted,
+private fun JamHeader(
+    endDate: LocalDateTime?,
+){
+    Column(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ){
+        Text(
+            text = stringResource(Res.string.weekly_jam_description),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+        AnimatedVisibility(endDate != null) {
+            JamEndCountdown(
+                endDate = endDate ?: return@AnimatedVisibility
+            )
+        }
+        HorizontalDivider()
+    }
+}
+
+@Composable
+private fun NoJamView(){
+    Text(
+        text = stringResource(Res.string.weekly_jam_not_available),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onBackground,
+    )
+}
+
+@Composable
+private fun UserSection(
+    submissionState: SubmissionViewState,
+    onSubmitWork: () -> Unit,
+    onRemoveSubmission: () -> Unit,
+    onRetryUpload: () -> Unit,
+){
+    Column {
+        val submitted = submissionState as? SubmissionViewState.Submitted
+        AnimatedVisibility(
+            visible = submitted != null,
+        ) {
+            EntryPreview(
+                imageUrl = submitted?.imageUrl ?: return@AnimatedVisibility,
+                onRetakeImage = onSubmitWork,
+                onDeleteImage = onRemoveSubmission,
+            )
+        }
+        SubmissionActions(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            viewState = submissionState,
+            onSubmitWork = onSubmitWork,
+            onRetry = onRetryUpload,
+        )
+    }
+}
+
+@Composable
+private fun EntryPreview(
+    imageUrl: String,
     onRetakeImage: () -> Unit,
     onDeleteImage: () -> Unit,
 ) {
@@ -283,7 +310,7 @@ fun EntryPreview(
 
         // 2) Real image (fades/scales in over the skeleton)
         KamelImage(
-            resource = { asyncPainterResource(viewState.imageUrl) },
+            resource = { asyncPainterResource(imageUrl) },
             contentDescription = null,
             contentScale = ContentScale.FillWidth,
             animationSpec = tween(600),
@@ -487,7 +514,7 @@ private fun SubmissionPreviewDialog(
                 color = MaterialTheme.colorScheme.surfaceContainer,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .widthIn(max = 560.dp)                 // cap width for tablets
+                    .widthIn(max = 560.dp) // cap width for tablets
             ) {
                 Column(
                     modifier = Modifier
