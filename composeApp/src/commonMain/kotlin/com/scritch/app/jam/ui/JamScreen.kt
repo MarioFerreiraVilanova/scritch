@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -60,6 +61,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.scritch.app.jam.JamFeedState
 import com.scritch.app.jam.JamScreenDialog
 import com.scritch.app.jam.JamSubmission
 import com.scritch.app.jam.JamViewModel
@@ -135,6 +137,7 @@ fun JamScreen(
                 left = 16.dp,
                 right = 16.dp,
                 top = 16.dp,
+                bottom = 16.dp,
             )
         ) {
             // Description / header
@@ -179,29 +182,10 @@ fun JamScreen(
                     // Inspiration
 
                     // Other user's entries
-                    if (viewState.feedState.items.isNotEmpty()) {
-                        items(
-                            items = viewState.feedState.items.chunked(2),
-                            key = { row -> row.joinToString { it.userId } }
-                        ) { row ->
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
-                                SubmissionCell(
-                                    submission = row[0],
-                                    modifier = Modifier.weight(1f)
-                                )
-                                if (row.size == 2) {
-                                    SubmissionCell(
-                                        submission = row[1],
-                                        modifier = Modifier.weight(1f),
-                                    )
-                                } else {
-                                    Spacer(Modifier.weight(1f))
-                                }
-                            }
-                        }
-                    }
+                    jamFeed(
+                        feedState = viewState.feedState,
+                        onLoadMore = viewModel::onLoadMore,
+                    )
                 }
             }
         }
@@ -263,6 +247,55 @@ fun JamScreen(
                     viewModel.onDismissDialog(JamScreenDialog.GalleryPicker)
                 }
             )
+        }
+    }
+}
+
+private fun LazyListScope.jamFeed(
+    feedState: JamFeedState,
+    onLoadMore: () -> Unit,
+){
+    if (feedState.items.isNotEmpty()) {
+        item {
+            HorizontalDivider()
+        }
+        item {
+            Text(
+                text = "See what others are drawing",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+        }
+        items(
+            items = feedState.items.chunked(2),
+            key = { row -> row.joinToString { it.userId } }
+        ) { row ->
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                SubmissionCell(
+                    submission = row[0],
+                    modifier = Modifier.weight(1f)
+                )
+                if (row.size == 2) {
+                    SubmissionCell(
+                        submission = row[1],
+                        modifier = Modifier.weight(1f),
+                    )
+                } else {
+                    Spacer(Modifier.weight(1f))
+                }
+            }
+        }
+
+        if (!feedState.endReached) {
+            item {
+                LaunchedEffect(
+                    key1 = feedState.items.size
+                ) {
+                    onLoadMore()
+                } // or use a VisibilityObserver
+            }
         }
     }
 }
