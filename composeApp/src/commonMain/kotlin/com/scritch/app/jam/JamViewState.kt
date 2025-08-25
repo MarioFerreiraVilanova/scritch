@@ -10,6 +10,7 @@ data class JamViewState (
     val endDate: LocalDateTime?,
     val submissionState: SubmissionViewState,
     val dialog: JamScreenDialog?,
+    val feedState: JamFeedState,
 ){
     companion object {
         val EMPTY = JamViewState(
@@ -19,6 +20,7 @@ data class JamViewState (
             endDate = null,
             submissionState = SubmissionViewState.NotSubmitted,
             dialog = null,
+            feedState = JamFeedState.EMPTY,
         )
     }
 }

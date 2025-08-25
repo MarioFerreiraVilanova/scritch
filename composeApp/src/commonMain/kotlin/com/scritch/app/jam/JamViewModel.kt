@@ -124,6 +124,47 @@ class JamViewModel(
                     }
                 )
             }
+
+            loadJamFeed()
+        }
+    }
+
+    private suspend fun loadJamFeed() {
+        val feed = jamRepository.getSubmissions(
+            userId = Firebase.auth.currentUser?.uid ?: return,
+            jamId = mutableViewState.value.jamId ?: return,
+        )
+        mutableViewState.update {
+            it.copy(
+                feedState = JamFeedState(
+                    isLoading = false,
+                    items = feed.items,
+                    cursor = feed.cursor,
+                    endReached = feed.endReached,
+                    error = null,
+                ),
+            )
+        }
+    }
+
+    fun onLoadMore() {
+        if (mutableViewState.value.feedState.isLoading || mutableViewState.value.feedState.endReached) return
+        viewModelScope.launch {
+            val nextPage = jamRepository.getSubmissions(
+                userId = Firebase.auth.currentUser?.uid ?: return@launch,
+                jamId = mutableViewState.value.jamId ?: return@launch,
+                cursor = mutableViewState.value.feedState.cursor,
+            )
+            mutableViewState.update {
+                it.copy(
+                    feedState = it.feedState.copy(
+                        isLoading = false,
+                        items = it.feedState.items + nextPage.items,
+                        cursor = nextPage.cursor,
+                        endReached = nextPage.endReached,
+                    )
+                )
+            }
         }
     }
 
