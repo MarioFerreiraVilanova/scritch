@@ -314,7 +314,7 @@ private fun EntryPreview(
         KamelImage(
             resource = { asyncPainterResource(imageUrl) },
             contentDescription = null,
-            contentScale = ContentScale.FillWidth,
+            contentScale = ContentScale.Crop,
             animationSpec = tween(600),
             onLoading = { progress ->
                 Box(
@@ -331,7 +331,7 @@ private fun EntryPreview(
                     )
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.aspectRatio(1f)
         )
 
         // 3) Action buttons only after image is visible
