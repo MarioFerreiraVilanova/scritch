@@ -19,7 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.scritch.app.jam.JamScreen
+import com.scritch.app.jam.ui.JamScreen
 import com.scritch.app.navigation.HomeScreen
 import com.scritch.app.solomode.SoloScreen
 import com.scritch.app.theme.NavigationBarItemColors

@@ -5,7 +5,7 @@ import com.scritch.app.app.AppViewModel
 import com.scritch.app.auth.AuthenticationRepository
 import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.LoadUserOptionsUseCase
-import com.scritch.app.jam.JamRepository
+import com.scritch.app.jam.data.JamRepository
 import com.scritch.app.jam.JamViewModel
 import com.scritch.app.solomode.SoloViewModel
 import com.scritch.app.landing.LandingViewModel

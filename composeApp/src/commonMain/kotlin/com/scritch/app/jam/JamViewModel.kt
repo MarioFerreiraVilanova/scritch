@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.scritch.app.categories.Category
 import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.OptionState
+import com.scritch.app.jam.data.JamRepository
 import com.scritch.app.prompt.PromptViewState
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth

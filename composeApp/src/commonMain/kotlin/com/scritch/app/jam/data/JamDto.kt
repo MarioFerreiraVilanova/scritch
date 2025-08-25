@@ -1,4 +1,4 @@
-package com.scritch.app.jam
+package com.scritch.app.jam.data
 
 import dev.gitlive.firebase.firestore.DocumentSnapshot
 import dev.gitlive.firebase.firestore.Timestamp

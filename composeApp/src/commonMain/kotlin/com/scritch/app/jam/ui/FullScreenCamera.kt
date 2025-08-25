@@ -1,4 +1,4 @@
-package com.scritch.app.jam
+package com.scritch.app.jam.ui
 
 import androidx.compose.runtime.Composable
 import io.github.ismoy.imagepickerkmp.CameraPhotoHandler

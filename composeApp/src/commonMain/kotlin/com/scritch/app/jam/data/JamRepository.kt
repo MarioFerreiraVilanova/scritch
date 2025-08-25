@@ -1,7 +1,11 @@
-package com.scritch.app.jam
+package com.scritch.app.jam.data
 
+import com.scritch.app.jam.Cursor
+import com.scritch.app.jam.Page
+import com.scritch.app.jam.data.SubmissionDto
 import com.scritch.app.util.storageFileFromString
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.Timestamp
 import dev.gitlive.firebase.firestore.firestore
@@ -164,4 +168,36 @@ class JamRepository {
         }
     }
 
+    suspend fun getSubmissions(
+        userId: String,
+        jamId: String,
+        cursor: Cursor? = null,
+        pageSize: Int = 24,
+    ): Page<SubmissionDto> {
+        val query = Firebase.firestore
+            .collection(JAM_COLLECTION)
+            .document(jamId)
+            .collection(SUBMISSIONS_COLLECTION)
+            .where { "userId" notEqualTo userId }
+            .orderBy("createdAt", Direction.DESCENDING)
+            .limit(pageSize)
+
+        val pageItems = if (cursor == null) {
+            query.get().documents.map { snapshot -> snapshot.data<SubmissionDto>() }
+        } else {
+            query.startAfter(cursor.lastDocId).get().documents.map { snapshot ->
+                snapshot.data<SubmissionDto>()
+            }
+        }
+
+        return Page(
+            items = pageItems,
+            cursor = pageItems.lastOrNull()?.let { lastItem ->
+                Cursor(
+                    lastDocId = lastItem.userId ?: return@let null,
+                )
+            },
+            endReached = pageItems.size < pageSize,
+        )
+    }
 }
