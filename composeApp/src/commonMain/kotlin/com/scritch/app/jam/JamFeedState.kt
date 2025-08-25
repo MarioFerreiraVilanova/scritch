@@ -1,14 +1,12 @@
 package com.scritch.app.jam
 
-import com.scritch.app.jam.data.SubmissionDto
-
 data class JamFeedState(
     val isLoading: Boolean,
-    val items: List<SubmissionDto>,
+    val items: List<JamSubmission>,
     val cursor: Cursor?,
     val endReached: Boolean,
     val error: String?,
-){
+) {
     companion object {
         val EMPTY = JamFeedState(
             isLoading = true,

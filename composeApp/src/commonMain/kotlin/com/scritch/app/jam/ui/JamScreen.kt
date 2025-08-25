@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -60,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.scritch.app.jam.JamScreenDialog
+import com.scritch.app.jam.JamSubmission
 import com.scritch.app.jam.JamViewModel
 import com.scritch.app.jam.JamViewState
 import com.scritch.app.jam.LoadingState
@@ -150,11 +152,13 @@ fun JamScreen(
                         )
                     }
                 }
+
                 LoadingState.NO_JAM -> {
                     item {
                         NoJamView()
                     }
                 }
+
                 else -> {
                     // Prompt
                     item {
@@ -175,6 +179,29 @@ fun JamScreen(
                     // Inspiration
 
                     // Other user's entries
+                    if (viewState.feedState.items.isNotEmpty()) {
+                        items(
+                            items = viewState.feedState.items.chunked(2),
+                            key = { row -> row.joinToString { it.userId } }
+                        ) { row ->
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                SubmissionCell(
+                                    submission = row[0],
+                                    modifier = Modifier.weight(1f)
+                                )
+                                if (row.size == 2) {
+                                    SubmissionCell(
+                                        submission = row[1],
+                                        modifier = Modifier.weight(1f),
+                                    )
+                                } else {
+                                    Spacer(Modifier.weight(1f))
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -241,12 +268,34 @@ fun JamScreen(
 }
 
 @Composable
+private fun SubmissionCell(
+    submission: JamSubmission,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .aspectRatio(1f)
+            .clip(MaterialTheme.shapes.small)
+            //.clickable { onClick(submission) }
+            .background(MaterialTheme.colorScheme.surfaceVariant),
+        contentAlignment = Alignment.Center
+    ) {
+        KamelImage(
+            resource = { asyncPainterResource(submission.imageUrl) },
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+@Composable
 private fun JamHeader(
     endDate: LocalDateTime?,
-){
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
-    ){
+    ) {
         Text(
             text = stringResource(Res.string.weekly_jam_description),
             style = MaterialTheme.typography.bodyMedium,
@@ -262,7 +311,7 @@ private fun JamHeader(
 }
 
 @Composable
-private fun NoJamView(){
+private fun NoJamView() {
     Text(
         text = stringResource(Res.string.weekly_jam_not_available),
         style = MaterialTheme.typography.bodyMedium,
@@ -276,7 +325,7 @@ private fun UserSection(
     onSubmitWork: () -> Unit,
     onRemoveSubmission: () -> Unit,
     onRetryUpload: () -> Unit,
-){
+) {
     Column {
         val submitted = submissionState as? SubmissionViewState.Submitted
         AnimatedVisibility(

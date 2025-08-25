@@ -138,7 +138,7 @@ class JamViewModel(
             it.copy(
                 feedState = JamFeedState(
                     isLoading = false,
-                    items = feed.items,
+                    items = feed.items.mapNotNull { dto -> JamSubmission.fromDto(dto) },
                     cursor = feed.cursor,
                     endReached = feed.endReached,
                     error = null,
@@ -159,7 +159,9 @@ class JamViewModel(
                 it.copy(
                     feedState = it.feedState.copy(
                         isLoading = false,
-                        items = it.feedState.items + nextPage.items,
+                        items = it.feedState.items + nextPage.items.mapNotNull { dto ->
+                            JamSubmission.fromDto(dto)
+                        },
                         cursor = nextPage.cursor,
                         endReached = nextPage.endReached,
                     )

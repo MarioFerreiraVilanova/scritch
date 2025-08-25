@@ -182,12 +182,14 @@ class JamRepository {
             .orderBy("createdAt", Direction.DESCENDING)
             .limit(pageSize)
 
-        val pageItems = if (cursor == null) {
-            query.get().documents.map { snapshot -> snapshot.data<SubmissionDto>() }
+        val querySnapshot = if (cursor == null) {
+            query.get().documents
         } else {
-            query.startAfter(cursor.lastDocId).get().documents.map { snapshot ->
-                snapshot.data<SubmissionDto>()
-            }
+            query.startAfter(cursor.lastDocId).get().documents
+        }
+
+        val pageItems = querySnapshot.map { snapshot ->
+            snapshot.data<SubmissionDto>()
         }
 
         return Page(
