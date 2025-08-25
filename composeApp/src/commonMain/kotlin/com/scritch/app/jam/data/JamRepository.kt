@@ -172,7 +172,7 @@ class JamRepository {
         userId: String,
         jamId: String,
         cursor: Cursor? = null,
-        pageSize: Int = 24,
+        pageSize: Int = 2,
     ): Page<SubmissionDto> {
         val query = Firebase.firestore
             .collection(JAM_COLLECTION)
@@ -180,25 +180,22 @@ class JamRepository {
             .collection(SUBMISSIONS_COLLECTION)
             .where { "userId" notEqualTo userId }
             .orderBy("createdAt", Direction.DESCENDING)
-            .limit(pageSize)
 
-        val querySnapshot = if (cursor == null) {
-            query.get().documents
+        val finalQuery = if (cursor == null) {
+            query
         } else {
-            query.startAfter(cursor.lastDocId).get().documents
+            query.startAfter(cursor.lastDoc)
         }
 
-        val pageItems = querySnapshot.map { snapshot ->
+        val documents = finalQuery.limit(pageSize).get().documents
+
+        val pageItems = documents.map { snapshot ->
             snapshot.data<SubmissionDto>()
         }
 
         return Page(
             items = pageItems,
-            cursor = pageItems.lastOrNull()?.let { lastItem ->
-                Cursor(
-                    lastDocId = lastItem.userId ?: return@let null,
-                )
-            },
+            cursor = documents.lastOrNull()?.let { Cursor(it) },
             endReached = pageItems.size < pageSize,
         )
     }

@@ -1,5 +1,7 @@
 package com.scritch.app.jam
 
+import dev.gitlive.firebase.firestore.DocumentSnapshot
+
 data class JamFeedState(
     val isLoading: Boolean,
     val items: List<JamSubmission>,
@@ -25,5 +27,5 @@ data class Page<T>(
 )
 
 data class Cursor(
-    val lastDocId: String,
+    val lastDoc: DocumentSnapshot,
 )
