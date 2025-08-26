@@ -44,6 +44,11 @@ class JamRepository {
         mimeType: String = "image/jpeg",
         onProgress: ((Int) -> Unit)? = null
     ): SubmissionDto {
+        deleteWeeklyJamSubmission(
+            jamId = jamId,
+            uid = uid,
+        )
+
         val storagePath = "$JAM_COLLECTION/$jamId/$uid.jpg"
 
         val ref = Firebase.storage.reference(storagePath)
@@ -67,22 +72,22 @@ class JamRepository {
             storagePath = storagePath,
             imageUrl = downloadUrl,
             caption = caption,
-            createdAt = null,
+            createdAt = Timestamp.now(),
         )
-        Firebase.firestore
-            .collection(JAM_COLLECTION).document(jamId)
-            .collection("submissions").document(uid)
-            .set(
-                submission,
-                merge = false,
-            )
+
+        val data = mapOf(
+            "userId" to uid,
+            "storagePath" to storagePath,
+            "imageUrl" to downloadUrl,
+            "caption" to caption,
+            "status" to "pending",
+            "createdAt" to FieldValue.serverTimestamp
+        )
 
         Firebase.firestore
             .collection(JAM_COLLECTION).document(jamId)
             .collection("submissions").document(uid)
-            .update(
-                "createdAt" to FieldValue.serverTimestamp,
-            )
+            .set(data)
 
         onProgress?.invoke(100)
         return submission
@@ -178,6 +183,7 @@ class JamRepository {
             .collection(JAM_COLLECTION)
             .document(jamId)
             .collection(SUBMISSIONS_COLLECTION)
+            .where { "status" equalTo "approved" }
             .where { "userId" notEqualTo userId }
             .orderBy("createdAt", Direction.DESCENDING)
 

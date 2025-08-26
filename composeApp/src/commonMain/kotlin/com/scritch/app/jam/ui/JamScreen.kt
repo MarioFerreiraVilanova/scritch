@@ -28,6 +28,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Try
@@ -533,7 +534,7 @@ private fun SubmissionActions(
                             onClick = onRetry,
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Try,
+                                imageVector = Icons.Default.Error,
                                 contentDescription = null,
                             )
                         }

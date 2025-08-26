@@ -10,4 +10,5 @@ data class SubmissionDto(
     val imageUrl: String? = null,
     val caption: String? = null,
     val createdAt: Timestamp? = null,
+    val status: String = "pending",
 )
