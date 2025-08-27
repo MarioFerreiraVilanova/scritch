@@ -24,14 +24,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Repeat
-import androidx.compose.material.icons.filled.Try
+import androidx.compose.material.icons.filled.StopCircle
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -68,6 +72,7 @@ import com.scritch.app.jam.JamSubmission
 import com.scritch.app.jam.JamViewModel
 import com.scritch.app.jam.JamViewState
 import com.scritch.app.jam.LoadingState
+import com.scritch.app.jam.SubmissionStatus
 import com.scritch.app.jam.SubmissionUploadState
 import com.scritch.app.jam.SubmissionViewState
 import com.scritch.app.prompt.Prompt
@@ -369,6 +374,7 @@ private fun UserSection(
                 imageUrl = submitted?.imageUrl ?: return@AnimatedVisibility,
                 onRetakeImage = onSubmitWork,
                 onDeleteImage = onRemoveSubmission,
+                status = submissionState.status,
             )
         }
         SubmissionActions(
@@ -383,6 +389,7 @@ private fun UserSection(
 @Composable
 private fun EntryPreview(
     imageUrl: String,
+    status: SubmissionStatus,
     onRetakeImage: () -> Unit,
     onDeleteImage: () -> Unit,
 ) {
@@ -421,23 +428,57 @@ private fun EntryPreview(
 
         // 3) Action buttons only after image is visible
         Row(
-            modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            FilledTonalIconButton(
-                onClick = onDeleteImage,
-                colors = IconButtonDefaults.filledTonalIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.errorContainer,
-                    contentColor = MaterialTheme.colorScheme.onErrorContainer
-                )
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ){
+            Surface(
+                modifier = Modifier.padding(16.dp),
+                shape = CircleShape,
             ) {
-                Icon(
-                    Icons.Default.Delete,
-                    contentDescription = stringResource(Res.string.delete)
-                )
+                Row(
+                    modifier = Modifier.padding(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ){
+                    Icon(
+                        imageVector = when (status){
+                            SubmissionStatus.Pending -> Icons.Default.Info
+                            SubmissionStatus.Approved -> Icons.Default.CheckCircle
+                            SubmissionStatus.Rejected -> Icons.Default.Error
+                        },
+                        contentDescription = null,
+                    )
+                    Text(
+                        modifier = Modifier.padding(end = 4.dp),
+                        text = when (status){
+                            SubmissionStatus.Pending -> "Pending review"
+                            SubmissionStatus.Approved -> "Approved!"
+                            SubmissionStatus.Rejected -> "Rejected"
+                        },
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                }
             }
-            FilledIconButton(onClick = onRetakeImage) {
-                Icon(imageVector = Icons.Default.Repeat, contentDescription = null)
+            Row(
+                modifier = Modifier.padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                FilledTonalIconButton(
+                    onClick = onDeleteImage,
+                    colors = IconButtonDefaults.filledTonalIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer
+                    )
+                ) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = stringResource(Res.string.delete)
+                    )
+                }
+                FilledIconButton(onClick = onRetakeImage) {
+                    Icon(imageVector = Icons.Default.Repeat, contentDescription = null)
+                }
             }
         }
     }

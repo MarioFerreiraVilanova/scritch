@@ -119,7 +119,8 @@ class JamViewModel(
                         SubmissionViewState.NotSubmitted
                     } else {
                         SubmissionViewState.Submitted(
-                            imageUrl = submission.imageUrl
+                            imageUrl = submission.imageUrl,
+                            status = submissionStatusFromString(submission.status) ?: throw IllegalStateException("Missing submission status")
                         )
                     }
                 )
@@ -314,6 +315,8 @@ class JamViewModel(
                     submissionState = SubmissionViewState.Submitted(
                         imageUrl = submission.imageUrl
                             ?: throw IllegalStateException("Missing image url"),
+                        status = submissionStatusFromString(submission.status)
+                            ?: throw IllegalStateException("Missing submission status"),
                     )
                 )
             }
