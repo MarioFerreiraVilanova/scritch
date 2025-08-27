@@ -7,7 +7,7 @@ data class JamSubmission(
     val userId: String,
     val imageUrl: String,
     val createdAt: Timestamp,
-    val status: SubmissionStatus,
+    val status: ModerationStatus,
 ) {
     companion object {
         fun fromDto(dto: SubmissionDto): JamSubmission? {
@@ -21,15 +21,15 @@ data class JamSubmission(
     }
 }
 
-enum class SubmissionStatus {
+enum class ModerationStatus {
     Pending,
     Approved,
     Rejected,
 }
 
-fun submissionStatusFromString(string: String): SubmissionStatus? = when (string) {
-    "pending" -> SubmissionStatus.Pending
-    "approved" -> SubmissionStatus.Approved
-    "rejected" -> SubmissionStatus.Rejected
+fun submissionStatusFromString(string: String): ModerationStatus? = when (string) {
+    "pending" -> ModerationStatus.Pending
+    "approved" -> ModerationStatus.Approved
+    "rejected" -> ModerationStatus.Rejected
     else -> null
 }

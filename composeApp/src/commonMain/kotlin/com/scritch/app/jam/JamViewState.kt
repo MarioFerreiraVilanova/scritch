@@ -36,5 +36,6 @@ enum class JamScreenDialog {
     EntryPreview,
     SubmissionDeleteConfirmation,
     ImageSourceSheet,
-    GalleryPicker
+    GalleryPicker,
+    ModerationStatus,
 }

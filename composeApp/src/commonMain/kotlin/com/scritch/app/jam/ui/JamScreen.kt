@@ -28,14 +28,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Repeat
-import androidx.compose.material.icons.filled.StopCircle
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -72,7 +70,7 @@ import com.scritch.app.jam.JamSubmission
 import com.scritch.app.jam.JamViewModel
 import com.scritch.app.jam.JamViewState
 import com.scritch.app.jam.LoadingState
-import com.scritch.app.jam.SubmissionStatus
+import com.scritch.app.jam.ModerationStatus
 import com.scritch.app.jam.SubmissionUploadState
 import com.scritch.app.jam.SubmissionViewState
 import com.scritch.app.prompt.Prompt
@@ -183,6 +181,7 @@ fun JamScreen(
                             onSubmitWork = viewModel::onSubmitWork,
                             onRemoveSubmission = viewModel::onRemoveSubmission,
                             onRetryUpload = viewModel::onRetryUpload,
+                            onModerationStatusClick = viewModel::onModerationStatusClick,
                         )
                     }
                     // Inspiration
@@ -364,6 +363,7 @@ private fun UserSection(
     onSubmitWork: () -> Unit,
     onRemoveSubmission: () -> Unit,
     onRetryUpload: () -> Unit,
+    onModerationStatusClick: () -> Unit,
 ) {
     Column {
         val submitted = submissionState as? SubmissionViewState.Submitted
@@ -374,7 +374,8 @@ private fun UserSection(
                 imageUrl = submitted?.imageUrl ?: return@AnimatedVisibility,
                 onRetakeImage = onSubmitWork,
                 onDeleteImage = onRemoveSubmission,
-                status = submissionState.status,
+                moderationStatus = submissionState.moderationStatus,
+                onModerationStatusClick = onModerationStatusClick,
             )
         }
         SubmissionActions(
@@ -389,9 +390,10 @@ private fun UserSection(
 @Composable
 private fun EntryPreview(
     imageUrl: String,
-    status: SubmissionStatus,
+    moderationStatus: ModerationStatus,
     onRetakeImage: () -> Unit,
     onDeleteImage: () -> Unit,
+    onModerationStatusClick: () -> Unit,
 ) {
 
     Box(
@@ -433,7 +435,9 @@ private fun EntryPreview(
             verticalAlignment = Alignment.CenterVertically,
         ){
             Surface(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .clickable(onClick = onModerationStatusClick),
                 shape = CircleShape,
             ) {
                 Row(
@@ -442,19 +446,19 @@ private fun EntryPreview(
                     verticalAlignment = Alignment.CenterVertically,
                 ){
                     Icon(
-                        imageVector = when (status){
-                            SubmissionStatus.Pending -> Icons.Default.Info
-                            SubmissionStatus.Approved -> Icons.Default.CheckCircle
-                            SubmissionStatus.Rejected -> Icons.Default.Error
+                        imageVector = when (moderationStatus){
+                            ModerationStatus.Pending -> Icons.Default.Info
+                            ModerationStatus.Approved -> Icons.Default.CheckCircle
+                            ModerationStatus.Rejected -> Icons.Default.Error
                         },
                         contentDescription = null,
                     )
                     Text(
                         modifier = Modifier.padding(end = 4.dp),
-                        text = when (status){
-                            SubmissionStatus.Pending -> "Pending review"
-                            SubmissionStatus.Approved -> "Approved!"
-                            SubmissionStatus.Rejected -> "Rejected"
+                        text = when (moderationStatus){
+                            ModerationStatus.Pending -> "Pending review"
+                            ModerationStatus.Approved -> "Done!"
+                            ModerationStatus.Rejected -> "Rejected"
                         },
                         style = MaterialTheme.typography.labelMedium,
                     )

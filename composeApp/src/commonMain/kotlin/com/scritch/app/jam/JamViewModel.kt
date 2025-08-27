@@ -120,7 +120,7 @@ class JamViewModel(
                     } else {
                         SubmissionViewState.Submitted(
                             imageUrl = submission.imageUrl,
-                            status = submissionStatusFromString(submission.status) ?: throw IllegalStateException("Missing submission status")
+                            moderationStatus = submissionStatusFromString(submission.status) ?: throw IllegalStateException("Missing submission status")
                         )
                     }
                 )
@@ -252,6 +252,14 @@ class JamViewModel(
         }
     }
 
+    fun onModerationStatusClick() {
+        mutableViewState.update {
+            it.copy(
+                dialog = JamScreenDialog.ModerationStatus,
+            )
+        }
+    }
+
     fun onShowPreview() {
         mutableViewState.update {
             it.copy(
@@ -315,7 +323,7 @@ class JamViewModel(
                     submissionState = SubmissionViewState.Submitted(
                         imageUrl = submission.imageUrl
                             ?: throw IllegalStateException("Missing image url"),
-                        status = submissionStatusFromString(submission.status)
+                        moderationStatus = submissionStatusFromString(submission.status)
                             ?: throw IllegalStateException("Missing submission status"),
                     )
                 )
