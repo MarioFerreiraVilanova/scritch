@@ -100,8 +100,18 @@ import scritch.composeapp.generated.resources.ends_in_d_h
 import scritch.composeapp.generated.resources.ends_in_h_m
 import scritch.composeapp.generated.resources.ends_in_m_s
 import scritch.composeapp.generated.resources.ends_in_s
+import scritch.composeapp.generated.resources.entry_approved
+import scritch.composeapp.generated.resources.entry_approved_message
+import scritch.composeapp.generated.resources.entry_rejected
+import scritch.composeapp.generated.resources.entry_rejected_message
+import scritch.composeapp.generated.resources.ok
 import scritch.composeapp.generated.resources.pick_one_from_the_gallery
+import scritch.composeapp.generated.resources.rejected
+import scritch.composeapp.generated.resources.review_pending
+import scritch.composeapp.generated.resources.review_pending_message
 import scritch.composeapp.generated.resources.share_your_work
+import scritch.composeapp.generated.resources.status_approved
+import scritch.composeapp.generated.resources.status_pending
 import scritch.composeapp.generated.resources.submission_preview
 import scritch.composeapp.generated.resources.take_a_picture
 import scritch.composeapp.generated.resources.upload_complete
@@ -467,9 +477,9 @@ private fun EntryPreview(
                     Text(
                         modifier = Modifier.padding(end = 4.dp),
                         text = when (moderationStatus){
-                            ModerationStatus.Pending -> "Pending review"
-                            ModerationStatus.Approved -> "Done!"
-                            ModerationStatus.Rejected -> "Rejected"
+                            ModerationStatus.Pending -> stringResource(Res.string.status_pending)
+                            ModerationStatus.Approved -> stringResource(Res.string.status_approved)
+                            ModerationStatus.Rejected -> stringResource(Res.string.rejected)
                         },
                         style = MaterialTheme.typography.labelMedium,
                     )
@@ -721,24 +731,24 @@ private fun ModerationStatusDialog(
         title = {
             Text(
                 text = when (moderationStatus) {
-                    ModerationStatus.Pending -> "Review Pending"
-                    ModerationStatus.Approved -> "Entry Approved!"
-                    ModerationStatus.Rejected -> "Entry Rejected"
+                    ModerationStatus.Pending -> stringResource(Res.string.review_pending)
+                    ModerationStatus.Approved -> stringResource(Res.string.entry_approved)
+                    ModerationStatus.Rejected -> stringResource(Res.string.entry_rejected)
                 }
             )
         },
         text = {
             Text(
                 text = when (moderationStatus) {
-                    ModerationStatus.Pending -> "Your submission is currently being reviewed by our moderators. This typically takes 24-48 hours."
-                    ModerationStatus.Approved -> "Congratulations! Your submission has been approved and is now visible to other users in the community feed."
-                    ModerationStatus.Rejected -> "Your submission was rejected as it didn't meet our community guidelines. Please try submitting a new entry that follows the prompt and community standards."
+                    ModerationStatus.Pending -> stringResource(Res.string.review_pending_message)
+                    ModerationStatus.Approved -> stringResource(Res.string.entry_approved_message)
+                    ModerationStatus.Rejected -> stringResource(Res.string.entry_rejected_message)
                 }
             )
         },
         confirmButton = {
             TextButton(onClick = onDismissRequest) {
-                Text("OK")
+                Text(stringResource(Res.string.ok))
             }
         },
         icon = {

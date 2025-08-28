@@ -33,12 +33,18 @@
     <string name="landing_screen_second_description_1">The challenges mainly involve using different art mediums and supports. Don’t have or want to use some? No worries, </string>
     <string name="landing_screen_second_description_2">you can customize everything in the settings!</string>
     <string name="no_category_imposed">No %1$s imposed</string>
+    <string name="ok">OK</string>
     <string name="other">Other</string>
     <string name="pick_one_from_the_gallery">Pick one from the gallery</string>
     <string name="prompt_settings">Prompt settings</string>
+    <string name="rejected">Rejected</string>
+    <string name="review_pending">Review Pending</string>
+    <string name="review_pending_message">Your submission is currently being reviewed by our moderators. This typically takes 24-48 hours.</string>
     <string name="send_us_an_email">Send us an email!</string>
     <string name="settings">Settings</string>
     <string name="share_your_work">Share your work</string>
+    <string name="status_approved">Done!</string>
+    <string name="status_pending">Pending review</string>
     <string name="solo_mode">Solo Mode</string>
     <string name="submission_preview">Submission preview</string>
     <string name="take_a_different_picture">Take a different picture</string>
@@ -68,6 +74,10 @@
     <string name="ends_in_h_m">Ends in %1$dh %2$dm</string>
     <string name="ends_in_m_s">Ends in %1$dm %2$ds</string>
     <string name="ends_in_s">Ends in %1$ds</string>
+    <string name="entry_approved">Entry Approved!</string>
+    <string name="entry_approved_message">Congratulations! Your submission has been approved and is now visible to other users in the community feed.</string>
+    <string name="entry_rejected">Entry Rejected</string>
+    <string name="entry_rejected_message">Your submission was rejected as it didn't meet our community guidelines. Please try submitting a new entry that follows the prompt and community standards.</string>
 
     <!-- Plurals -->
     <plurals name="category_art_medium">
