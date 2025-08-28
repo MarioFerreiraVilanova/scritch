@@ -456,9 +456,8 @@ private fun EntryPreview(
             verticalAlignment = Alignment.CenterVertically,
         ){
             Surface(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .clickable(onClick = onModerationStatusClick),
+                onClick = onModerationStatusClick,
+                modifier = Modifier.padding(16.dp),
                 shape = CircleShape,
             ) {
                 Row(
