@@ -107,6 +107,7 @@ import scritch.composeapp.generated.resources.entry_rejected_message
 import scritch.composeapp.generated.resources.ok
 import scritch.composeapp.generated.resources.pick_one_from_the_gallery
 import scritch.composeapp.generated.resources.rejected
+import scritch.composeapp.generated.resources.retry
 import scritch.composeapp.generated.resources.review_pending
 import scritch.composeapp.generated.resources.review_pending_message
 import scritch.composeapp.generated.resources.share_your_work
@@ -191,6 +192,7 @@ fun JamScreen(
                             onSubmitWork = viewModel::onSubmitWork,
                             onRemoveSubmission = viewModel::onRemoveSubmission,
                             onRetryUpload = viewModel::onRetryUpload,
+                            onCancelUpload = viewModel::onCancelUpload,
                             onModerationStatusClick = viewModel::onModerationStatusClick,
                         )
                     }
@@ -384,6 +386,7 @@ private fun UserSection(
     onSubmitWork: () -> Unit,
     onRemoveSubmission: () -> Unit,
     onRetryUpload: () -> Unit,
+    onCancelUpload: () -> Unit,
     onModerationStatusClick: () -> Unit,
 ) {
     Column {
@@ -404,6 +407,7 @@ private fun UserSection(
             viewState = submissionState,
             onSubmitWork = onSubmitWork,
             onRetry = onRetryUpload,
+            onCancelUpload = onCancelUpload,
         )
     }
 }
@@ -565,6 +569,7 @@ private fun SubmissionActions(
     viewState: SubmissionViewState,
     onSubmitWork: () -> Unit,
     onRetry: () -> Unit,
+    onCancelUpload: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val animatedProgress by animateFloatAsState(
@@ -595,13 +600,25 @@ private fun SubmissionActions(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     when (viewState.uploadStatus) {
-                        is SubmissionUploadState.Error -> FilledIconButton(
-                            onClick = onRetry,
+                        is SubmissionUploadState.Error -> Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Error,
-                                contentDescription = null,
-                            )
+                            FilledTonalIconButton(
+                                onClick = onCancelUpload,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = stringResource(Res.string.cancel),
+                                )
+                            }
+                            FilledIconButton(
+                                onClick = onRetry,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Repeat,
+                                    contentDescription = stringResource(Res.string.retry),
+                                )
+                            }
                         }
 
                         SubmissionUploadState.Success -> CircularProgressIndicator()

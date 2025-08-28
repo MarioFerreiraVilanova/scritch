@@ -252,6 +252,14 @@ class JamViewModel(
         }
     }
 
+    fun onCancelUpload() {
+        mutableViewState.update {
+            it.copy(
+                submissionState = SubmissionViewState.NotSubmitted
+            )
+        }
+    }
+
     fun onModerationStatusClick() {
         mutableViewState.update {
             it.copy(

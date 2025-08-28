@@ -38,6 +38,7 @@
     <string name="pick_one_from_the_gallery">Pick one from the gallery</string>
     <string name="prompt_settings">Prompt settings</string>
     <string name="rejected">Rejected</string>
+    <string name="retry">Retry</string>
     <string name="review_pending">Review Pending</string>
     <string name="review_pending_message">Your submission is currently being reviewed by our moderators. This typically takes 24-48 hours.</string>
     <string name="send_us_an_email">Send us an email!</string>
