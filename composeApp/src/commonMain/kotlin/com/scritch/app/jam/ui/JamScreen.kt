@@ -236,6 +236,17 @@ fun JamScreen(
         null -> {
         }
 
+        JamScreenDialog.ModerationStatus -> {
+            (viewState.submissionState as? SubmissionViewState.Submitted)?.let { submission ->
+                ModerationStatusDialog(
+                    moderationStatus = submission.moderationStatus,
+                    onDismissRequest = {
+                        viewModel.onDismissDialog(JamScreenDialog.ModerationStatus)
+                    }
+                )
+            }
+        }
+
         JamScreenDialog.GalleryPicker -> {
             GalleryPickerLauncher(
                 allowMultiple = false,
@@ -698,6 +709,54 @@ private fun SubmissionPreviewDialog(
             }
         }
     }
+}
+
+@Composable
+private fun ModerationStatusDialog(
+    moderationStatus: ModerationStatus,
+    onDismissRequest: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismissRequest,
+        title = {
+            Text(
+                text = when (moderationStatus) {
+                    ModerationStatus.Pending -> "Review Pending"
+                    ModerationStatus.Approved -> "Entry Approved!"
+                    ModerationStatus.Rejected -> "Entry Rejected"
+                }
+            )
+        },
+        text = {
+            Text(
+                text = when (moderationStatus) {
+                    ModerationStatus.Pending -> "Your submission is currently being reviewed by our moderators. This typically takes 24-48 hours."
+                    ModerationStatus.Approved -> "Congratulations! Your submission has been approved and is now visible to other users in the community feed."
+                    ModerationStatus.Rejected -> "Your submission was rejected as it didn't meet our community guidelines. Please try submitting a new entry that follows the prompt and community standards."
+                }
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onDismissRequest) {
+                Text("OK")
+            }
+        },
+        icon = {
+            Icon(
+                imageVector = when (moderationStatus) {
+                    ModerationStatus.Pending -> Icons.Default.Info
+                    ModerationStatus.Approved -> Icons.Default.CheckCircle
+                    ModerationStatus.Rejected -> Icons.Default.Error
+                },
+                contentDescription = null,
+                tint = when (moderationStatus) {
+                    ModerationStatus.Pending -> MaterialTheme.colorScheme.primary
+                    ModerationStatus.Approved -> MaterialTheme.colorScheme.primary
+                    ModerationStatus.Rejected -> MaterialTheme.colorScheme.error
+                }
+            )
+        }
+    )
 }
 
 @Composable

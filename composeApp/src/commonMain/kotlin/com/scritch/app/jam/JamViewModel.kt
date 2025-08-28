@@ -278,6 +278,7 @@ class JamViewModel(
                     JamScreenDialog.SubmissionDeleteConfirmation -> null
                     JamScreenDialog.ImageSourceSheet -> null
                     JamScreenDialog.GalleryPicker -> null
+                    JamScreenDialog.ModerationStatus -> null
                 },
             )
         }
