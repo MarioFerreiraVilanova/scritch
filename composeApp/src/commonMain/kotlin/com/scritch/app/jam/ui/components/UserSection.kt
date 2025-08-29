@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -12,8 +14,10 @@ import com.scritch.app.jam.SubmissionViewState
 import com.scritch.app.theme.scritchColorScheme
 import com.scritch.app.theme.scritchShapes
 import com.scritch.app.theme.scritchTypography
-import androidx.compose.material3.MaterialTheme
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.weekly_scritch_has_ended
 
 @Composable
 fun UserSection(
@@ -36,6 +40,7 @@ fun UserSection(
                 onDeleteImage = onRemoveSubmission,
                 moderationStatus = submitted.moderationStatus,
                 onModerationStatusClick = onModerationStatusClick,
+                isJamExpired = isJamExpired,
             )
         }
         SubmissionActions(
@@ -46,6 +51,20 @@ fun UserSection(
             onCancelUpload = onCancelUpload,
             isJamExpired = isJamExpired,
         )
+        
+        // Show expired message at the bottom when jam has ended
+        if (isJamExpired) {
+            Text(
+                text = stringResource(Res.string.weekly_scritch_has_ended),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 8.dp),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
+        }
     }
 }
 

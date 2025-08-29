@@ -51,6 +51,7 @@ fun EntryPreview(
     onRetakeImage: () -> Unit,
     onDeleteImage: () -> Unit,
     onModerationStatusClick: () -> Unit,
+    isJamExpired: Boolean,
 ) {
     Box(
         modifier = Modifier
@@ -134,7 +135,10 @@ fun EntryPreview(
                         contentDescription = stringResource(Res.string.delete)
                     )
                 }
-                FilledIconButton(onClick = onRetakeImage) {
+                FilledIconButton(
+                    onClick = onRetakeImage,
+                    enabled = !isJamExpired
+                ) {
                     Icon(imageVector = Icons.Default.Repeat, contentDescription = null)
                 }
             }
@@ -156,6 +160,7 @@ private fun EntryPreviewPendingPreview() {
             onRetakeImage = {},
             onDeleteImage = {},
             onModerationStatusClick = {},
+            isJamExpired = false,
         )
     }
 }
@@ -174,6 +179,7 @@ private fun EntryPreviewApprovedPreview() {
             onRetakeImage = {},
             onDeleteImage = {},
             onModerationStatusClick = {},
+            isJamExpired = false,
         )
     }
 }
@@ -192,6 +198,7 @@ private fun EntryPreviewRejectedPreview() {
             onRetakeImage = {},
             onDeleteImage = {},
             onModerationStatusClick = {},
+            isJamExpired = false,
         )
     }
 }

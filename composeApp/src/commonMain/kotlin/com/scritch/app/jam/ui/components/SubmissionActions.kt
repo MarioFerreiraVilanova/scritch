@@ -40,7 +40,6 @@ import scritch.composeapp.generated.resources.share_your_work
 import scritch.composeapp.generated.resources.upload_complete
 import scritch.composeapp.generated.resources.upload_failed
 import scritch.composeapp.generated.resources.uploading_your_image
-import scritch.composeapp.generated.resources.weekly_scritch_has_ended
 
 @Composable
 fun SubmissionActions(
@@ -120,23 +119,16 @@ fun SubmissionActions(
             }
 
             SubmissionViewState.NotSubmitted -> {
-                if (isJamExpired) {
-                    Text(
-                        text = stringResource(Res.string.weekly_scritch_has_ended),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                Button(
+                    onClick = onSubmitWork,
+                    enabled = !isJamExpired
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.camera),
+                        contentDescription = null,
                     )
-                } else {
-                    Button(
-                        onClick = onSubmitWork
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.camera),
-                            contentDescription = null,
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(text = stringResource(Res.string.share_your_work))
-                    }
+                    Spacer(Modifier.width(8.dp))
+                    Text(text = stringResource(Res.string.share_your_work))
                 }
             }
 
