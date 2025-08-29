@@ -63,3 +63,95 @@ The app heavily relies on Firebase services:
 - `navigation/AppNavGraph.kt`: Navigation structure and flow
 - `di/AppModule.kt`: Dependency injection configuration
 - `build.gradle.kts`: Multiplatform build configuration with all dependencies
+
+## Development Preferences
+
+### Internationalization (i18n)
+- **ALL text in the app must be localized** - never use hardcoded strings in UI components
+- **Supported languages**: 
+  - English (default/fallback)
+  - French (France) 
+  - Spanish (Spain)
+- **String key organization**: Follow the existing organizational structure in string resource files when adding new keys
+- **Before adding new strings**: Always check existing localization files to understand the current key naming patterns and organization
+
+### Firestore Database Structure
+
+#### Collections Overview
+- **weekly_jam**: Weekly art challenges/prompts
+- **categories**: Art categories (medium, support, topic, constraint) with localized options
+- **user_data**: User preferences and disabled options
+- **admins**: Admin users with elevated privileges
+
+#### Collection: `weekly_jam`
+**Document Structure** (JamDto):
+```
+weekly_jam/{jamId}
+├── id: String (document ID, e.g., "2025_33")
+├── constraint: String?
+├── medium: String?
+├── support: String?
+├── topic: String?
+├── startDate: Timestamp
+└── endDate: Timestamp
+```
+
+**Subcollection**: `submissions`
+```
+weekly_jam/{jamId}/submissions/{userId}
+├── userId: String
+├── storagePath: String (e.g., "weekly_jam/2025_33/user123.jpg")
+├── imageUrl: String (Firebase Storage download URL)
+├── caption: String?
+├── createdAt: Timestamp
+└── status: String ("pending", "approved", "rejected")
+```
+
+#### Collection: `categories`
+**Document Structure**: Four category types (`medium`, `support`, `topic`, `constraint`)
+```
+categories/{categoryType}
+└── options/
+    └── {optionId} (OptionDto)
+        ├── id: String
+        ├── name: String?
+        ├── description: String?
+        ├── tips: Map<String, String>? (TipMap)
+        ├── prompt: String?
+        └── frequency: Int?
+```
+
+**Localized Options**: Each category also has localized subcollections:
+```
+categories/{categoryType}
+├── options-en/
+├── options-es/
+└── options-fr/
+```
+
+#### Collection: `user_data`
+**Document Structure** (UserDataDto):
+```
+user_data/{userId}
+├── disabledTopicIds: List<String>?
+├── disabledMediumIds: List<String>?
+├── disabledSupportIds: List<String>?
+├── disabledConstraintIds: List<String>?
+└── unImposedCategories: Map<String, Boolean>? (categorySettings)
+```
+
+#### Collection: `admins`
+**Document Structure**: Admin user records
+```
+admins/{userId}
+└── who: String (real name, dummy field to prevent empty document)
+```
+
+**Usage**:
+- Check if a user ID exists in this collection to determine admin privileges
+- Used for admin panel access (creating jams, moderating submissions)
+- Simplified Firestore security rule setup (easier than role-based fields)
+
+#### Storage Structure
+- **Path**: `weekly_jam/{jamId}/{userId}.jpg`
+- **Usage**: User submission images for weekly jams
