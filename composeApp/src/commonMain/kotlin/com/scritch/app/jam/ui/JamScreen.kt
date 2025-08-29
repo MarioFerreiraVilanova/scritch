@@ -35,6 +35,8 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -64,6 +66,7 @@ import scritch.composeapp.generated.resources.pick_one_from_the_gallery
 import scritch.composeapp.generated.resources.take_a_picture
 import scritch.composeapp.generated.resources.weekly_jam_not_available
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JamScreen(
     chosenImagePath: String?,
@@ -73,6 +76,8 @@ fun JamScreen(
     viewModel: JamViewModel = koinViewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
+    val pullToRefreshState = rememberPullToRefreshState()
+    val isRefreshing = viewState.loadingState == LoadingState.REFRESHING
 
     LaunchedEffect(chosenImagePath) {
         viewModel.onImageCaptured(chosenImagePath ?: return@LaunchedEffect)
@@ -82,19 +87,25 @@ fun JamScreen(
     Scaffold(
         modifier = modifier,
     ) { contentPadding ->
-        LazyColumn(
-            modifier = modifier
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = viewModel::onRefresh,
+            state = pullToRefreshState,
+            modifier = Modifier
                 .fillMaxSize()
                 .consumeWindowInsets(contentPadding)
-                .padding(contentPadding),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues.Absolute(
-                left = 16.dp,
-                right = 16.dp,
-                top = 16.dp,
-                bottom = 16.dp,
-            )
+                .padding(contentPadding)
         ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues.Absolute(
+                    left = 16.dp,
+                    right = 16.dp,
+                    top = 16.dp,
+                    bottom = 16.dp,
+                )
+            ) {
             // Description / header
             item {
                 JamHeader(
@@ -144,6 +155,7 @@ fun JamScreen(
                         onLoadMore = viewModel::onLoadMore,
                     )
                 }
+            }
             }
         }
     }

@@ -33,6 +33,12 @@ class JamViewModel(
         }
     }
 
+    fun onRefresh() {
+        viewModelScope.launch {
+            loadJamData()
+        }
+    }
+
     private suspend fun loadJamData() {
         mutableViewState.update {
             it.copy(
