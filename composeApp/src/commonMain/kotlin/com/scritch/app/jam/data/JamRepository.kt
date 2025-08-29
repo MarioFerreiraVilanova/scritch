@@ -9,6 +9,8 @@ import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.Timestamp
 import dev.gitlive.firebase.firestore.firestore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import dev.gitlive.firebase.storage.storage
 import dev.gitlive.firebase.storage.storageMetadata
 import kotlin.time.ExperimentalTime
@@ -18,21 +20,29 @@ private const val SUBMISSIONS_COLLECTION = "submissions"
 
 class JamRepository {
 
-    suspend fun loadCurrentJam(): JamDto? {
-        val now = Timestamp.now()
-        Firebase
-            .firestore
+    fun getCurrentJamFlow(): Flow<JamDto?> {
+        return Firebase.firestore
             .collection(JAM_COLLECTION)
-            .where {
-                "startDate" lessThanOrEqualTo now
-                "endDate" greaterThanOrEqualTo now
+            .orderBy("startDate", Direction.DESCENDING)
+            .limit(1)
+            .snapshots()
+            .map { querySnapshot ->
+                querySnapshot.documents.firstOrNull()?.let { snapshot ->
+                    JamDto(snapshot)
+                }
             }
+    }
+
+    suspend fun loadCurrentJam(): JamDto? {
+        return Firebase.firestore
+            .collection(JAM_COLLECTION)
+            .orderBy("startDate", Direction.DESCENDING)
+            .limit(1)
             .get()
             .documents
             .firstOrNull()?.let { snapshot ->
-                return JamDto(snapshot)
+                JamDto(snapshot)
             }
-        return null
     }
 
     @OptIn(ExperimentalTime::class)

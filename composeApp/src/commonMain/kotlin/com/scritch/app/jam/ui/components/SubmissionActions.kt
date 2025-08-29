@@ -40,6 +40,7 @@ import scritch.composeapp.generated.resources.share_your_work
 import scritch.composeapp.generated.resources.upload_complete
 import scritch.composeapp.generated.resources.upload_failed
 import scritch.composeapp.generated.resources.uploading_your_image
+import scritch.composeapp.generated.resources.weekly_scritch_has_ended
 
 @Composable
 fun SubmissionActions(
@@ -47,6 +48,7 @@ fun SubmissionActions(
     onSubmitWork: () -> Unit,
     onRetry: () -> Unit,
     onCancelUpload: () -> Unit,
+    isJamExpired: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val animatedProgress by animateFloatAsState(
@@ -118,15 +120,23 @@ fun SubmissionActions(
             }
 
             SubmissionViewState.NotSubmitted -> {
-                Button(
-                    onClick = onSubmitWork
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.camera),
-                        contentDescription = null,
+                if (isJamExpired) {
+                    Text(
+                        text = stringResource(Res.string.weekly_scritch_has_ended),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                    Spacer(Modifier.width(8.dp))
-                    Text(text = stringResource(Res.string.share_your_work))
+                } else {
+                    Button(
+                        onClick = onSubmitWork
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.camera),
+                            contentDescription = null,
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(text = stringResource(Res.string.share_your_work))
+                    }
                 }
             }
 
@@ -148,6 +158,7 @@ private fun SubmissionActionsNotSubmittedPreview() {
             onSubmitWork = {},
             onRetry = {},
             onCancelUpload = {},
+            isJamExpired = false,
             modifier = Modifier.fillMaxWidth().padding(16.dp)
         )
     }
@@ -169,6 +180,7 @@ private fun SubmissionActionsUploadingPreview() {
             onSubmitWork = {},
             onRetry = {},
             onCancelUpload = {},
+            isJamExpired = false,
             modifier = Modifier.fillMaxWidth().padding(16.dp)
         )
     }
@@ -190,6 +202,7 @@ private fun SubmissionActionsErrorPreview() {
             onSubmitWork = {},
             onRetry = {},
             onCancelUpload = {},
+            isJamExpired = false,
             modifier = Modifier.fillMaxWidth().padding(16.dp)
         )
     }

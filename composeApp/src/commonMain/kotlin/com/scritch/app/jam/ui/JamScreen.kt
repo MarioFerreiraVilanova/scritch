@@ -53,6 +53,7 @@ import com.scritch.app.jam.JamViewModel
 import com.scritch.app.jam.JamViewState
 import com.scritch.app.jam.LoadingState
 import com.scritch.app.jam.SubmissionViewState
+import com.scritch.app.jam.data.JamStatus
 import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
 import com.scritch.app.uicomponents.PageLoader
@@ -145,6 +146,7 @@ fun JamScreen(
                             onRetryUpload = viewModel::onRetryUpload,
                             onCancelUpload = viewModel::onCancelUpload,
                             onModerationStatusClick = viewModel::onModerationStatusClick,
+                            isJamExpired = viewState.jamStatus == JamStatus.EXPIRED,
                         )
                     }
                     // Inspiration

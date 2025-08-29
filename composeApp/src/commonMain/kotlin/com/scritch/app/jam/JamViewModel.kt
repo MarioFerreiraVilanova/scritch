@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.scritch.app.categories.Category
 import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.OptionState
+import com.scritch.app.jam.data.JamDto
 import com.scritch.app.jam.data.JamRepository
 import com.scritch.app.prompt.PromptViewState
 import dev.gitlive.firebase.Firebase
@@ -13,6 +14,8 @@ import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -28,30 +31,29 @@ class JamViewModel(
     val viewState = mutableViewState.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            loadJamData()
-        }
+        // Set up real-time listener for jam updates
+        jamRepository.getCurrentJamFlow()
+            .onEach { jamDto ->
+                handleJamUpdate(jamDto)
+            }
+            .launchIn(viewModelScope)
     }
 
     fun onRefresh() {
         viewModelScope.launch {
-            loadJamData()
+            // The flow will automatically update when we manually refresh
+            val jamDto = jamRepository.loadCurrentJam()
+            handleJamUpdate(jamDto)
         }
     }
 
-    private suspend fun loadJamData() {
-        mutableViewState.update {
-            it.copy(
-                loadingState = when (it.loadingState) {
-                    LoadingState.INITIAL_LOADING -> LoadingState.INITIAL_LOADING
-                    LoadingState.LOADED -> LoadingState.REFRESHING
-                    LoadingState.NO_JAM -> LoadingState.REFRESHING
-                    LoadingState.REFRESHING -> LoadingState.REFRESHING
-                }
-            )
+    private suspend fun handleJamUpdate(jamDto: JamDto?) {
+        // Set loading state based on current state
+        if (mutableViewState.value.loadingState != LoadingState.INITIAL_LOADING) {
+            mutableViewState.update {
+                it.copy(loadingState = LoadingState.REFRESHING)
+            }
         }
-
-        val jamDto = jamRepository.loadCurrentJam()
 
         if (jamDto == null) {
             mutableViewState.update {
@@ -114,6 +116,7 @@ class JamViewModel(
                     loadingState = LoadingState.LOADED,
                     jamId = jamDto.id,
                     endDate = jamDto.endDate?.toLocalDateTime(TimeZone.currentSystemDefault()),
+                    jamStatus = jamDto.jamStatus,
                     promptViewState = PromptViewState(
                         topic = topic,
                         medium = medium,

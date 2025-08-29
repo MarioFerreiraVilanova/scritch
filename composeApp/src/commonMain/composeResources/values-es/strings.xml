@@ -77,6 +77,7 @@
     <string name="entry_approved_message">¡Enhorabuena! Tu participación ha sido aprobada y ya es visible para otros usuarios en el feed de la comunidad.</string>
     <string name="entry_rejected">Participación rechazada</string>
     <string name="entry_rejected_message">Tu participación ha sido rechazada porque no cumplía las normas de la comunidad. Prueba a enviar una nueva participación que siga el prompt y los estándares de la comunidad.</string>
+    <string name="weekly_scritch_has_ended">Este Scritch semanal ha terminado</string>
 
     <!-- Plurals -->
     <plurals name="category_art_medium">

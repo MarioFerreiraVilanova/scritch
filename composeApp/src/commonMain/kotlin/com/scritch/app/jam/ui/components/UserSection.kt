@@ -23,6 +23,7 @@ fun UserSection(
     onRetryUpload: () -> Unit,
     onCancelUpload: () -> Unit,
     onModerationStatusClick: () -> Unit,
+    isJamExpired: Boolean,
 ) {
     Column {
         val submitted = submissionState as? SubmissionViewState.Submitted
@@ -43,6 +44,7 @@ fun UserSection(
             onSubmitWork = onSubmitWork,
             onRetry = onRetryUpload,
             onCancelUpload = onCancelUpload,
+            isJamExpired = isJamExpired,
         )
     }
 }
@@ -62,6 +64,7 @@ private fun UserSectionNotSubmittedPreview() {
             onRetryUpload = {},
             onCancelUpload = {},
             onModerationStatusClick = {},
+            isJamExpired = false,
         )
     }
 }
@@ -84,6 +87,7 @@ private fun UserSectionSubmittedPreview() {
             onRetryUpload = {},
             onCancelUpload = {},
             onModerationStatusClick = {},
+            isJamExpired = false,
         )
     }
 }

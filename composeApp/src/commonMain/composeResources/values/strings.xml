@@ -79,6 +79,7 @@
     <string name="entry_approved_message">Congratulations! Your submission has been approved and is now visible to other users in the community feed.</string>
     <string name="entry_rejected">Entry Rejected</string>
     <string name="entry_rejected_message">Your submission was rejected as it didn't meet our community guidelines. Please try submitting a new entry that follows the prompt and community standards.</string>
+    <string name="weekly_scritch_has_ended">This weekly Scritch has ended</string>
 
     <!-- Plurals -->
     <plurals name="category_art_medium">
