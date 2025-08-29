@@ -63,6 +63,7 @@ import io.kamel.image.asyncPainterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.be_the_first_to_submit
 import scritch.composeapp.generated.resources.pick_one_from_the_gallery
 import scritch.composeapp.generated.resources.take_a_picture
 import scritch.composeapp.generated.resources.weekly_jam_not_available
@@ -237,17 +238,19 @@ private fun LazyListScope.jamFeed(
     feedState: JamFeedState,
     onLoadMore: () -> Unit,
 ){
+    // Always show the feed section
+    item {
+        HorizontalDivider()
+    }
+    item {
+        Text(
+            text = "See what others are drawing",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onBackground,
+        )
+    }
+    
     if (feedState.items.isNotEmpty()) {
-        item {
-            HorizontalDivider()
-        }
-        item {
-            Text(
-                text = "See what others are drawing",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-        }
         items(
             items = feedState.items.chunked(2),
             key = { row -> row.joinToString { it.userId } }
@@ -277,6 +280,22 @@ private fun LazyListScope.jamFeed(
                 ) {
                     onLoadMore()
                 } // or use a VisibilityObserver
+            }
+        }
+    } else {
+        // Empty state
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(Res.string.be_the_first_to_submit),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }
