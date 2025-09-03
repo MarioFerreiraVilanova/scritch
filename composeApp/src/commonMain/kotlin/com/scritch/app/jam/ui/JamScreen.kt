@@ -242,15 +242,15 @@ private fun LazyListScope.jamFeed(
     item {
         HorizontalDivider()
     }
-    item {
-        Text(
-            text = "See what others are drawing",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-    }
     
     if (feedState.items.isNotEmpty()) {
+        item {
+            Text(
+                text = "See what others are drawing",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+        }
         items(
             items = feedState.items.chunked(2),
             key = { row -> row.joinToString { it.userId } }
