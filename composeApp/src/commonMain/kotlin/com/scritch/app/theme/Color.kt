@@ -14,6 +14,9 @@ val scritchColorScheme = darkColorScheme(
     surface = Color.Black,
     surfaceContainer = Color(0xFF1A1919),
     onSurface = Color.White,
+    surfaceVariant = Color(0xFF1C1C1C),
+    error = Color(0xFFDA3301),
+    onError = Color.White,
 )
 
 @Composable

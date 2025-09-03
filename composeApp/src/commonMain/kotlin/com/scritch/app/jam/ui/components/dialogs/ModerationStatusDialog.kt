@@ -31,6 +31,7 @@ fun ModerationStatusDialog(
     onDismissRequest: () -> Unit,
 ) {
     AlertDialog(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant,
         onDismissRequest = onDismissRequest,
         title = {
             Text(
@@ -38,7 +39,9 @@ fun ModerationStatusDialog(
                     ModerationStatus.Pending -> stringResource(Res.string.review_pending)
                     ModerationStatus.Approved -> stringResource(Res.string.entry_approved)
                     ModerationStatus.Rejected -> stringResource(Res.string.entry_rejected)
-                }
+                },
+                textAlign = androidx.compose.ui.text.style.TextAlign.Start,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         },
         text = {
@@ -47,7 +50,8 @@ fun ModerationStatusDialog(
                     ModerationStatus.Pending -> stringResource(Res.string.review_pending_message)
                     ModerationStatus.Approved -> stringResource(Res.string.entry_approved_message)
                     ModerationStatus.Rejected -> stringResource(Res.string.entry_rejected_message)
-                }
+                },
+                color = MaterialTheme.colorScheme.onSurface,
             )
         },
         confirmButton = {
@@ -55,21 +59,6 @@ fun ModerationStatusDialog(
                 Text(stringResource(Res.string.ok))
             }
         },
-        icon = {
-            Icon(
-                imageVector = when (moderationStatus) {
-                    ModerationStatus.Pending -> Icons.Default.Info
-                    ModerationStatus.Approved -> Icons.Default.CheckCircle
-                    ModerationStatus.Rejected -> Icons.Default.Error
-                },
-                contentDescription = null,
-                tint = when (moderationStatus) {
-                    ModerationStatus.Pending -> MaterialTheme.colorScheme.primary
-                    ModerationStatus.Approved -> MaterialTheme.colorScheme.primary
-                    ModerationStatus.Rejected -> MaterialTheme.colorScheme.error
-                }
-            )
-        }
     )
 }
 

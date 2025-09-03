@@ -20,8 +20,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Image
@@ -53,6 +55,7 @@ import com.scritch.app.jam.JamSubmission
 import com.scritch.app.jam.JamViewModel
 import com.scritch.app.jam.JamViewState
 import com.scritch.app.jam.LoadingState
+import com.scritch.app.jam.ModerationStatus
 import com.scritch.app.jam.SubmissionViewState
 import com.scritch.app.jam.data.JamStatus
 import com.scritch.app.prompt.Prompt
@@ -65,7 +68,10 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.be_the_first_to_submit
+import scritch.composeapp.generated.resources.entry_approved
+import scritch.composeapp.generated.resources.entry_rejected
 import scritch.composeapp.generated.resources.pick_one_from_the_gallery
+import scritch.composeapp.generated.resources.review_pending
 import scritch.composeapp.generated.resources.take_a_picture
 import scritch.composeapp.generated.resources.weekly_jam_not_available
 
@@ -145,6 +151,7 @@ fun JamScreen(
                         feedState = viewState.feedState,
                         submissionState = viewState.submissionState,
                         onSubmitWork = viewModel::onSubmitWork,
+                        onModerationStatusClick = viewModel::onModerationStatusClick,
                         isJamExpired = viewState.jamStatus == JamStatus.EXPIRED,
                         onLoadMore = viewModel::onLoadMore,
                     )
@@ -229,6 +236,7 @@ private fun LazyListScope.jamFeed(
     feedState: JamFeedState,
     submissionState: SubmissionViewState,
     onSubmitWork: () -> Unit,
+    onModerationStatusClick: () -> Unit,
     isJamExpired: Boolean,
     onLoadMore: () -> Unit,
 ){
@@ -243,13 +251,6 @@ private fun LazyListScope.jamFeed(
     val hasAnyContent = hasUserSubmission || allSubmissions.isNotEmpty()
     
     if (hasAnyContent) {
-        item {
-            Text(
-                text = if (hasUserSubmission) "See what you and others are drawing" else "See what others are drawing",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-        }
         
         // Create rows, starting with user submission if present
         val allRows = mutableListOf<List<Any>>()
@@ -291,6 +292,7 @@ private fun LazyListScope.jamFeed(
                             UserSubmissionCell(
                                 submissionState = submissionState,
                                 onSubmitWork = onSubmitWork,
+                                onModerationStatusClick = onModerationStatusClick,
                                 isJamExpired = isJamExpired,
                                 modifier = Modifier.weight(1f)
                             )
@@ -329,6 +331,7 @@ private fun LazyListScope.jamFeed(
                 UserSubmissionCell(
                     submissionState = submissionState,
                     onSubmitWork = onSubmitWork,
+                    onModerationStatusClick = onModerationStatusClick,
                     isJamExpired = isJamExpired,
                     modifier = Modifier.weight(1f)
                 )
@@ -357,6 +360,7 @@ private fun LazyListScope.jamFeed(
 private fun UserSubmissionCell(
     submissionState: SubmissionViewState,
     onSubmitWork: () -> Unit,
+    onModerationStatusClick: () -> Unit,
     isJamExpired: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -364,6 +368,11 @@ private fun UserSubmissionCell(
         modifier = modifier
             .aspectRatio(1f)
             .clip(MaterialTheme.shapes.small)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.primary,
+                shape = MaterialTheme.shapes.small
+            )
             .clickable(enabled = !isJamExpired && submissionState == SubmissionViewState.NotSubmitted) { 
                 onSubmitWork() 
             },
@@ -371,62 +380,62 @@ private fun UserSubmissionCell(
     ) {
         when (submissionState) {
             is SubmissionViewState.Submitted -> {
-                KamelImage(
-                    resource = { asyncPainterResource(submissionState.imageUrl) },
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
-                )
+                Box {
+                    KamelImage(
+                        resource = { asyncPainterResource(submissionState.imageUrl) },
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(MaterialTheme.shapes.small)
+                    )
+                    
+                    // Moderation status text overlay (hide when approved)
+                    if (submissionState.moderationStatus != ModerationStatus.Approved) {
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .background(
+                                    color = when (submissionState.moderationStatus) {
+                                        ModerationStatus.Pending -> MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
+                                        ModerationStatus.Rejected -> MaterialTheme.colorScheme.error
+                                        else -> MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
+                                    },
+                                    shape = CircleShape,
+                                )
+                                .clickable { onModerationStatusClick() }
+                                .padding(horizontal = 12.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = when (submissionState.moderationStatus) {
+                                    ModerationStatus.Pending -> stringResource(Res.string.review_pending)
+                                    ModerationStatus.Rejected -> stringResource(Res.string.entry_rejected)
+                                    else -> ""
+                                },
+                                style = MaterialTheme.typography.labelSmall,
+                                color = when (submissionState.moderationStatus) {
+                                    ModerationStatus.Pending -> MaterialTheme.colorScheme.onSurface
+                                    ModerationStatus.Rejected -> MaterialTheme.colorScheme.onError
+                                    else -> MaterialTheme.colorScheme.primary
+                                }
+                            )
+                        }
+                    }
+                }
             }
             else -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
-                            color = MaterialTheme.colorScheme.surface,
+                            color = if (!isJamExpired) {
+                                MaterialTheme.colorScheme.surface
+                            } else {
+                                MaterialTheme.colorScheme.surfaceVariant
+                            },
                             shape = MaterialTheme.shapes.small
                         )
-                        .clip(MaterialTheme.shapes.small)
-                        .then(
-                            if (!isJamExpired) {
-                                Modifier.background(
-                                    color = MaterialTheme.colorScheme.surface,
-                                    shape = MaterialTheme.shapes.small
-                                )
-                            } else {
-                                Modifier.background(
-                                    color = MaterialTheme.colorScheme.surfaceVariant,
-                                    shape = MaterialTheme.shapes.small
-                                )
-                            }
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(2.dp)
-                            .background(
-                                color = Color.Transparent,
-                                shape = MaterialTheme.shapes.small
-                            )
-                            .then(
-                                if (!isJamExpired) {
-                                    Modifier.border(
-                                        width = 2.dp,
-                                        color = MaterialTheme.colorScheme.primary,
-                                        shape = MaterialTheme.shapes.small
-                                    )
-                                } else {
-                                    Modifier.border(
-                                        width = 2.dp,
-                                        color = MaterialTheme.colorScheme.outline,
-                                        shape = MaterialTheme.shapes.small
-                                    )
-                                }
-                            )
-                    )
-                }
+                )
             }
         }
     }
