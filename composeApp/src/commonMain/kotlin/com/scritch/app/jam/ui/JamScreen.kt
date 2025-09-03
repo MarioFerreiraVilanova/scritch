@@ -390,6 +390,18 @@ private fun UserSubmissionCell(
                             .clip(MaterialTheme.shapes.small)
                     )
                     
+                    // Background overlay for contrast when showing moderation status
+                    if (submissionState.moderationStatus != ModerationStatus.Approved) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    color = MaterialTheme.colorScheme.background.copy(alpha = 0.4f),
+                                    shape = MaterialTheme.shapes.small
+                                )
+                        )
+                    }
+                    
                     // Moderation status text overlay (hide when approved)
                     if (submissionState.moderationStatus != ModerationStatus.Approved) {
                         Box(
@@ -429,7 +441,7 @@ private fun UserSubmissionCell(
                         .fillMaxSize()
                         .background(
                             color = if (!isJamExpired) {
-                                MaterialTheme.colorScheme.surface
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                             } else {
                                 MaterialTheme.colorScheme.surfaceVariant
                             },
