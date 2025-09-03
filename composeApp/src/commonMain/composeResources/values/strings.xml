@@ -45,6 +45,8 @@
     <string name="send_us_an_email">Send us an email!</string>
     <string name="settings">Settings</string>
     <string name="share_your_work">Share your work</string>
+    <string name="show_contributions">Show contributions</string>
+    <string name="show_contributions_subtitle">See how others have completed the challenge</string>
     <string name="status_approved">Done!</string>
     <string name="status_pending">Pending review</string>
     <string name="solo_mode">Solo Mode</string>

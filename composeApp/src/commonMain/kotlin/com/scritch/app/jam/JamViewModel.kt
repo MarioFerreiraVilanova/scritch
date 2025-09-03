@@ -285,6 +285,14 @@ class JamViewModel(
         }
     }
 
+    fun onToggleContributions(showContributions: Boolean) {
+        mutableViewState.update {
+            it.copy(
+                showContributions = showContributions,
+            )
+        }
+    }
+
     fun onDismissDialog(
         dialog: JamScreenDialog,
     ) {

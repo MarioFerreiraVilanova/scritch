@@ -38,6 +38,7 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -77,6 +78,8 @@ import scritch.composeapp.generated.resources.entry_rejected
 import scritch.composeapp.generated.resources.pick_one_from_the_gallery
 import scritch.composeapp.generated.resources.review_pending
 import scritch.composeapp.generated.resources.share_your_work
+import scritch.composeapp.generated.resources.show_contributions
+import scritch.composeapp.generated.resources.show_contributions_subtitle
 import scritch.composeapp.generated.resources.take_a_picture
 import scritch.composeapp.generated.resources.uploading_your_image
 import scritch.composeapp.generated.resources.weekly_jam_not_available
@@ -152,12 +155,28 @@ fun JamScreen(
                         )
                     }
                     
+                    // Separator
+                    item {
+                        HorizontalDivider(
+                            color = MaterialTheme.colorScheme.outline
+                        )
+                    }
+                    
+                    // Show contributions toggle
+                    item {
+                        ShowContributionsToggle(
+                            showContributions = viewState.showContributions,
+                            onToggleChange = viewModel::onToggleContributions
+                        )
+                    }
+                    
                     // Feed with user submission integrated
                     jamFeed(
                         feedState = viewState.feedState,
                         submissionState = viewState.submissionState,
                         onSubmitWork = viewModel::onSubmitWork,
                         onModerationStatusClick = viewModel::onModerationStatusClick,
+                        showContributions = viewState.showContributions,
                         isJamExpired = viewState.jamStatus == JamStatus.EXPIRED,
                         onLoadMore = viewModel::onLoadMore,
                     )
@@ -243,12 +262,15 @@ private fun LazyListScope.jamFeed(
     submissionState: SubmissionViewState,
     onSubmitWork: () -> Unit,
     onModerationStatusClick: () -> Unit,
+    showContributions: Boolean,
     isJamExpired: Boolean,
     onLoadMore: () -> Unit,
 ){
     // Always show the feed section
     item {
-        HorizontalDivider()
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.outline
+        )
     }
     
     // Create combined list with user submission as first item
@@ -306,6 +328,7 @@ private fun LazyListScope.jamFeed(
                         is JamSubmission -> {
                             SubmissionCell(
                                 submission = item,
+                                showImage = showContributions,
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -505,21 +528,65 @@ private fun UserSubmissionCell(
 @Composable
 private fun SubmissionCell(
     submission: JamSubmission,
+    showImage: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
             .aspectRatio(1f)
             .clip(MaterialTheme.shapes.small)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline,
+                shape = MaterialTheme.shapes.small
+            )
             //.clickable { onClick(submission) }
             .background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.Center
     ) {
-        KamelImage(
-            resource = { asyncPainterResource(submission.imageUrl) },
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+        if (showImage) {
+            KamelImage(
+                resource = { asyncPainterResource(submission.imageUrl) },
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(MaterialTheme.shapes.small)
+            )
+        }
+    }
+}
+
+@Composable
+private fun ShowContributionsToggle(
+    showContributions: Boolean,
+    onToggleChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = stringResource(Res.string.show_contributions),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = stringResource(Res.string.show_contributions_subtitle),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Switch(
+            checked = showContributions,
+            onCheckedChange = onToggleChange
         )
     }
 }

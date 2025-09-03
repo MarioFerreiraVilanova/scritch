@@ -44,6 +44,8 @@
     <string name="review_pending_message">Tu participación está siendo revisada por nuestros moderadores. Esto suele llevar entre 24 y 48 horas.</string>
     <string name="send_us_an_email">¡Envíanos un correo!</string>
     <string name="settings">Ajustes</string>
+    <string name="show_contributions">Mostrar contribuciones</string>
+    <string name="show_contributions_subtitle">Ve cómo otros han completado el reto</string>
     <string name="solo_mode">Modo Solo</string>
     <string name="status_approved">¡Hecho!</string>
     <string name="status_pending">Pendiente de revisión</string>
