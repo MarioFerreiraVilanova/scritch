@@ -1,12 +1,12 @@
 package com.scritch.app.jam.ui
 
 import com.scritch.app.jam.ui.components.JamHeader
-import com.scritch.app.jam.ui.components.UserSection
 import com.scritch.app.jam.ui.components.dialogs.ModerationStatusDialog
 import com.scritch.app.jam.ui.components.dialogs.SubmissionDeleteDialog
 import com.scritch.app.jam.ui.components.dialogs.SubmissionPreviewDialog
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,6 +44,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.scritch.app.jam.JamFeedState
@@ -138,23 +139,13 @@ fun JamScreen(
                             onCategoryClick = viewModel::onCategoryClick,
                         )
                     }
-                    // User section
-                    item {
-                        UserSection(
-                            submissionState = viewState.submissionState,
-                            onSubmitWork = viewModel::onSubmitWork,
-                            onRemoveSubmission = viewModel::onRemoveSubmission,
-                            onRetryUpload = viewModel::onRetryUpload,
-                            onCancelUpload = viewModel::onCancelUpload,
-                            onModerationStatusClick = viewModel::onModerationStatusClick,
-                            isJamExpired = viewState.jamStatus == JamStatus.EXPIRED,
-                        )
-                    }
-                    // Inspiration
-
-                    // Other user's entries
+                    
+                    // Feed with user submission integrated
                     jamFeed(
                         feedState = viewState.feedState,
+                        submissionState = viewState.submissionState,
+                        onSubmitWork = viewModel::onSubmitWork,
+                        isJamExpired = viewState.jamStatus == JamStatus.EXPIRED,
                         onLoadMore = viewModel::onLoadMore,
                     )
                 }
@@ -236,6 +227,9 @@ fun JamScreen(
 
 private fun LazyListScope.jamFeed(
     feedState: JamFeedState,
+    submissionState: SubmissionViewState,
+    onSubmitWork: () -> Unit,
+    isJamExpired: Boolean,
     onLoadMore: () -> Unit,
 ){
     // Always show the feed section
@@ -243,31 +237,75 @@ private fun LazyListScope.jamFeed(
         HorizontalDivider()
     }
     
-    if (feedState.items.isNotEmpty()) {
+    // Create combined list with user submission as first item
+    val allSubmissions = feedState.items
+    val hasUserSubmission = submissionState is SubmissionViewState.Submitted
+    val hasAnyContent = hasUserSubmission || allSubmissions.isNotEmpty()
+    
+    if (hasAnyContent) {
         item {
             Text(
-                text = "See what others are drawing",
+                text = if (hasUserSubmission) "See what you and others are drawing" else "See what others are drawing",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onBackground,
             )
         }
+        
+        // Create rows, starting with user submission if present
+        val allRows = mutableListOf<List<Any>>()
+        
+        if (hasUserSubmission || (!isJamExpired && submissionState == SubmissionViewState.NotSubmitted)) {
+            // First row always includes user submission (whether submitted or empty state)
+            if (allSubmissions.isNotEmpty()) {
+                allRows.add(listOf("user", allSubmissions[0]))
+                // Add remaining submissions in pairs
+                allSubmissions.drop(1).chunked(2).forEach { row ->
+                    allRows.add(row)
+                }
+            } else {
+                allRows.add(listOf("user"))
+            }
+        } else {
+            // No user submission, just show other submissions
+            allRows.addAll(allSubmissions.chunked(2))
+        }
+        
         items(
-            items = feedState.items.chunked(2),
-            key = { row -> row.joinToString { it.userId } }
+            items = allRows,
+            key = { row -> 
+                row.joinToString { item ->
+                    when (item) {
+                        "user" -> "user_submission"
+                        is JamSubmission -> item.userId
+                        else -> item.toString()
+                    }
+                }
+            }
         ) { row ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                SubmissionCell(
-                    submission = row[0],
-                    modifier = Modifier.weight(1f)
-                )
-                if (row.size == 2) {
-                    SubmissionCell(
-                        submission = row[1],
-                        modifier = Modifier.weight(1f),
-                    )
-                } else {
+                row.forEachIndexed { index, item ->
+                    when (item) {
+                        "user" -> {
+                            UserSubmissionCell(
+                                submissionState = submissionState,
+                                onSubmitWork = onSubmitWork,
+                                isJamExpired = isJamExpired,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                        is JamSubmission -> {
+                            SubmissionCell(
+                                submission = item,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+                    }
+                }
+                
+                // Fill remaining space if row is incomplete
+                if (row.size == 1) {
                     Spacer(Modifier.weight(1f))
                 }
             }
@@ -279,16 +317,30 @@ private fun LazyListScope.jamFeed(
                     key1 = feedState.items.size
                 ) {
                     onLoadMore()
-                } // or use a VisibilityObserver
+                }
             }
         }
     } else {
-        // Empty state
+        // Empty state - show user submission slot and encouraging message
+        item {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                UserSubmissionCell(
+                    submissionState = submissionState,
+                    onSubmitWork = onSubmitWork,
+                    isJamExpired = isJamExpired,
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(Modifier.weight(1f))
+            }
+        }
+        
         item {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(32.dp),
+                    .padding(top = 16.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -296,6 +348,85 @@ private fun LazyListScope.jamFeed(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun UserSubmissionCell(
+    submissionState: SubmissionViewState,
+    onSubmitWork: () -> Unit,
+    isJamExpired: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .aspectRatio(1f)
+            .clip(MaterialTheme.shapes.small)
+            .clickable(enabled = !isJamExpired && submissionState == SubmissionViewState.NotSubmitted) { 
+                onSubmitWork() 
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        when (submissionState) {
+            is SubmissionViewState.Submitted -> {
+                KamelImage(
+                    resource = { asyncPainterResource(submissionState.imageUrl) },
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+            else -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            color = MaterialTheme.colorScheme.surface,
+                            shape = MaterialTheme.shapes.small
+                        )
+                        .clip(MaterialTheme.shapes.small)
+                        .then(
+                            if (!isJamExpired) {
+                                Modifier.background(
+                                    color = MaterialTheme.colorScheme.surface,
+                                    shape = MaterialTheme.shapes.small
+                                )
+                            } else {
+                                Modifier.background(
+                                    color = MaterialTheme.colorScheme.surfaceVariant,
+                                    shape = MaterialTheme.shapes.small
+                                )
+                            }
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(2.dp)
+                            .background(
+                                color = Color.Transparent,
+                                shape = MaterialTheme.shapes.small
+                            )
+                            .then(
+                                if (!isJamExpired) {
+                                    Modifier.border(
+                                        width = 2.dp,
+                                        color = MaterialTheme.colorScheme.primary,
+                                        shape = MaterialTheme.shapes.small
+                                    )
+                                } else {
+                                    Modifier.border(
+                                        width = 2.dp,
+                                        color = MaterialTheme.colorScheme.outline,
+                                        shape = MaterialTheme.shapes.small
+                                    )
+                                }
+                            )
+                    )
+                }
             }
         }
     }
