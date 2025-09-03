@@ -40,7 +40,7 @@
     <string name="prompt_settings">Configuración de retos</string>
     <string name="rejected">Rechazada</string>
     <string name="retry">Reintentar</string>
-    <string name="review_pending">Revisión pendiente</string>
+    <string name="review_pending">Pendiente de revisión</string>
     <string name="review_pending_message">Tu participación está siendo revisada por nuestros moderadores. Esto suele llevar entre 24 y 48 horas.</string>
     <string name="send_us_an_email">¡Envíanos un correo!</string>
     <string name="settings">Ajustes</string>

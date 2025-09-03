@@ -19,14 +19,17 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -56,6 +59,7 @@ import com.scritch.app.jam.JamViewModel
 import com.scritch.app.jam.JamViewState
 import com.scritch.app.jam.LoadingState
 import com.scritch.app.jam.ModerationStatus
+import com.scritch.app.jam.SubmissionUploadState
 import com.scritch.app.jam.SubmissionViewState
 import com.scritch.app.jam.data.JamStatus
 import com.scritch.app.prompt.Prompt
@@ -72,7 +76,9 @@ import scritch.composeapp.generated.resources.entry_approved
 import scritch.composeapp.generated.resources.entry_rejected
 import scritch.composeapp.generated.resources.pick_one_from_the_gallery
 import scritch.composeapp.generated.resources.review_pending
+import scritch.composeapp.generated.resources.share_your_work
 import scritch.composeapp.generated.resources.take_a_picture
+import scritch.composeapp.generated.resources.uploading_your_image
 import scritch.composeapp.generated.resources.weekly_jam_not_available
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -255,7 +261,7 @@ private fun LazyListScope.jamFeed(
         // Create rows, starting with user submission if present
         val allRows = mutableListOf<List<Any>>()
         
-        if (hasUserSubmission || (!isJamExpired && submissionState == SubmissionViewState.NotSubmitted)) {
+        if (!isJamExpired || hasUserSubmission) {
             // First row always includes user submission (whether submitted or empty state)
             if (allSubmissions.isNotEmpty()) {
                 allRows.add(listOf("user", allSubmissions[0]))
@@ -446,8 +452,51 @@ private fun UserSubmissionCell(
                                 MaterialTheme.colorScheme.surfaceVariant
                             },
                             shape = MaterialTheme.shapes.small
-                        )
-                )
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        when (submissionState) {
+                            is SubmissionViewState.ImageTakenLocally -> {
+                                CircularProgressIndicator(
+                                    progress = { 
+                                        when (val uploadStatus = submissionState.uploadStatus) {
+                                            is SubmissionUploadState.Uploading -> uploadStatus.progress ?: 0f
+                                            SubmissionUploadState.Success -> 1f
+                                            else -> 0f
+                                        }
+                                    },
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(48.dp),
+                                    strokeWidth = 2.dp
+                                )
+                                Text(
+                                    text = stringResource(Res.string.uploading_your_image),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                )
+                            }
+                            else -> {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(48.dp)
+                                )
+                                Text(
+                                    text = stringResource(Res.string.share_your_work),
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }

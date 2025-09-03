@@ -40,7 +40,7 @@
     <string name="prompt_settings">Paramètres du générateur d'idées</string>
     <string name="rejected">Rejetée</string>
     <string name="retry">Réessayer</string>
-    <string name="review_pending">Révision en cours</string>
+    <string name="review_pending">En attente de révision</string>
     <string name="review_pending_message">Votre participation est actuellement en cours de révision par nos modérateurs. Cela prend généralement 24 à 48 heures.</string>
     <string name="send_us_an_email">Envoyez-nous un email !</string>
     <string name="settings">Paramètres</string>
