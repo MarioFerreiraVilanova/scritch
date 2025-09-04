@@ -9,6 +9,7 @@ import com.scritch.app.categories.OptionState
 import com.scritch.app.jam.data.JamDto
 import com.scritch.app.jam.data.JamRepository
 import com.scritch.app.prompt.PromptViewState
+import com.scritch.app.userprofile.UserProfileRepository
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +26,7 @@ import kotlin.time.ExperimentalTime
 class JamViewModel(
     private val jamRepository: JamRepository,
     private val categoryRepository: CategoryRepository,
+    private val userProfileRepository: UserProfileRepository,
 ) : ViewModel() {
 
     private val mutableViewState = MutableStateFlow(JamViewState.EMPTY)
@@ -279,14 +281,21 @@ class JamViewModel(
 
     fun onShowUserPreview() {
         val submission = viewState.value.submissionState as? SubmissionViewState.Submitted ?: return
-        mutableViewState.update {
-            it.copy(
-                dialog = JamScreenDialog.EntryPreview(
-                    imageUrl = submission.imageUrl,
-                    isUserSubmission = true,
-                    moderationStatus = submission.moderationStatus
-                ),
-            )
+        viewModelScope.launch {
+            val currentUserId = Firebase.auth.currentUser?.uid ?: return@launch
+            val userProfile = userProfileRepository.userProfile(currentUserId)
+            val nickname = userProfile?.nickname ?: return@launch
+            
+            mutableViewState.update {
+                it.copy(
+                    dialog = JamScreenDialog.EntryPreview(
+                        imageUrl = submission.imageUrl,
+                        isUserSubmission = true,
+                        moderationStatus = submission.moderationStatus,
+                        nickname = nickname
+                    ),
+                )
+            }
         }
     }
 
@@ -297,7 +306,8 @@ class JamViewModel(
                 dialog = JamScreenDialog.EntryPreview(
                     imageUrl = submission.imageUrl,
                     isUserSubmission = false,
-                    moderationStatus = submission.status
+                    moderationStatus = submission.status,
+                    nickname = submission.nickname
                 ),
             )
         }

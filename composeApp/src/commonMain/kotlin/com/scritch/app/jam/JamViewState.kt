@@ -41,7 +41,8 @@ sealed class JamScreenDialog {
     data class EntryPreview(
         val imageUrl: String,
         val isUserSubmission: Boolean,
-        val moderationStatus: ModerationStatus? = null
+        val moderationStatus: ModerationStatus,
+        val nickname: String
     ) : JamScreenDialog()
     data object SubmissionDeleteConfirmation : JamScreenDialog()
     data object ImageSourceSheet : JamScreenDialog()

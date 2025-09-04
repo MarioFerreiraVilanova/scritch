@@ -84,6 +84,8 @@
     <string name="you">Tu</string>
     <string name="your_nickname">Ton pseudonyme</string>
     <string name="loading">Chargement…</string>
+    <string name="your_contribution">Ta contribution (%1$s)</string>
+    <string name="scritch_jam_by">Scritch Jam par %1$s</string>
 
 
     <!-- Plurals -->

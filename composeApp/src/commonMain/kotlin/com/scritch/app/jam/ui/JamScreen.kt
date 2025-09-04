@@ -1,6 +1,8 @@
 package com.scritch.app.jam.ui
 
 import com.scritch.app.jam.ui.components.JamHeader
+import com.scritch.app.jam.ui.components.SubmissionCell
+import com.scritch.app.jam.ui.components.UserSubmissionCell
 import com.scritch.app.jam.ui.components.dialogs.ModerationStatusDialog
 import com.scritch.app.jam.ui.components.dialogs.SubmissionDeleteDialog
 import com.scritch.app.jam.ui.components.dialogs.SubmissionPreviewDialog
@@ -215,6 +217,7 @@ fun JamScreen(
                 imageUrl = dialog.imageUrl,
                 isUserSubmission = dialog.isUserSubmission,
                 moderationStatus = dialog.moderationStatus,
+                nickname = dialog.nickname,
                 onDismissRequest = viewModel::onDismissDialog,
                 onRetrySubmission = if (dialog.isUserSubmission) viewModel::onSubmitWork else null,
                 onDeleteSubmission = if (dialog.isUserSubmission) viewModel::onRemoveSubmission else null,
@@ -390,226 +393,7 @@ private fun LazyListScope.jamFeed(
     }
 }
 
-@Composable
-private fun UserSubmissionCell(
-    submissionState: SubmissionViewState,
-    onSubmitWork: () -> Unit,
-    onModerationStatusClick: () -> Unit,
-    onShowPreview: () -> Unit,
-    isJamExpired: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier
-            .aspectRatio(1f)
-            .clip(MaterialTheme.shapes.small)
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.primary,
-                shape = MaterialTheme.shapes.small
-            )
-            .clickable { 
-                when (submissionState) {
-                    is SubmissionViewState.Submitted -> onShowPreview()
-                    SubmissionViewState.NotSubmitted -> if (!isJamExpired) onSubmitWork()
-                    else -> {} // Do nothing for other states like uploading
-                }
-            },
-        contentAlignment = Alignment.Center
-    ) {
-        when (submissionState) {
-            is SubmissionViewState.Submitted -> {
-                Box {
-                    KamelImage(
-                        resource = { asyncPainterResource(submissionState.imageUrl) },
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(MaterialTheme.shapes.small)
-                    )
-                    
-                    // Background overlay for contrast when showing moderation status
-                    if (submissionState.moderationStatus != ModerationStatus.Approved) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    color = MaterialTheme.colorScheme.background.copy(alpha = 0.4f),
-                                    shape = MaterialTheme.shapes.small
-                                )
-                        )
-                    }
-                    
-                    // Moderation status text overlay (hide when approved)
-                    if (submissionState.moderationStatus != ModerationStatus.Approved) {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .background(
-                                    color = when (submissionState.moderationStatus) {
-                                        ModerationStatus.Pending -> MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
-                                        ModerationStatus.Rejected -> MaterialTheme.colorScheme.error
-                                        else -> MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
-                                    },
-                                    shape = CircleShape,
-                                )
-                                .clickable { onModerationStatusClick() }
-                                .padding(horizontal = 12.dp, vertical = 6.dp)
-                        ) {
-                            Text(
-                                text = when (submissionState.moderationStatus) {
-                                    ModerationStatus.Pending -> stringResource(Res.string.review_pending)
-                                    ModerationStatus.Rejected -> stringResource(Res.string.entry_rejected)
-                                    else -> ""
-                                },
-                                style = MaterialTheme.typography.labelSmall,
-                                color = when (submissionState.moderationStatus) {
-                                    ModerationStatus.Pending -> MaterialTheme.colorScheme.onSurface
-                                    ModerationStatus.Rejected -> MaterialTheme.colorScheme.onError
-                                    else -> MaterialTheme.colorScheme.primary
-                                }
-                            )
-                        }
-                    }
-                    
-                    // "You" indicator with gradient background in bottom start corner
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .fillMaxWidth()
-                            .height(46.dp)
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Transparent,
-                                        MaterialTheme.colorScheme.surface
-                                    )
-                                )
-                            )
-                    )
-                    
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.account_circle),
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = stringResource(Res.string.you),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                }
-            }
-            else -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            color = if (!isJamExpired) {
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                            } else {
-                                MaterialTheme.colorScheme.surfaceVariant
-                            },
-                            shape = MaterialTheme.shapes.small
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        when (submissionState) {
-                            is SubmissionViewState.ImageTakenLocally -> {
-                                CircularProgressIndicator(
-                                    progress = { 
-                                        when (val uploadStatus = submissionState.uploadStatus) {
-                                            is SubmissionUploadState.Uploading -> uploadStatus.progress ?: 0f
-                                            SubmissionUploadState.Success -> 1f
-                                            else -> 0f
-                                        }
-                                    },
-                                    color = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(48.dp),
-                                    strokeWidth = 2.dp
-                                )
-                                Text(
-                                    text = stringResource(Res.string.uploading_your_image),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                                )
-                            }
-                            else -> {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(48.dp)
-                                )
-                                Text(
-                                    text = stringResource(Res.string.share_your_work),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
-@Composable
-private fun SubmissionCell(
-    submission: JamSubmission,
-    showImage: Boolean,
-    onShowPreview: (String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier
-            .aspectRatio(1f)
-            .clip(MaterialTheme.shapes.small)
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline,
-                shape = MaterialTheme.shapes.small
-            )
-            .clickable(enabled = showImage) { onShowPreview(submission.userId) }
-            .background(MaterialTheme.colorScheme.surfaceVariant),
-        contentAlignment = Alignment.Center
-    ) {
-        if (showImage) {
-            KamelImage(
-                resource = { asyncPainterResource(submission.imageUrl) },
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(MaterialTheme.shapes.small)
-            )
-        } else {
-            Icon(
-                imageVector = Icons.Default.VisibilityOff,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.outline,
-                modifier = Modifier.size(48.dp)
-            )
-        }
-    }
-}
 
 @Composable
 private fun ShowContributionsToggle(

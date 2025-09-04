@@ -17,6 +17,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -38,14 +42,17 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.delete
 import scritch.composeapp.generated.resources.redo
+import scritch.composeapp.generated.resources.scritch_jam_by
 import scritch.composeapp.generated.resources.submission_preview
+import scritch.composeapp.generated.resources.your_contribution
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SubmissionPreviewDialog(
     imageUrl: String,
     isUserSubmission: Boolean,
-    moderationStatus: ModerationStatus?,
+    moderationStatus: ModerationStatus,
+    nickname: String,
     onDismissRequest: () -> Unit,
     onRetrySubmission: (() -> Unit)?,
     onDeleteSubmission: (() -> Unit)?,
@@ -62,6 +69,18 @@ fun SubmissionPreviewDialog(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            // Nickname header text
+            Text(
+                text = createStyledSubmissionText(
+                    isUserSubmission = isUserSubmission,
+                    nickname = nickname
+                ),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 4.dp)
+            )
+            
             KamelImage(
                 resource = { asyncPainterResource(imageUrl) },
                 contentDescription = stringResource(Res.string.submission_preview),
@@ -150,9 +169,39 @@ private fun SubmissionPreviewDialogPreview() {
             imageUrl = "https://example.com/image.jpg",
             isUserSubmission = true,
             moderationStatus = ModerationStatus.Approved,
+            nickname = "Picasso47",
             onDismissRequest = {},
             onRetrySubmission = {},
             onDeleteSubmission = {},
         )
+    }
+}
+
+@Composable
+private fun createStyledSubmissionText(
+    isUserSubmission: Boolean,
+    nickname: String
+): AnnotatedString {
+    val baseText = if (isUserSubmission) {
+        stringResource(Res.string.your_contribution, nickname)
+    } else {
+        stringResource(Res.string.scritch_jam_by, nickname)
+    }
+    
+    return buildAnnotatedString {
+        val nicknameStart = baseText.indexOf(nickname)
+        if (nicknameStart >= 0) {
+            // Add text before nickname with regular color
+            append(baseText.substring(0, nicknameStart))
+            // Add nickname with primary color
+            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+                append(nickname)
+            }
+            // Add text after nickname with regular color
+            append(baseText.substring(nicknameStart + nickname.length))
+        } else {
+            // Fallback: just append the whole text with regular color
+            append(baseText)
+        }
     }
 }
