@@ -69,10 +69,10 @@
     <string name="version_notes_0_7">Themed the app black, styled prompt and added an app icon, fixed logout</string>
     <string name="version_notes_0_8">New onboarding screen, fixed titles on setting screens, new formatting for tips</string>
     <string name="version_notes_0_9">Changes in prompt logic and bux fixes towards iOS</string>
-    <string name="weekly_jam">Weekly Scritch</string>
-    <string name="weekly_jam_description">Join the Weekly Scritch! A shared challenge to spark creativity and connect with artists worldwide.</string>
+    <string name="weekly_jam">Scritch Jam</string>
+    <string name="weekly_jam_description">Join the Scritch Jam! A shared challenge to spark creativity and connect with artists worldwide.</string>
     <string name="weekly_jam_end_time">This Scritch will end on %1$s at %2$s</string>
-    <string name="weekly_jam_not_available">There’s no weekly jam at the moment — check back soon for the next challenge!</string>
+    <string name="weekly_jam_not_available">There's no Scritch Jam at the moment — check back soon for the next challenge!</string>
     <string name="yes_delete_it">Yes, delete it</string>
     <string name="ends_in_d_h">Ends in %1$dd %2$dh</string>
     <string name="ends_in_h_m">Ends in %1$dh %2$dm</string>
@@ -82,7 +82,7 @@
     <string name="entry_approved_message">Congratulations! Your submission has been approved and is now visible to other users in the community feed.</string>
     <string name="entry_rejected">Entry Rejected</string>
     <string name="entry_rejected_message">Your submission was rejected as it didn't meet our community guidelines. Please try submitting a new entry that follows the prompt and community standards.</string>
-    <string name="weekly_scritch_has_ended">This weekly Scritch has ended</string>
+    <string name="weekly_scritch_has_ended">This Scritch Jam has ended</string>
     <string name="you">You</string>
     <string name="your_nickname">Your nickname</string>
     <string name="loading">Loading…</string>

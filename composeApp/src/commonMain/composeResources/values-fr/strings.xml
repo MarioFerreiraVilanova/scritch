@@ -67,10 +67,10 @@
     <string name="version_notes_0_7">Thème noir appliqué, style des défis modifié et icône de l'app ajoutée, correction de la déconnexion</string>
     <string name="version_notes_0_8">Nouvel écran d’accueil, titres corrigés dans les paramètres, nouveau format pour les astuces</string>
     <string name="version_notes_0_9">Modifications de la logique des défis et corrections de bugs pour iOS</string>
-    <string name="weekly_jam">Scritch hebdomadaire</string>
-    <string name="weekly_jam_description">Participe à la Scritch Hebdo ! Un défi commun pour stimuler ta créativité et te connecter avec des artistes du monde entier.</string>
+    <string name="weekly_jam">Scritch Jam</string>
+    <string name="weekly_jam_description">Participe au Scritch Jam ! Un défi commun pour stimuler ta créativité et te connecter avec des artistes du monde entier.</string>
     <string name="weekly_jam_end_time">Cette Scritch se termine le %1$s à %2$s</string>
-    <string name="weekly_jam_not_available">Il n’y a pas de Scritch en cours cette semaine. Revenez bientôt pour découvrir le prochain défi !</string>
+    <string name="weekly_jam_not_available">Il n'y a pas de Scritch Jam en cours. Revenez bientôt pour découvrir le prochain défi !</string>
     <string name="yes_delete_it">Oui, supprimer</string>
     <string name="ends_in_d_h">Se termine dans %1$dj %2$dh</string>
     <string name="ends_in_h_m">Se termine dans %1$dh %2$dm</string>
@@ -80,7 +80,7 @@
     <string name="entry_approved_message">Félicitations ! Votre participation a été approuvée et est maintenant visible par les autres utilisateurs dans le flux communautaire.</string>
     <string name="entry_rejected">Participation rejetée</string>
     <string name="entry_rejected_message">Votre participation a été rejetée car elle ne respectait pas les règles de la communauté. Veuillez essayer de soumettre une nouvelle participation qui suit l'invite et les standards de la communauté.</string>
-    <string name="weekly_scritch_has_ended">Cette Scritch hebdomadaire est terminée</string>
+    <string name="weekly_scritch_has_ended">Ce Scritch Jam est terminé</string>
     <string name="you">Tu</string>
     <string name="your_nickname">Ton pseudonyme</string>
     <string name="loading">Chargement…</string>
