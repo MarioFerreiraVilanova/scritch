@@ -21,6 +21,8 @@ val scritchColorScheme = darkColorScheme(
     outline = Color(0xFF535353),
     onBackground = Color.White,
     onSurfaceVariant = Color(0xFFC2C2C2),
+    inverseSurface = Color.White,
+    inverseOnSurface = Color.Black,
 )
 
 @Composable
