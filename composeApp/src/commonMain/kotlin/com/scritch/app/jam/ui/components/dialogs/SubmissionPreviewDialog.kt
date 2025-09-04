@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.scritch.app.jam.ModerationStatus
+import com.scritch.app.jam.ui.components.ModerationStatusChip
 import com.scritch.app.theme.scritchColorScheme
 import com.scritch.app.theme.scritchShapes
 import com.scritch.app.theme.scritchTypography
@@ -56,6 +57,7 @@ fun SubmissionPreviewDialog(
     onDismissRequest: () -> Unit,
     onRetrySubmission: (() -> Unit)?,
     onDeleteSubmission: (() -> Unit)?,
+    onModerationStatusClick: (() -> Unit)?,
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
@@ -81,48 +83,62 @@ fun SubmissionPreviewDialog(
                     .padding(bottom = 4.dp)
             )
             
-            KamelImage(
-                resource = { asyncPainterResource(imageUrl) },
-                contentDescription = stringResource(Res.string.submission_preview),
-                contentScale = ContentScale.FillWidth,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.small)
-                    .border(
-                        width = 1.dp,
-                        color = if (isUserSubmission) {
-                            MaterialTheme.colorScheme.primary
-                        } else {
-                            MaterialTheme.colorScheme.outline
-                        },
-                        shape = MaterialTheme.shapes.small
-                    ),
-                onLoading = { progress ->
-                    // progress in [0f..1f] or null
-                    Column(
-                        Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 160.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(
-                            8.dp,
-                            Alignment.CenterVertically
-                        )
-                    ) {
-                        val animatedProgress by animateFloatAsState(progress)
-                        CircularProgressIndicator(
-                            progress = {
-                                animatedProgress
-                            }
-                        )
-                        Text(
-                            text = "Loading...",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
+            Box {
+                KamelImage(
+                    resource = { asyncPainterResource(imageUrl) },
+                    contentDescription = stringResource(Res.string.submission_preview),
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(MaterialTheme.shapes.small)
+                        .border(
+                            width = 1.dp,
+                            color = if (isUserSubmission) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.outline
+                            },
+                            shape = MaterialTheme.shapes.small
+                        ),
+                    onLoading = { progress ->
+                        // progress in [0f..1f] or null
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 160.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(
+                                8.dp,
+                                Alignment.CenterVertically
+                            )
+                        ) {
+                            val animatedProgress by animateFloatAsState(progress)
+                            CircularProgressIndicator(
+                                progress = {
+                                    animatedProgress
+                                }
+                            )
+                            Text(
+                                text = "Loading...",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            )
+                        }
                     }
+                )
+                
+                // Moderation status chip for user submissions (overlaid on top start corner)
+                if (isUserSubmission) {
+                    ModerationStatusChip(
+                        moderationStatus = moderationStatus,
+                        showForApproved = true,
+                        onClick = onModerationStatusClick,
+                        modifier = Modifier
+                            .align(Alignment.TopStart)
+                            .padding(8.dp)
+                    )
                 }
-            )
+            }
             
             // Action buttons for user submissions
             if (isUserSubmission && (onRetrySubmission != null || onDeleteSubmission != null)) {
@@ -159,7 +175,7 @@ fun SubmissionPreviewDialog(
 
 @Preview
 @Composable
-private fun SubmissionPreviewDialogPreview() {
+private fun SubmissionPreviewDialogUserApprovedPreview() {
     MaterialTheme(
         colorScheme = scritchColorScheme,
         typography = scritchTypography(),
@@ -173,6 +189,70 @@ private fun SubmissionPreviewDialogPreview() {
             onDismissRequest = {},
             onRetrySubmission = {},
             onDeleteSubmission = {},
+            onModerationStatusClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SubmissionPreviewDialogUserPendingPreview() {
+    MaterialTheme(
+        colorScheme = scritchColorScheme,
+        typography = scritchTypography(),
+        shapes = scritchShapes,
+    ) {
+        SubmissionPreviewDialog(
+            imageUrl = "https://example.com/image.jpg",
+            isUserSubmission = true,
+            moderationStatus = ModerationStatus.Pending,
+            nickname = "Picasso47",
+            onDismissRequest = {},
+            onRetrySubmission = {},
+            onDeleteSubmission = {},
+            onModerationStatusClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SubmissionPreviewDialogUserRejectedPreview() {
+    MaterialTheme(
+        colorScheme = scritchColorScheme,
+        typography = scritchTypography(),
+        shapes = scritchShapes,
+    ) {
+        SubmissionPreviewDialog(
+            imageUrl = "https://example.com/image.jpg",
+            isUserSubmission = true,
+            moderationStatus = ModerationStatus.Rejected,
+            nickname = "Picasso47",
+            onDismissRequest = {},
+            onRetrySubmission = {},
+            onDeleteSubmission = {},
+            onModerationStatusClick = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SubmissionPreviewDialogOtherUserPreview() {
+    MaterialTheme(
+        colorScheme = scritchColorScheme,
+        typography = scritchTypography(),
+        shapes = scritchShapes,
+    ) {
+        SubmissionPreviewDialog(
+            imageUrl = "https://example.com/image.jpg",
+            isUserSubmission = false,
+            moderationStatus = ModerationStatus.Approved,
+            nickname = "VanGogh203",
+            onDismissRequest = {},
+            onRetrySubmission = null,
+            onDeleteSubmission = null,
+            onModerationStatusClick = null,
         )
     }
 }

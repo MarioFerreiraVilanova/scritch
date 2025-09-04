@@ -221,6 +221,7 @@ fun JamScreen(
                 onDismissRequest = viewModel::onDismissDialog,
                 onRetrySubmission = if (dialog.isUserSubmission) viewModel::onSubmitWork else null,
                 onDeleteSubmission = if (dialog.isUserSubmission) viewModel::onRemoveSubmission else null,
+                onModerationStatusClick = if (dialog.isUserSubmission) viewModel::onModerationStatusClick else null,
             )
         }
 

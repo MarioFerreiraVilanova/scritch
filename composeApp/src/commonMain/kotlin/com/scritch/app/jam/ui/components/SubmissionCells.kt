@@ -49,6 +49,7 @@ import scritch.composeapp.generated.resources.entry_rejected
 import scritch.composeapp.generated.resources.plus
 import scritch.composeapp.generated.resources.review_pending
 import scritch.composeapp.generated.resources.share_your_work
+import scritch.composeapp.generated.resources.status_approved
 import scritch.composeapp.generated.resources.uploading_your_image
 import scritch.composeapp.generated.resources.you
 
@@ -103,37 +104,13 @@ fun UserSubmissionCell(
                         )
                     }
                     
-                    // Moderation status text overlay (hide when approved)
-                    if (submissionState.moderationStatus != ModerationStatus.Approved) {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .background(
-                                    color = when (submissionState.moderationStatus) {
-                                        ModerationStatus.Pending -> MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
-                                        ModerationStatus.Rejected -> MaterialTheme.colorScheme.error
-                                        else -> MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
-                                    },
-                                    shape = CircleShape,
-                                )
-                                .clickable { onModerationStatusClick() }
-                                .padding(horizontal = 12.dp, vertical = 6.dp)
-                        ) {
-                            Text(
-                                text = when (submissionState.moderationStatus) {
-                                    ModerationStatus.Pending -> stringResource(Res.string.review_pending)
-                                    ModerationStatus.Rejected -> stringResource(Res.string.entry_rejected)
-                                    else -> ""
-                                },
-                                style = MaterialTheme.typography.labelSmall,
-                                color = when (submissionState.moderationStatus) {
-                                    ModerationStatus.Pending -> MaterialTheme.colorScheme.onSurface
-                                    ModerationStatus.Rejected -> MaterialTheme.colorScheme.onError
-                                    else -> MaterialTheme.colorScheme.primary
-                                }
-                            )
-                        }
-                    }
+                    // Moderation status chip overlay (hide when approved)
+                    ModerationStatusChip(
+                        moderationStatus = submissionState.moderationStatus,
+                        showForApproved = false,
+                        onClick = onModerationStatusClick,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
                     
                     // User overlay - reusable component
                     SubmissionOverlay(
@@ -248,6 +225,46 @@ fun SubmissionCell(
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.size(48.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun ModerationStatusChip(
+    moderationStatus: ModerationStatus,
+    showForApproved: Boolean = false,
+    onClick: (() -> Unit)? = null,
+    modifier: Modifier = Modifier,
+) {
+    if (moderationStatus != ModerationStatus.Approved || showForApproved) {
+        Box(
+            modifier = modifier
+                .background(
+                    color = when (moderationStatus) {
+                        ModerationStatus.Pending -> MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
+                        ModerationStatus.Rejected -> MaterialTheme.colorScheme.error
+                        ModerationStatus.Approved -> MaterialTheme.colorScheme.primary
+                    },
+                    shape = CircleShape,
+                )
+                .then(
+                    if (onClick != null) Modifier.clickable { onClick() } else Modifier
+                )
+                .padding(horizontal = 12.dp, vertical = 6.dp)
+        ) {
+            Text(
+                text = when (moderationStatus) {
+                    ModerationStatus.Pending -> stringResource(Res.string.review_pending)
+                    ModerationStatus.Rejected -> stringResource(Res.string.entry_rejected)
+                    ModerationStatus.Approved -> stringResource(Res.string.status_approved)
+                },
+                style = MaterialTheme.typography.labelSmall,
+                color = when (moderationStatus) {
+                    ModerationStatus.Pending -> MaterialTheme.colorScheme.onSurface
+                    ModerationStatus.Rejected -> MaterialTheme.colorScheme.onError
+                    ModerationStatus.Approved -> MaterialTheme.colorScheme.onPrimary
+                }
             )
         }
     }
