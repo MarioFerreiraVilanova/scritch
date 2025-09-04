@@ -6,12 +6,16 @@ import androidx.lifecycle.viewModelScope
 import com.scritch.app.categories.Category
 import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.OptionState
+import com.scritch.app.jam.data.JamDto
+import com.scritch.app.jam.data.JamRepository
 import com.scritch.app.prompt.PromptViewState
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -27,24 +31,29 @@ class JamViewModel(
     val viewState = mutableViewState.asStateFlow()
 
     init {
+        // Set up real-time listener for jam updates
+        jamRepository.getCurrentJamFlow()
+            .onEach { jamDto ->
+                handleJamUpdate(jamDto)
+            }
+            .launchIn(viewModelScope)
+    }
+
+    fun onRefresh() {
         viewModelScope.launch {
-            loadJamData()
+            // The flow will automatically update when we manually refresh
+            val jamDto = jamRepository.loadCurrentJam()
+            handleJamUpdate(jamDto)
         }
     }
 
-    private suspend fun loadJamData() {
-        mutableViewState.update {
-            it.copy(
-                loadingState = when (it.loadingState) {
-                    LoadingState.INITIAL_LOADING -> LoadingState.INITIAL_LOADING
-                    LoadingState.LOADED -> LoadingState.REFRESHING
-                    LoadingState.NO_JAM -> LoadingState.REFRESHING
-                    LoadingState.REFRESHING -> LoadingState.REFRESHING
-                }
-            )
+    private suspend fun handleJamUpdate(jamDto: JamDto?) {
+        // Set loading state based on current state
+        if (mutableViewState.value.loadingState != LoadingState.INITIAL_LOADING) {
+            mutableViewState.update {
+                it.copy(loadingState = LoadingState.REFRESHING)
+            }
         }
-
-        val jamDto = jamRepository.loadCurrentJam()
 
         if (jamDto == null) {
             mutableViewState.update {
@@ -107,6 +116,7 @@ class JamViewModel(
                     loadingState = LoadingState.LOADED,
                     jamId = jamDto.id,
                     endDate = jamDto.endDate?.toLocalDateTime(TimeZone.currentSystemDefault()),
+                    jamStatus = jamDto.jamStatus,
                     promptViewState = PromptViewState(
                         topic = topic,
                         medium = medium,
@@ -118,9 +128,53 @@ class JamViewModel(
                         SubmissionViewState.NotSubmitted
                     } else {
                         SubmissionViewState.Submitted(
-                            imageUrl = submission.imageUrl
+                            imageUrl = submission.imageUrl,
+                            moderationStatus = submissionStatusFromString(submission.status) ?: throw IllegalStateException("Missing submission status")
                         )
                     }
+                )
+            }
+
+            loadJamFeed()
+        }
+    }
+
+    private suspend fun loadJamFeed() {
+        val feed = jamRepository.getSubmissions(
+            userId = Firebase.auth.currentUser?.uid ?: return,
+            jamId = mutableViewState.value.jamId ?: return,
+        )
+        mutableViewState.update {
+            it.copy(
+                feedState = JamFeedState(
+                    isLoading = false,
+                    items = feed.items.mapNotNull { dto -> JamSubmission.fromDto(dto) },
+                    cursor = feed.cursor,
+                    endReached = feed.endReached,
+                    error = null,
+                ),
+            )
+        }
+    }
+
+    fun onLoadMore() {
+        if (mutableViewState.value.feedState.isLoading || mutableViewState.value.feedState.endReached) return
+        viewModelScope.launch {
+            val nextPage = jamRepository.getSubmissions(
+                userId = Firebase.auth.currentUser?.uid ?: return@launch,
+                jamId = mutableViewState.value.jamId ?: return@launch,
+                cursor = mutableViewState.value.feedState.cursor,
+            )
+            mutableViewState.update {
+                it.copy(
+                    feedState = it.feedState.copy(
+                        isLoading = false,
+                        items = it.feedState.items + nextPage.items.mapNotNull { dto ->
+                            JamSubmission.fromDto(dto)
+                        },
+                        cursor = nextPage.cursor,
+                        endReached = nextPage.endReached,
+                    )
                 )
             }
         }
@@ -207,25 +261,60 @@ class JamViewModel(
         }
     }
 
-    fun onShowPreview() {
+    fun onCancelUpload() {
         mutableViewState.update {
             it.copy(
-                dialog = JamScreenDialog.EntryPreview,
+                submissionState = SubmissionViewState.NotSubmitted
             )
         }
     }
 
-    fun onDismissDialog(
-        dialog: JamScreenDialog,
-    ) {
+    fun onModerationStatusClick() {
         mutableViewState.update {
             it.copy(
-                dialog = when (dialog) {
-                    JamScreenDialog.EntryPreview -> null
-                    JamScreenDialog.SubmissionDeleteConfirmation -> null
-                    JamScreenDialog.ImageSourceSheet -> null
-                    JamScreenDialog.GalleryPicker -> null
-                },
+                dialog = JamScreenDialog.ModerationStatusExplanation,
+            )
+        }
+    }
+
+    fun onShowUserPreview() {
+        val submission = viewState.value.submissionState as? SubmissionViewState.Submitted ?: return
+        mutableViewState.update {
+            it.copy(
+                dialog = JamScreenDialog.EntryPreview(
+                    imageUrl = submission.imageUrl,
+                    isUserSubmission = true,
+                    moderationStatus = submission.moderationStatus
+                ),
+            )
+        }
+    }
+
+    fun onShowSubmissionPreview(userId: String) {
+        val submission = viewState.value.feedState.items.find { it.userId == userId } ?: return
+        mutableViewState.update {
+            it.copy(
+                dialog = JamScreenDialog.EntryPreview(
+                    imageUrl = submission.imageUrl,
+                    isUserSubmission = false,
+                    moderationStatus = submission.status
+                ),
+            )
+        }
+    }
+
+    fun onToggleContributions(showContributions: Boolean) {
+        mutableViewState.update {
+            it.copy(
+                showContributions = showContributions,
+            )
+        }
+    }
+
+    fun onDismissDialog() {
+        mutableViewState.update {
+            it.copy(
+                dialog = null,
             )
         }
     }
@@ -270,6 +359,8 @@ class JamViewModel(
                     submissionState = SubmissionViewState.Submitted(
                         imageUrl = submission.imageUrl
                             ?: throw IllegalStateException("Missing image url"),
+                        moderationStatus = submissionStatusFromString(submission.status)
+                            ?: throw IllegalStateException("Missing submission status"),
                     )
                 )
             }

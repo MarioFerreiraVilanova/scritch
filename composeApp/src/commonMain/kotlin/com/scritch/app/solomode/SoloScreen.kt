@@ -160,15 +160,9 @@ private fun PromptButton(
     modifier: Modifier = Modifier,
 ) {
     Button(
-        modifier = modifier,
-        content = {
-            Icon(
-                painter = painterResource(Res.drawable.arrows_repeat),
-                contentDescription = null,
-            )
-            Spacer(Modifier.width(8.dp))
-            Text(text = stringResource(Res.string.generate_prompt))
-        },
         onClick = onClick,
+        label = stringResource(Res.string.generate_prompt),
+        icon = painterResource(Res.drawable.arrows_repeat),
+        modifier = modifier,
     )
 }

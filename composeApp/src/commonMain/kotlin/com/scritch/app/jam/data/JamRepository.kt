@@ -1,10 +1,16 @@
-package com.scritch.app.jam
+package com.scritch.app.jam.data
 
+import com.scritch.app.jam.Cursor
+import com.scritch.app.jam.Page
+import com.scritch.app.jam.data.SubmissionDto
 import com.scritch.app.util.storageFileFromString
 import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.Timestamp
 import dev.gitlive.firebase.firestore.firestore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import dev.gitlive.firebase.storage.storage
 import dev.gitlive.firebase.storage.storageMetadata
 import kotlin.time.ExperimentalTime
@@ -14,21 +20,29 @@ private const val SUBMISSIONS_COLLECTION = "submissions"
 
 class JamRepository {
 
-    suspend fun loadCurrentJam(): JamDto? {
-        val now = Timestamp.now()
-        Firebase
-            .firestore
+    fun getCurrentJamFlow(): Flow<JamDto?> {
+        return Firebase.firestore
             .collection(JAM_COLLECTION)
-            .where {
-                "startDate" lessThanOrEqualTo now
-                "endDate" greaterThanOrEqualTo now
+            .orderBy("startDate", Direction.DESCENDING)
+            .limit(1)
+            .snapshots()
+            .map { querySnapshot ->
+                querySnapshot.documents.firstOrNull()?.let { snapshot ->
+                    JamDto(snapshot)
+                }
             }
+    }
+
+    suspend fun loadCurrentJam(): JamDto? {
+        return Firebase.firestore
+            .collection(JAM_COLLECTION)
+            .orderBy("startDate", Direction.DESCENDING)
+            .limit(1)
             .get()
             .documents
             .firstOrNull()?.let { snapshot ->
-                return JamDto(snapshot)
+                JamDto(snapshot)
             }
-        return null
     }
 
     @OptIn(ExperimentalTime::class)
@@ -40,6 +54,11 @@ class JamRepository {
         mimeType: String = "image/jpeg",
         onProgress: ((Int) -> Unit)? = null
     ): SubmissionDto {
+        deleteWeeklyJamSubmission(
+            jamId = jamId,
+            uid = uid,
+        )
+
         val storagePath = "$JAM_COLLECTION/$jamId/$uid.jpg"
 
         val ref = Firebase.storage.reference(storagePath)
@@ -63,22 +82,22 @@ class JamRepository {
             storagePath = storagePath,
             imageUrl = downloadUrl,
             caption = caption,
-            createdAt = null,
+            createdAt = Timestamp.now(),
         )
-        Firebase.firestore
-            .collection(JAM_COLLECTION).document(jamId)
-            .collection("submissions").document(uid)
-            .set(
-                submission,
-                merge = false,
-            )
+
+        val data = mapOf(
+            "userId" to uid,
+            "storagePath" to storagePath,
+            "imageUrl" to downloadUrl,
+            "caption" to caption,
+            "status" to "pending",
+            "createdAt" to FieldValue.serverTimestamp
+        )
 
         Firebase.firestore
             .collection(JAM_COLLECTION).document(jamId)
             .collection("submissions").document(uid)
-            .update(
-                "createdAt" to FieldValue.serverTimestamp,
-            )
+            .set(data)
 
         onProgress?.invoke(100)
         return submission
@@ -164,4 +183,36 @@ class JamRepository {
         }
     }
 
+    suspend fun getSubmissions(
+        userId: String,
+        jamId: String,
+        cursor: Cursor? = null,
+        pageSize: Int = 2,
+    ): Page<SubmissionDto> {
+        val query = Firebase.firestore
+            .collection(JAM_COLLECTION)
+            .document(jamId)
+            .collection(SUBMISSIONS_COLLECTION)
+            .where { "status" equalTo "approved" }
+            .where { "userId" notEqualTo userId }
+            .orderBy("createdAt", Direction.DESCENDING)
+
+        val finalQuery = if (cursor == null) {
+            query
+        } else {
+            query.startAfter(cursor.lastDoc)
+        }
+
+        val documents = finalQuery.limit(pageSize).get().documents
+
+        val pageItems = documents.map { snapshot ->
+            snapshot.data<SubmissionDto>()
+        }
+
+        return Page(
+            items = pageItems,
+            cursor = documents.lastOrNull()?.let { Cursor(it) },
+            endReached = pageItems.size < pageSize,
+        )
+    }
 }

@@ -17,3 +17,5 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 /composeApp/release/composeApp-release.aab
+/scripts/policy.json
+/scripts/serviceAccountKey.json

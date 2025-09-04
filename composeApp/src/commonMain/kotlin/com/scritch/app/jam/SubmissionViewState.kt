@@ -11,6 +11,7 @@ sealed class SubmissionViewState {
 
     data class Submitted(
         val imageUrl: String,
+        val moderationStatus: ModerationStatus,
     ) : SubmissionViewState()
 }
 

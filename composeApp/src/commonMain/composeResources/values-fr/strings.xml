@@ -15,6 +15,7 @@
     <string name="back">Retour</string>
     <string name="back_to_home">Retour à l'accueil</string>
     <string name="back_to_settings">Retour aux paramètres</string>
+    <string name="be_the_first_to_submit">Soyez le premier à participer !</string>
     <string name="cancel">Annuler</string>
     <string name="concept_and_design">Concept et design : %1$s</string>
     <string name="continue_word">Continuer</string>
@@ -33,12 +34,21 @@
     <string name="landing_screen_second_description_1">Les défis impliquent différents médiums et supports. Vous ne les avez pas ou ne voulez pas les utiliser ? Aucun souci, </string>
     <string name="landing_screen_second_description_2">vous pouvez tout personnaliser dans les paramètres !</string>
     <string name="no_category_imposed">Aucune %1$s imposée</string>
+    <string name="ok">OK</string>
     <string name="other">Autre</string>
     <string name="pick_one_from_the_gallery">Choisir depuis la galerie</string>
     <string name="prompt_settings">Paramètres du générateur d'idées</string>
+    <string name="rejected">Rejetée</string>
+    <string name="retry">Réessayer</string>
+    <string name="review_pending">En attente de révision</string>
+    <string name="review_pending_message">Votre participation est actuellement en cours de révision par nos modérateurs. Cela prend généralement 24 à 48 heures.</string>
     <string name="send_us_an_email">Envoyez-nous un email !</string>
     <string name="settings">Paramètres</string>
+    <string name="show_contributions">Afficher les contributions</string>
+    <string name="show_contributions_subtitle">Voir comment d'autres ont relevé le défi</string>
     <string name="solo_mode">Mode Solo</string>
+    <string name="status_approved">Terminé !</string>
+    <string name="status_pending">En attente de révision</string>
     <string name="submission_preview">Aperçu de la participation</string>
     <string name="take_a_different_picture">Prendre une autre photo</string>
     <string name="take_a_picture">Prendre une photo</string>
@@ -66,6 +76,12 @@
     <string name="ends_in_h_m">Se termine dans %1$dh %2$dm</string>
     <string name="ends_in_m_s">Se termine dans %1$dm %2$ds</string>
     <string name="ends_in_s">Se termine dans %1$ds</string>
+    <string name="entry_approved">Participation approuvée !</string>
+    <string name="entry_approved_message">Félicitations ! Votre participation a été approuvée et est maintenant visible par les autres utilisateurs dans le flux communautaire.</string>
+    <string name="entry_rejected">Participation rejetée</string>
+    <string name="entry_rejected_message">Votre participation a été rejetée car elle ne respectait pas les règles de la communauté. Veuillez essayer de soumettre une nouvelle participation qui suit l'invite et les standards de la communauté.</string>
+    <string name="weekly_scritch_has_ended">Cette Scritch hebdomadaire est terminée</string>
+    <string name="you">Tu</string>
 
 
     <!-- Plurals -->

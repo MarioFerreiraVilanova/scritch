@@ -11,9 +11,18 @@ val scritchColorScheme = darkColorScheme(
     primary = Color(0xFFEED201),
     onPrimary = Color.Black,
     background = Color.Black,
+    onSurface = Color.White,
     surface = Color.Black,
     surfaceContainer = Color(0xFF1A1919),
-    onSurface = Color.White,
+    surfaceVariant = Color(0xFF1C1C1C),
+    surfaceDim = Color(0xFF121212),
+    error = Color(0xFFDA3301),
+    onError = Color.White,
+    outline = Color(0xFF535353),
+    onBackground = Color.White,
+    onSurfaceVariant = Color(0xFFC2C2C2),
+    inverseSurface = Color.White,
+    inverseOnSurface = Color.Black,
 )
 
 @Composable

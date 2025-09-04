@@ -1,10 +1,25 @@
-package com.scritch.app.jam
+package com.scritch.app.jam.data
 
 import dev.gitlive.firebase.firestore.DocumentSnapshot
 import dev.gitlive.firebase.firestore.Timestamp
 import dev.gitlive.firebase.firestore.toMilliseconds
 import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
+
+enum class JamStatus {
+    ACTIVE,
+    EXPIRED,
+    UPCOMING;
+    
+    companion object {
+        fun fromString(status: String?): JamStatus = when (status?.lowercase()) {
+            "active" -> ACTIVE
+            "expired" -> EXPIRED
+            "upcoming" -> UPCOMING
+            else -> ACTIVE // Default to active for backward compatibility
+        }
+    }
+}
 
 @OptIn(ExperimentalTime::class)
 data class JamDto(
@@ -14,7 +29,8 @@ data class JamDto(
     val support: String?,
     val topic: String?,
     val startDate: Instant?,
-    val endDate: Instant?
+    val endDate: Instant?,
+    val status: String?
 ){
     constructor(documentSnapshot: DocumentSnapshot): this(
         id = documentSnapshot.id,
@@ -27,6 +43,9 @@ data class JamDto(
         },
         endDate = documentSnapshot.get<Timestamp?>("endDate")?.let {
             Instant.fromEpochMilliseconds(it.toMilliseconds().toLong())
-        }
+        },
+        status = documentSnapshot.get<String?>("status")
     )
+    
+    val jamStatus: JamStatus get() = JamStatus.fromString(status)
 }

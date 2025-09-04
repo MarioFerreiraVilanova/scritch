@@ -15,6 +15,7 @@
     <string name="back">Atrás</string>
     <string name="back_to_home">Volver al inicio</string>
     <string name="back_to_settings">Volver a ajustes</string>
+    <string name="be_the_first_to_submit">¡Sé el primero en participar!</string>
     <string name="cancel">Cancelar</string>
     <string name="concept_and_design">Concepto y diseño: %1$s</string>
     <string name="continue_word">Continuar</string>
@@ -33,12 +34,21 @@
     <string name="landing_screen_second_description_1">Los retos se basan en usar distintos medios artísticos y soportes. ¿No tienes algunos o no los quieres usar? No pasa nada, </string>
     <string name="landing_screen_second_description_2">¡puedes personalizar todo desde ajustes!</string>
     <string name="no_category_imposed">Sin %1$s impuesta</string>
+    <string name="ok">Vale</string>
     <string name="other">Otro</string>
     <string name="pick_one_from_the_gallery">Elegir de la galería</string>
     <string name="prompt_settings">Configuración de retos</string>
+    <string name="rejected">Rechazada</string>
+    <string name="retry">Reintentar</string>
+    <string name="review_pending">Pendiente de revisión</string>
+    <string name="review_pending_message">Tu participación está siendo revisada por nuestros moderadores. Esto suele llevar entre 24 y 48 horas.</string>
     <string name="send_us_an_email">¡Envíanos un correo!</string>
     <string name="settings">Ajustes</string>
+    <string name="show_contributions">Mostrar contribuciones</string>
+    <string name="show_contributions_subtitle">Ve cómo otros han completado el reto</string>
     <string name="solo_mode">Modo Solo</string>
+    <string name="status_approved">¡Hecho!</string>
+    <string name="status_pending">Pendiente de revisión</string>
     <string name="submission_preview">Vista previa de la participación</string>
     <string name="take_a_different_picture">Haz otra foto</string>
     <string name="take_a_picture">Haz una foto</string>
@@ -66,6 +76,12 @@
     <string name="ends_in_h_m">Termina en %1$dh %2$dm</string>
     <string name="ends_in_m_s">Termina en %1$dm %2$ds</string>
     <string name="ends_in_s">Termina en  %1$ds</string>
+    <string name="entry_approved">¡Participación aprobada!</string>
+    <string name="entry_approved_message">¡Enhorabuena! Tu participación ha sido aprobada y ya es visible para otros usuarios en el feed de la comunidad.</string>
+    <string name="entry_rejected">Participación rechazada</string>
+    <string name="entry_rejected_message">Tu participación ha sido rechazada porque no cumplía las normas de la comunidad. Prueba a enviar una nueva participación que siga el prompt y los estándares de la comunidad.</string>
+    <string name="weekly_scritch_has_ended">Este Scritch semanal ha terminado</string>
+    <string name="you">Tú</string>
 
     <!-- Plurals -->
     <plurals name="category_art_medium">
