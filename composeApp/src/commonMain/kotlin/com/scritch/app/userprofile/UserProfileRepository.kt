@@ -8,14 +8,12 @@ import kotlin.random.Random
 private const val USER_PROFILES_COLLECTION = "user_profiles"
 
 private val ARTIST_NAMES = listOf(
-    "Picasso", "VanGogh", "Monet", "Dali", "Frida", "Warhol", "Pollock",
-    "Renoir", "Degas", "Cezanne", "Klimt", "Matisse", "Kandinsky", "Rothko",
-    "Basquiat", "OKeeffe", "Hockney", "Bacon", "Koons", "Banksy", "Kusama",
-    "Leonardo", "Michelangelo", "Raphael", "Caravaggio", "Rembrandt", "Vermeer",
-    "Goya", "Manet", "Toulouse", "Seurat", "Gauguin", "Munch", "Schiele",
-    "Hopper", "Klee", "Mondrian", "Magritte", "Chagall", "Miro", "Duchamp",
-    "Weston", "Adams", "Bourgeois", "Sherman", "Haring", "Lichtenstein",
-    "Johns", "Rauschenberg", "Stella", "Twombly"
+    "Abramović", "Aliabadi", "Bacon", "Banksy", "Basquiat", "Bird", "Bourgeois", "Chagall", "Dali",
+    "Delaunay", "Duchamp", "Goya", "Goldin", "Haring", "Holzer", "Hockney", "Hopper", "Kahlo",
+    "Kandinsky", "Klee", "Klimt", "Krasner", "Kusama", "Leonardo", "Magritte", "Manet", "Matisse",
+    "Maar", "Miro", "Mondrian", "Monet", "Morisot", "Munch", "Neshat", "O’Keeffe",
+    "Pollock", "Raphael", "Rembrandt", "Rothko", "Saint-Phalle", "Sherman", "Van Gogh",
+    "Vermeer", "Warhol"
 )
 
 class UserProfileRepository {
