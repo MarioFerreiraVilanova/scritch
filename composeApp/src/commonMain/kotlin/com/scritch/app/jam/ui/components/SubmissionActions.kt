@@ -121,15 +121,10 @@ fun SubmissionActions(
             SubmissionViewState.NotSubmitted -> {
                 Button(
                     onClick = onSubmitWork,
+                    label = stringResource(Res.string.share_your_work),
+                    icon = painterResource(Res.drawable.camera),
                     enabled = !isJamExpired
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.camera),
-                        contentDescription = null,
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(text = stringResource(Res.string.share_your_work))
-                }
+                )
             }
 
             is SubmissionViewState.Submitted -> {}

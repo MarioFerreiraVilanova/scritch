@@ -34,10 +34,9 @@ fun SubmissionDeleteDialog(
         confirmButton = {
             Button(
                 onClick = onConfirm,
+                label = stringResource(Res.string.yes_delete_it),
                 style = ButtonStyle.Negative,
-            ) {
-                Text(text = stringResource(Res.string.yes_delete_it))
-            }
+            )
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {

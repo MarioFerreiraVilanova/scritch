@@ -6,17 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -119,31 +116,21 @@ fun SubmissionPreviewDialog(
                     onRetrySubmission?.let { onRetry ->
                         Button(
                             onClick = onRetry,
+                            label = "Replace",
+                            icon = painterResource(Res.drawable.redo),
                             style = ButtonStyle.Secondary,
                             modifier = Modifier.weight(1f),
-                        ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.redo),
-                                contentDescription = null,
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Replace")
-                        }
+                        )
                     }
                     
                     onDeleteSubmission?.let { onDelete ->
                         Button(
                             onClick = onDelete,
+                            label = "Delete",
+                            icon = painterResource(Res.drawable.delete),
                             style = ButtonStyle.Negative,
                             modifier = Modifier.weight(1f),
-                        ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.delete),
-                                contentDescription = null,
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Delete")
-                        }
+                        )
                     }
                 }
             }
