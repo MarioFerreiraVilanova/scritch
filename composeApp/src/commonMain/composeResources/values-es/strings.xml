@@ -82,6 +82,8 @@
     <string name="entry_rejected_message">Tu participación ha sido rechazada porque no cumplía las normas de la comunidad. Prueba a enviar una nueva participación que siga el prompt y los estándares de la comunidad.</string>
     <string name="weekly_scritch_has_ended">Este Scritch semanal ha terminado</string>
     <string name="you">Tú</string>
+    <string name="your_nickname">Tu apodo</string>
+    <string name="loading">Cargando…</string>
 
     <!-- Plurals -->
     <plurals name="category_art_medium">

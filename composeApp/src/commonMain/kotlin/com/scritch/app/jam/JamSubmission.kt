@@ -8,6 +8,7 @@ data class JamSubmission(
     val imageUrl: String,
     val createdAt: Timestamp,
     val status: ModerationStatus,
+    val nickname: String,
 ) {
     companion object {
         fun fromDto(dto: SubmissionDto): JamSubmission? {
@@ -16,6 +17,7 @@ data class JamSubmission(
                 imageUrl = dto.imageUrl ?: return null,
                 createdAt = dto.createdAt ?: return null,
                 status = submissionStatusFromString(dto.status) ?: return null,
+                nickname = dto.nickname ?: return null,
             )
         }
     }

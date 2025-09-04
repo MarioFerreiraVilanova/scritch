@@ -80,7 +80,8 @@ The app heavily relies on Firebase services:
 #### Collections Overview
 - **weekly_jam**: Weekly art challenges/prompts
 - **categories**: Art categories (medium, support, topic, constraint) with localized options
-- **user_data**: User preferences and disabled options
+- **user_data**: Private user preferences and disabled options
+- **user_profiles**: Public user data (nicknames, display information)
 - **admins**: Admin users with elevated privileges
 
 #### Collection: `weekly_jam`
@@ -139,6 +140,25 @@ user_data/{userId}
 ├── disabledConstraintIds: List<String>?
 └── unImposedCategories: Map<String, Boolean>? (categorySettings)
 ```
+
+**Security**: Private data - only the user who owns the document can read/write
+
+#### Collection: `user_profiles`
+**Document Structure** (UserProfileDto):
+```
+user_profiles/{userId}
+├── userId: String
+├── nickname: String (e.g., "Picasso47", "VanGogh203")
+└── createdAt: Timestamp
+```
+
+**Security**: Public read access (needed for jam submissions), user can only write their own profile
+
+**Usage**:
+- Stores publicly visible user information like artist-based nicknames
+- Automatically generated on first access with format: {ArtistName}{Number}
+- Separate from private user_data for proper security isolation
+- Used in jam submissions for user identification
 
 #### Collection: `admins`
 **Document Structure**: Admin user records

@@ -18,6 +18,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.scritch.app.categories.Category
@@ -33,6 +35,10 @@ import scritch.composeapp.generated.resources.pen
 import scritch.composeapp.generated.resources.prompt_settings
 import scritch.composeapp.generated.resources.rectangle_vertical_history
 import scritch.composeapp.generated.resources.settings
+import scritch.composeapp.generated.resources.your_nickname
+import scritch.composeapp.generated.resources.loading
+import scritch.composeapp.generated.resources.account_circle
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +48,9 @@ fun SettingsScreen(
     onCategoryPress: (Category) -> Unit,
     onGoToAbout: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>(),
 ) {
+    val viewState by viewModel.viewState.collectAsState()
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -100,6 +108,27 @@ fun SettingsScreen(
 
             item {
                 SectionTitle(stringResource(Res.string.other))
+            }
+
+            item {
+                ListItem(
+                    headlineContent = {
+                        Text(stringResource(Res.string.your_nickname))
+                    },
+                    supportingContent = {
+                        Text(
+                            text = viewState.nickname ?: stringResource(Res.string.loading),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = vectorResource(Res.drawable.account_circle),
+                            contentDescription = null,
+                        )
+                    }
+                )
             }
 
             item {

@@ -13,12 +13,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import dev.gitlive.firebase.storage.storage
 import dev.gitlive.firebase.storage.storageMetadata
+import com.scritch.app.userprofile.UserProfileRepository
 import kotlin.time.ExperimentalTime
 
 private const val JAM_COLLECTION = "weekly_jam"
 private const val SUBMISSIONS_COLLECTION = "submissions"
 
-class JamRepository {
+class JamRepository(
+    private val userProfileRepository: UserProfileRepository,
+) {
 
     fun getCurrentJamFlow(): Flow<JamDto?> {
         return Firebase.firestore
@@ -76,6 +79,10 @@ class JamRepository {
 
         val downloadUrl = ref.getDownloadUrl()
 
+        // Get user's nickname
+        val userProfile = userProfileRepository.userProfile(uid)
+        val nickname = userProfile?.nickname ?: throw Exception("User must have a nickname to submit")
+
         // Write/merge submission metadata (doc id == uid → one per user per week)
         val submission = SubmissionDto(
             userId = uid,
@@ -83,6 +90,7 @@ class JamRepository {
             imageUrl = downloadUrl,
             caption = caption,
             createdAt = Timestamp.now(),
+            nickname = nickname,
         )
 
         val data = mapOf(
@@ -91,7 +99,8 @@ class JamRepository {
             "imageUrl" to downloadUrl,
             "caption" to caption,
             "status" to "pending",
-            "createdAt" to FieldValue.serverTimestamp
+            "createdAt" to FieldValue.serverTimestamp,
+            "nickname" to nickname
         )
 
         Firebase.firestore

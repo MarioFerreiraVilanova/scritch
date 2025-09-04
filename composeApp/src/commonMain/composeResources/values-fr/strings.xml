@@ -82,6 +82,8 @@
     <string name="entry_rejected_message">Votre participation a été rejetée car elle ne respectait pas les règles de la communauté. Veuillez essayer de soumettre une nouvelle participation qui suit l'invite et les standards de la communauté.</string>
     <string name="weekly_scritch_has_ended">Cette Scritch hebdomadaire est terminée</string>
     <string name="you">Tu</string>
+    <string name="your_nickname">Ton pseudonyme</string>
+    <string name="loading">Chargement…</string>
 
 
     <!-- Plurals -->

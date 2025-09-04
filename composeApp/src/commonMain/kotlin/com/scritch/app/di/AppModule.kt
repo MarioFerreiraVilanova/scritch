@@ -9,6 +9,7 @@ import com.scritch.app.jam.data.JamRepository
 import com.scritch.app.jam.JamViewModel
 import com.scritch.app.solomode.SoloViewModel
 import com.scritch.app.landing.LandingViewModel
+import com.scritch.app.settings.SettingsViewModel
 import com.scritch.app.settings.about.AboutViewModel
 import com.scritch.app.splash.SplashViewModel
 import com.scritch.app.userdata.LoadUserDataUseCase
@@ -32,6 +33,7 @@ val appModule = module {
     viewModelOf(::AppViewModel)
     viewModelOf(::JamViewModel)
     viewModelOf(::LandingViewModel)
+    viewModelOf(::SettingsViewModel)
     viewModelOf(::SoloViewModel)
     viewModelOf(::SplashViewModel)
     viewModelOf(::WizardScreenViewModel)
