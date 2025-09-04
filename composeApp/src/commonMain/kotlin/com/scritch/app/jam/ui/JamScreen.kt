@@ -1,6 +1,7 @@
 package com.scritch.app.jam.ui
 
 import com.scritch.app.jam.ui.components.JamHeader
+import com.scritch.app.jam.ui.components.EmptyFeedCell
 import com.scritch.app.jam.ui.components.SubmissionCell
 import com.scritch.app.jam.ui.components.UserSubmissionCell
 import com.scritch.app.jam.ui.components.dialogs.ModerationStatusDialog
@@ -79,7 +80,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.account_circle
-import scritch.composeapp.generated.resources.be_the_first_to_submit
 import scritch.composeapp.generated.resources.you
 import scritch.composeapp.generated.resources.entry_approved
 import scritch.composeapp.generated.resources.entry_rejected
@@ -163,19 +163,21 @@ fun JamScreen(
                         )
                     }
                     
-                    // Separator
-                    item {
-                        HorizontalDivider(
-                            color = MaterialTheme.colorScheme.outline
-                        )
-                    }
-                    
-                    // Show contributions toggle
-                    item {
-                        ShowContributionsToggle(
-                            showContributions = viewState.showContributions,
-                            onToggleChange = viewModel::onToggleContributions
-                        )
+                    // Show contributions toggle (only if there are contributions to show)
+                    if (viewState.feedState.items.isNotEmpty()) {
+                        // Separator before toggle
+                        item {
+                            HorizontalDivider(
+                                color = MaterialTheme.colorScheme.outline
+                            )
+                        }
+                        
+                        item {
+                            ShowContributionsToggle(
+                                showContributions = viewState.showContributions,
+                                onToggleChange = viewModel::onToggleContributions
+                            )
+                        }
                     }
                     
                     // Feed with user submission integrated
@@ -272,11 +274,13 @@ private fun LazyListScope.jamFeed(
     isJamExpired: Boolean,
     onLoadMore: () -> Unit,
 ){
-    // Always show the feed section
-    item {
-        HorizontalDivider(
-            color = MaterialTheme.colorScheme.outline
-        )
+    // Add separator before feed if there are no contributions (so no toggle separator was shown)
+    if (feedState.items.isEmpty()) {
+        item {
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outline
+            )
+        }
     }
     
     // Create combined list with user submission as first item
@@ -360,7 +364,7 @@ private fun LazyListScope.jamFeed(
             }
         }
     } else {
-        // Empty state - show user submission slot and encouraging message
+        // Empty state - show user submission slot and empty feed cell
         item {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -373,21 +377,8 @@ private fun LazyListScope.jamFeed(
                     isJamExpired = isJamExpired,
                     modifier = Modifier.weight(1f)
                 )
-                Spacer(Modifier.weight(1f))
-            }
-        }
-        
-        item {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(Res.string.be_the_first_to_submit),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                EmptyFeedCell(
+                    modifier = Modifier.weight(1f)
                 )
             }
         }

@@ -46,6 +46,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.account_circle
 import scritch.composeapp.generated.resources.entry_rejected
+import scritch.composeapp.generated.resources.no_one_contributed_yet
 import scritch.composeapp.generated.resources.plus
 import scritch.composeapp.generated.resources.review_pending
 import scritch.composeapp.generated.resources.share_your_work
@@ -227,6 +228,32 @@ fun SubmissionCell(
                 modifier = Modifier.size(48.dp)
             )
         }
+    }
+}
+
+@Composable
+fun EmptyFeedCell(
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier
+            .aspectRatio(1f)
+            .clip(MaterialTheme.shapes.small)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline,
+                shape = MaterialTheme.shapes.small
+            )
+            .background(MaterialTheme.colorScheme.surfaceVariant),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(Res.string.no_one_contributed_yet),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.outline,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(12.dp)
+        )
     }
 }
 
@@ -488,6 +515,20 @@ private fun SubmissionCellHiddenPreview() {
             ),
             showImage = false,
             onShowPreview = {},
+            modifier = Modifier.size(120.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun EmptyFeedCellPreview() {
+    MaterialTheme(
+        colorScheme = scritchColorScheme,
+        typography = scritchTypography(),
+        shapes = scritchShapes,
+    ) {
+        EmptyFeedCell(
             modifier = Modifier.size(120.dp)
         )
     }
