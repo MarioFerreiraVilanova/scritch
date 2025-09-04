@@ -118,7 +118,6 @@ class JamViewModel(
                     loadingState = LoadingState.LOADED,
                     jamId = jamDto.id,
                     endDate = jamDto.endDate?.toLocalDateTime(TimeZone.currentSystemDefault()),
-                    jamStatus = jamDto.jamStatus,
                     promptViewState = PromptViewState(
                         topic = topic,
                         medium = medium,

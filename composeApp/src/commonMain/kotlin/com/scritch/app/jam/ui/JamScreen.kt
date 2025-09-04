@@ -1,40 +1,21 @@
 package com.scritch.app.jam.ui
 
-import com.scritch.app.jam.ui.components.JamHeader
-import com.scritch.app.jam.ui.components.EmptyFeedCell
-import com.scritch.app.jam.ui.components.SubmissionCell
-import com.scritch.app.jam.ui.components.UserSubmissionCell
-import com.scritch.app.jam.ui.components.dialogs.ModerationStatusDialog
-import com.scritch.app.jam.ui.components.dialogs.SubmissionDeleteDialog
-import com.scritch.app.jam.ui.components.dialogs.SubmissionPreviewDialog
-
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -45,19 +26,17 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.scritch.app.jam.JamFeedState
 import com.scritch.app.jam.JamScreenDialog
@@ -65,34 +44,34 @@ import com.scritch.app.jam.JamSubmission
 import com.scritch.app.jam.JamViewModel
 import com.scritch.app.jam.JamViewState
 import com.scritch.app.jam.LoadingState
-import com.scritch.app.jam.ModerationStatus
-import com.scritch.app.jam.SubmissionUploadState
 import com.scritch.app.jam.SubmissionViewState
-import com.scritch.app.jam.data.JamStatus
+import com.scritch.app.jam.ui.components.EmptyFeedCell
+import com.scritch.app.jam.ui.components.JamHeader
+import com.scritch.app.jam.ui.components.SubmissionCell
+import com.scritch.app.jam.ui.components.UserSubmissionCell
+import com.scritch.app.jam.ui.components.dialogs.ModerationStatusDialog
+import com.scritch.app.jam.ui.components.dialogs.SubmissionDeleteDialog
+import com.scritch.app.jam.ui.components.dialogs.SubmissionPreviewDialog
 import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
 import com.scritch.app.uicomponents.PageLoader
 import io.github.ismoy.imagepickerkmp.GalleryPickerLauncher
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
-import org.jetbrains.compose.resources.painterResource
+import kotlinx.coroutines.delay
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
-import scritch.composeapp.generated.resources.account_circle
-import scritch.composeapp.generated.resources.you
-import scritch.composeapp.generated.resources.entry_approved
-import scritch.composeapp.generated.resources.entry_rejected
 import scritch.composeapp.generated.resources.pick_one_from_the_gallery
-import scritch.composeapp.generated.resources.review_pending
-import scritch.composeapp.generated.resources.share_your_work
 import scritch.composeapp.generated.resources.show_contributions
 import scritch.composeapp.generated.resources.show_contributions_subtitle
 import scritch.composeapp.generated.resources.take_a_picture
-import scritch.composeapp.generated.resources.uploading_your_image
 import scritch.composeapp.generated.resources.weekly_jam_not_available
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, kotlin.time.ExperimentalTime::class)
 @Composable
 fun JamScreen(
     chosenImagePath: String?,
@@ -102,6 +81,36 @@ fun JamScreen(
     viewModel: JamViewModel = koinViewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
+
+    // Calculate jam expiration with smart adaptive ticking
+    val isJamExpired by remember(viewState.endDate) {
+        derivedStateOf {
+            viewState.endDate?.toInstant(TimeZone.currentSystemDefault())?.let { endInstant ->
+                Clock.System.now() > endInstant
+            } ?: false
+        }
+    }
+
+    // Smart ticking: adjust frequency based on time remaining
+    LaunchedEffect(viewState.endDate) {
+        if (viewState.endDate != null) {
+            val endInstant = viewState.endDate!!.toInstant(TimeZone.currentSystemDefault())
+
+            while (true) {
+                val now = Clock.System.now()
+                val timeLeft = endInstant - now
+
+                val delayMs = when {
+                    timeLeft <= 0.minutes -> break // Jam has ended, stop ticking
+                    timeLeft <= 10.minutes -> 1_000L // Tick every second in final 10 minutes
+                    timeLeft <= 1.hours -> 60_000L // Tick every minute in final hour
+                    else -> 600_000L // Tick every 10 minutes otherwise
+                }
+
+                delay(delayMs)
+            }
+        }
+    }
     val pullToRefreshState = rememberPullToRefreshState()
     val isRefreshing = viewState.loadingState == LoadingState.REFRESHING
 
@@ -132,68 +141,68 @@ fun JamScreen(
                     bottom = 16.dp,
                 )
             ) {
-            // Description / header
-            item {
-                JamHeader(
-                    endDate = viewState.endDate,
-                )
-            }
-
-            when (viewState.loadingState) {
-                LoadingState.INITIAL_LOADING -> {
-                    item {
-                        PageLoader(
-                            modifier = Modifier.padding(64.dp)
-                        )
-                    }
-                }
-
-                LoadingState.NO_JAM -> {
-                    item {
-                        NoJamView()
-                    }
-                }
-
-                else -> {
-                    // Prompt
-                    item {
-                        Prompt(
-                            viewState = viewState.promptViewState,
-                            onCategoryClick = viewModel::onCategoryClick,
-                        )
-                    }
-                    
-                    // Show contributions toggle (only if there are contributions to show)
-                    if (viewState.feedState.items.isNotEmpty()) {
-                        // Separator before toggle
-                        item {
-                            HorizontalDivider(
-                                color = MaterialTheme.colorScheme.outline
-                            )
-                        }
-                        
-                        item {
-                            ShowContributionsToggle(
-                                showContributions = viewState.showContributions,
-                                onToggleChange = viewModel::onToggleContributions
-                            )
-                        }
-                    }
-                    
-                    // Feed with user submission integrated
-                    jamFeed(
-                        feedState = viewState.feedState,
-                        submissionState = viewState.submissionState,
-                        onSubmitWork = viewModel::onSubmitWork,
-                        onModerationStatusClick = viewModel::onModerationStatusClick,
-                        onShowUserPreview = viewModel::onShowUserPreview,
-                        onShowSubmissionPreview = viewModel::onShowSubmissionPreview,
-                        showContributions = viewState.showContributions,
-                        isJamExpired = viewState.jamStatus == JamStatus.EXPIRED,
-                        onLoadMore = viewModel::onLoadMore,
+                // Description / header
+                item {
+                    JamHeader(
+                        endDate = viewState.endDate,
                     )
                 }
-            }
+
+                when (viewState.loadingState) {
+                    LoadingState.INITIAL_LOADING -> {
+                        item {
+                            PageLoader(
+                                modifier = Modifier.padding(64.dp)
+                            )
+                        }
+                    }
+
+                    LoadingState.NO_JAM -> {
+                        item {
+                            NoJamView()
+                        }
+                    }
+
+                    else -> {
+                        // Prompt
+                        item {
+                            Prompt(
+                                viewState = viewState.promptViewState,
+                                onCategoryClick = viewModel::onCategoryClick,
+                            )
+                        }
+
+                        // Show contributions toggle (only if there are contributions to show)
+                        if (viewState.feedState.items.isNotEmpty()) {
+                            // Separator before toggle
+                            item {
+                                HorizontalDivider(
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                            }
+
+                            item {
+                                ShowContributionsToggle(
+                                    showContributions = viewState.showContributions,
+                                    onToggleChange = viewModel::onToggleContributions
+                                )
+                            }
+                        }
+
+                        // Feed with user submission integrated
+                        jamFeed(
+                            feedState = viewState.feedState,
+                            submissionState = viewState.submissionState,
+                            onSubmitWork = viewModel::onSubmitWork,
+                            onModerationStatusClick = viewModel::onModerationStatusClick,
+                            onShowUserPreview = viewModel::onShowUserPreview,
+                            onShowSubmissionPreview = viewModel::onShowSubmissionPreview,
+                            showContributions = viewState.showContributions,
+                            isJamExpired = isJamExpired,
+                            onLoadMore = viewModel::onLoadMore,
+                        )
+                    }
+                }
             }
         }
     }
@@ -273,7 +282,7 @@ private fun LazyListScope.jamFeed(
     showContributions: Boolean,
     isJamExpired: Boolean,
     onLoadMore: () -> Unit,
-){
+) {
     // Add separator before feed if there are no contributions (so no toggle separator was shown)
     if (feedState.items.isEmpty()) {
         item {
@@ -282,17 +291,17 @@ private fun LazyListScope.jamFeed(
             )
         }
     }
-    
+
     // Create combined list with user submission as first item
     val allSubmissions = feedState.items
     val hasUserSubmission = submissionState is SubmissionViewState.Submitted
     val hasAnyContent = hasUserSubmission || allSubmissions.isNotEmpty()
-    
+
     if (hasAnyContent) {
-        
+
         // Create rows, starting with user submission if present
         val allRows = mutableListOf<List<Any>>()
-        
+
         if (!isJamExpired || hasUserSubmission) {
             // First row always includes user submission (whether submitted or empty state)
             if (allSubmissions.isNotEmpty()) {
@@ -308,10 +317,10 @@ private fun LazyListScope.jamFeed(
             // No user submission, just show other submissions
             allRows.addAll(allSubmissions.chunked(2))
         }
-        
+
         items(
             items = allRows,
-            key = { row -> 
+            key = { row ->
                 row.joinToString { item ->
                     when (item) {
                         "user" -> "user_submission"
@@ -336,6 +345,7 @@ private fun LazyListScope.jamFeed(
                                 modifier = Modifier.weight(1f)
                             )
                         }
+
                         is JamSubmission -> {
                             SubmissionCell(
                                 submission = item,
@@ -346,7 +356,7 @@ private fun LazyListScope.jamFeed(
                         }
                     }
                 }
-                
+
                 // Fill remaining space if row is incomplete
                 if (row.size == 1) {
                     Spacer(Modifier.weight(1f))
@@ -384,7 +394,6 @@ private fun LazyListScope.jamFeed(
         }
     }
 }
-
 
 
 @Composable
