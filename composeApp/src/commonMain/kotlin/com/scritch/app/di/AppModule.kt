@@ -13,6 +13,7 @@ import com.scritch.app.settings.about.AboutViewModel
 import com.scritch.app.splash.SplashViewModel
 import com.scritch.app.userdata.LoadUserDataUseCase
 import com.scritch.app.userdata.UserDataRepository
+import com.scritch.app.userprofile.UserProfileRepository
 import com.scritch.app.wizard.WizardScreenViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -25,6 +26,7 @@ val appModule = module {
     singleOf(::CategoryRepository)
     singleOf(::JamRepository)
     singleOf(::UserDataRepository)
+    singleOf(::UserProfileRepository)
 
     viewModelOf(::AboutViewModel)
     viewModelOf(::AppViewModel)
