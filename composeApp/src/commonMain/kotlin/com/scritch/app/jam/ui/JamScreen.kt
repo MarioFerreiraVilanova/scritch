@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -51,6 +52,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -70,10 +72,13 @@ import com.scritch.app.uicomponents.PageLoader
 import io.github.ismoy.imagepickerkmp.GalleryPickerLauncher
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.account_circle
 import scritch.composeapp.generated.resources.be_the_first_to_submit
+import scritch.composeapp.generated.resources.you
 import scritch.composeapp.generated.resources.entry_approved
 import scritch.composeapp.generated.resources.entry_rejected
 import scritch.composeapp.generated.resources.pick_one_from_the_gallery
@@ -466,6 +471,42 @@ private fun UserSubmissionCell(
                                 }
                             )
                         }
+                    }
+                    
+                    // "You" indicator with gradient background in bottom start corner
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .fillMaxWidth()
+                            .height(46.dp)
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        MaterialTheme.colorScheme.surface
+                                    )
+                                )
+                            )
+                    )
+                    
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.account_circle),
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = stringResource(Res.string.you),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                     }
                 }
             }
