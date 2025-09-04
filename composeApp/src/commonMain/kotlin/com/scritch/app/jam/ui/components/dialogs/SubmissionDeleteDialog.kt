@@ -1,7 +1,6 @@
 package com.scritch.app.jam.ui.components.dialogs
 
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -10,6 +9,7 @@ import com.scritch.app.theme.scritchColorScheme
 import com.scritch.app.theme.scritchShapes
 import com.scritch.app.theme.scritchTypography
 import com.scritch.app.uicomponents.Button
+import com.scritch.app.uicomponents.ButtonStyle
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import scritch.composeapp.generated.resources.Res
@@ -34,10 +34,7 @@ fun SubmissionDeleteDialog(
         confirmButton = {
             Button(
                 onClick = onConfirm,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error,
-                    contentColor = MaterialTheme.colorScheme.onError
-                ),
+                style = ButtonStyle.Negative,
             ) {
                 Text(text = stringResource(Res.string.yes_delete_it))
             }
