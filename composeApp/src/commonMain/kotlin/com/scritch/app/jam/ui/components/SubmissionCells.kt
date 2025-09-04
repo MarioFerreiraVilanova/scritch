@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -47,6 +46,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.account_circle
 import scritch.composeapp.generated.resources.entry_rejected
+import scritch.composeapp.generated.resources.plus
 import scritch.composeapp.generated.resources.review_pending
 import scritch.composeapp.generated.resources.share_your_work
 import scritch.composeapp.generated.resources.uploading_your_image
@@ -184,7 +184,7 @@ fun UserSubmissionCell(
                             }
                             else -> {
                                 Icon(
-                                    imageVector = Icons.Default.Add,
+                                    painter = painterResource(Res.drawable.plus),
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.size(48.dp)
