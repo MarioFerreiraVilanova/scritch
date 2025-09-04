@@ -37,10 +37,14 @@ enum class LoadingState {
     REFRESHING,
 }
 
-enum class JamScreenDialog {
-    EntryPreview,
-    SubmissionDeleteConfirmation,
-    ImageSourceSheet,
-    GalleryPicker,
-    ModerationStatus,
+sealed class JamScreenDialog {
+    data class EntryPreview(
+        val imageUrl: String,
+        val isUserSubmission: Boolean,
+        val moderationStatus: ModerationStatus? = null
+    ) : JamScreenDialog()
+    data object SubmissionDeleteConfirmation : JamScreenDialog()
+    data object ImageSourceSheet : JamScreenDialog()
+    data object GalleryPicker : JamScreenDialog()
+    data object ModerationStatusExplanation : JamScreenDialog()
 }

@@ -272,15 +272,33 @@ class JamViewModel(
     fun onModerationStatusClick() {
         mutableViewState.update {
             it.copy(
-                dialog = JamScreenDialog.ModerationStatus,
+                dialog = JamScreenDialog.ModerationStatusExplanation,
             )
         }
     }
 
-    fun onShowPreview() {
+    fun onShowUserPreview() {
+        val submission = viewState.value.submissionState as? SubmissionViewState.Submitted ?: return
         mutableViewState.update {
             it.copy(
-                dialog = JamScreenDialog.EntryPreview,
+                dialog = JamScreenDialog.EntryPreview(
+                    imageUrl = submission.imageUrl,
+                    isUserSubmission = true,
+                    moderationStatus = submission.moderationStatus
+                ),
+            )
+        }
+    }
+
+    fun onShowSubmissionPreview(userId: String) {
+        val submission = viewState.value.feedState.items.find { it.userId == userId } ?: return
+        mutableViewState.update {
+            it.copy(
+                dialog = JamScreenDialog.EntryPreview(
+                    imageUrl = submission.imageUrl,
+                    isUserSubmission = false,
+                    moderationStatus = submission.status
+                ),
             )
         }
     }
@@ -293,18 +311,10 @@ class JamViewModel(
         }
     }
 
-    fun onDismissDialog(
-        dialog: JamScreenDialog,
-    ) {
+    fun onDismissDialog() {
         mutableViewState.update {
             it.copy(
-                dialog = when (dialog) {
-                    JamScreenDialog.EntryPreview -> null
-                    JamScreenDialog.SubmissionDeleteConfirmation -> null
-                    JamScreenDialog.ImageSourceSheet -> null
-                    JamScreenDialog.GalleryPicker -> null
-                    JamScreenDialog.ModerationStatus -> null
-                },
+                dialog = null,
             )
         }
     }

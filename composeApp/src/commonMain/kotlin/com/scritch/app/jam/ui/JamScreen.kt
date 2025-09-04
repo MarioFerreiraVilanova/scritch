@@ -177,6 +177,8 @@ fun JamScreen(
                         submissionState = viewState.submissionState,
                         onSubmitWork = viewModel::onSubmitWork,
                         onModerationStatusClick = viewModel::onModerationStatusClick,
+                        onShowUserPreview = viewModel::onShowUserPreview,
+                        onShowSubmissionPreview = viewModel::onShowSubmissionPreview,
                         showContributions = viewState.showContributions,
                         isJamExpired = viewState.jamStatus == JamStatus.EXPIRED,
                         onLoadMore = viewModel::onLoadMore,
@@ -199,27 +201,21 @@ fun JamScreen(
             onOpenCamera()
         },
         onGallerySelected = viewModel::onGallerySelectedAsSource,
-        onDismissRequest = {
-            viewModel.onDismissDialog(JamScreenDialog.ImageSourceSheet)
-        }
+        onDismissRequest = viewModel::onDismissDialog,
     )
 
-    when (viewState.dialog) {
-        JamScreenDialog.EntryPreview -> {
-            (viewState.submissionState as? SubmissionViewState.Submitted)?.let { submission ->
-                SubmissionPreviewDialog(
-                    viewState = submission,
-                    onDismissRequest = {
-                        viewModel.onDismissDialog(JamScreenDialog.EntryPreview)
-                    },
-                )
-            }
+    when (val dialog = viewState.dialog) {
+        is JamScreenDialog.EntryPreview -> {
+            SubmissionPreviewDialog(
+                imageUrl = dialog.imageUrl,
+                isUserSubmission = dialog.isUserSubmission,
+                moderationStatus = dialog.moderationStatus,
+                onDismissRequest = viewModel::onDismissDialog,
+            )
         }
 
         JamScreenDialog.SubmissionDeleteConfirmation -> SubmissionDeleteDialog(
-            onDismissRequest = {
-                viewModel.onDismissDialog(JamScreenDialog.SubmissionDeleteConfirmation)
-            },
+            onDismissRequest = viewModel::onDismissDialog,
             onConfirm = viewModel::onRemoveSubmission,
         )
 
@@ -227,13 +223,11 @@ fun JamScreen(
         null -> {
         }
 
-        JamScreenDialog.ModerationStatus -> {
+        JamScreenDialog.ModerationStatusExplanation -> {
             (viewState.submissionState as? SubmissionViewState.Submitted)?.let { submission ->
                 ModerationStatusDialog(
                     moderationStatus = submission.moderationStatus,
-                    onDismissRequest = {
-                        viewModel.onDismissDialog(JamScreenDialog.ModerationStatus)
-                    }
+                    onDismissRequest = viewModel::onDismissDialog,
                 )
             }
         }
@@ -246,13 +240,11 @@ fun JamScreen(
                         viewModel.onImageCaptured(chosenImage.uri)
                     }
                 },
-                onDismiss = {
-                    viewModel.onDismissDialog(JamScreenDialog.GalleryPicker)
-                },
+                onDismiss = viewModel::onDismissDialog,
                 onError = { _ ->
                     // TODO handle the error, maybe show a snack bar or something
-                    viewModel.onDismissDialog(JamScreenDialog.GalleryPicker)
-                }
+                    viewModel.onDismissDialog()
+                },
             )
         }
     }
@@ -263,6 +255,8 @@ private fun LazyListScope.jamFeed(
     submissionState: SubmissionViewState,
     onSubmitWork: () -> Unit,
     onModerationStatusClick: () -> Unit,
+    onShowUserPreview: () -> Unit,
+    onShowSubmissionPreview: (String) -> Unit,
     showContributions: Boolean,
     isJamExpired: Boolean,
     onLoadMore: () -> Unit,
@@ -322,6 +316,7 @@ private fun LazyListScope.jamFeed(
                                 submissionState = submissionState,
                                 onSubmitWork = onSubmitWork,
                                 onModerationStatusClick = onModerationStatusClick,
+                                onShowPreview = onShowUserPreview,
                                 isJamExpired = isJamExpired,
                                 modifier = Modifier.weight(1f)
                             )
@@ -330,6 +325,7 @@ private fun LazyListScope.jamFeed(
                             SubmissionCell(
                                 submission = item,
                                 showImage = showContributions,
+                                onShowPreview = onShowSubmissionPreview,
                                 modifier = Modifier.weight(1f)
                             )
                         }
@@ -362,6 +358,7 @@ private fun LazyListScope.jamFeed(
                     submissionState = submissionState,
                     onSubmitWork = onSubmitWork,
                     onModerationStatusClick = onModerationStatusClick,
+                    onShowPreview = onShowUserPreview,
                     isJamExpired = isJamExpired,
                     modifier = Modifier.weight(1f)
                 )
@@ -391,6 +388,7 @@ private fun UserSubmissionCell(
     submissionState: SubmissionViewState,
     onSubmitWork: () -> Unit,
     onModerationStatusClick: () -> Unit,
+    onShowPreview: () -> Unit,
     isJamExpired: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -403,8 +401,12 @@ private fun UserSubmissionCell(
                 color = MaterialTheme.colorScheme.primary,
                 shape = MaterialTheme.shapes.small
             )
-            .clickable(enabled = !isJamExpired && submissionState == SubmissionViewState.NotSubmitted) { 
-                onSubmitWork() 
+            .clickable { 
+                when (submissionState) {
+                    is SubmissionViewState.Submitted -> onShowPreview()
+                    SubmissionViewState.NotSubmitted -> if (!isJamExpired) onSubmitWork()
+                    else -> {} // Do nothing for other states like uploading
+                }
             },
         contentAlignment = Alignment.Center
     ) {
@@ -530,6 +532,7 @@ private fun UserSubmissionCell(
 private fun SubmissionCell(
     submission: JamSubmission,
     showImage: Boolean,
+    onShowPreview: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -541,7 +544,7 @@ private fun SubmissionCell(
                 color = MaterialTheme.colorScheme.outline,
                 shape = MaterialTheme.shapes.small
             )
-            //.clickable { onClick(submission) }
+            .clickable(enabled = showImage) { onShowPreview(submission.userId) }
             .background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.Center
     ) {
