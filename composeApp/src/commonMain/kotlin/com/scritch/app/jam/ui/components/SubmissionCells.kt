@@ -38,6 +38,12 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import androidx.core.uri.UriUtils
+import com.scritch.app.theme.scritchColorScheme
+import com.scritch.app.theme.scritchShapes
+import com.scritch.app.theme.scritchTypography
+import dev.gitlive.firebase.firestore.Timestamp
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.account_circle
 import scritch.composeapp.generated.resources.entry_rejected
@@ -289,6 +295,226 @@ private fun SubmissionOverlay(
                 text = if (isCurrentUser) stringResource(Res.string.you) else displayName,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+// =============================================================================
+// PREVIEWS
+// =============================================================================
+
+@Preview
+@Composable
+private fun UserSubmissionCellNotSubmittedPreview() {
+    MaterialTheme(
+        colorScheme = scritchColorScheme,
+        typography = scritchTypography(),
+        shapes = scritchShapes,
+    ) {
+        UserSubmissionCell(
+            submissionState = SubmissionViewState.NotSubmitted,
+            onSubmitWork = {},
+            onModerationStatusClick = {},
+            onShowPreview = {},
+            isJamExpired = false,
+            modifier = Modifier.size(120.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun UserSubmissionCellUploadingPreview() {
+    MaterialTheme(
+        colorScheme = scritchColorScheme,
+        typography = scritchTypography(),
+        shapes = scritchShapes,
+    ) {
+        UserSubmissionCell(
+            submissionState = SubmissionViewState.ImageTakenLocally(
+                imageUri = UriUtils.parse("content://example.jpg"),
+                uploadStatus = SubmissionUploadState.Uploading(0.6f)
+            ),
+            onSubmitWork = {},
+            onModerationStatusClick = {},
+            onShowPreview = {},
+            isJamExpired = false,
+            modifier = Modifier.size(120.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun UserSubmissionCellSubmittedApprovedPreview() {
+    MaterialTheme(
+        colorScheme = scritchColorScheme,
+        typography = scritchTypography(),
+        shapes = scritchShapes,
+    ) {
+        UserSubmissionCell(
+            submissionState = SubmissionViewState.Submitted(
+                imageUrl = "https://example.com/image.jpg",
+                moderationStatus = ModerationStatus.Approved
+            ),
+            onSubmitWork = {},
+            onModerationStatusClick = {},
+            onShowPreview = {},
+            isJamExpired = false,
+            modifier = Modifier.size(120.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun UserSubmissionCellSubmittedPendingPreview() {
+    MaterialTheme(
+        colorScheme = scritchColorScheme,
+        typography = scritchTypography(),
+        shapes = scritchShapes,
+    ) {
+        UserSubmissionCell(
+            submissionState = SubmissionViewState.Submitted(
+                imageUrl = "https://example.com/image.jpg",
+                moderationStatus = ModerationStatus.Pending
+            ),
+            onSubmitWork = {},
+            onModerationStatusClick = {},
+            onShowPreview = {},
+            isJamExpired = false,
+            modifier = Modifier.size(120.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun UserSubmissionCellSubmittedRejectedPreview() {
+    MaterialTheme(
+        colorScheme = scritchColorScheme,
+        typography = scritchTypography(),
+        shapes = scritchShapes,
+    ) {
+        UserSubmissionCell(
+            submissionState = SubmissionViewState.Submitted(
+                imageUrl = "https://example.com/image.jpg",
+                moderationStatus = ModerationStatus.Rejected
+            ),
+            onSubmitWork = {},
+            onModerationStatusClick = {},
+            onShowPreview = {},
+            isJamExpired = false,
+            modifier = Modifier.size(120.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun UserSubmissionCellExpiredPreview() {
+    MaterialTheme(
+        colorScheme = scritchColorScheme,
+        typography = scritchTypography(),
+        shapes = scritchShapes,
+    ) {
+        UserSubmissionCell(
+            submissionState = SubmissionViewState.NotSubmitted,
+            onSubmitWork = {},
+            onModerationStatusClick = {},
+            onShowPreview = {},
+            isJamExpired = true,
+            modifier = Modifier.size(120.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SubmissionCellVisiblePreview() {
+    MaterialTheme(
+        colorScheme = scritchColorScheme,
+        typography = scritchTypography(),
+        shapes = scritchShapes,
+    ) {
+        SubmissionCell(
+            submission = JamSubmission(
+                userId = "user123",
+                imageUrl = "https://example.com/image.jpg",
+                createdAt = Timestamp.now(),
+                status = ModerationStatus.Approved,
+                nickname = "Picasso47"
+            ),
+            showImage = true,
+            onShowPreview = {},
+            modifier = Modifier.size(120.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SubmissionCellHiddenPreview() {
+    MaterialTheme(
+        colorScheme = scritchColorScheme,
+        typography = scritchTypography(),
+        shapes = scritchShapes,
+    ) {
+        SubmissionCell(
+            submission = JamSubmission(
+                userId = "user123",
+                imageUrl = "https://example.com/image.jpg",
+                createdAt = Timestamp.now(),
+                status = ModerationStatus.Approved,
+                nickname = "VanGogh203"
+            ),
+            showImage = false,
+            onShowPreview = {},
+            modifier = Modifier.size(120.dp)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SubmissionOverlayCurrentUserPreview() {
+    MaterialTheme(
+        colorScheme = scritchColorScheme,
+        typography = scritchTypography(),
+        shapes = scritchShapes,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(120.dp)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+        ) {
+            SubmissionOverlay(
+                displayName = "Picasso47",
+                isCurrentUser = true,
+                modifier = Modifier.align(Alignment.BottomStart)
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun SubmissionOverlayOtherUserPreview() {
+    MaterialTheme(
+        colorScheme = scritchColorScheme,
+        typography = scritchTypography(),
+        shapes = scritchShapes,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(120.dp)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+        ) {
+            SubmissionOverlay(
+                displayName = "VanGogh203",
+                isCurrentUser = false,
+                modifier = Modifier.align(Alignment.BottomStart)
             )
         }
     }
