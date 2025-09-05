@@ -71,6 +71,7 @@
     <string name="weekly_jam_description">¡Únete al Scritch Jam! Un reto compartido para despertar tu creatividad y conectar con artistas de todo el mundo.</string>
     <string name="weekly_jam_end_time">Este Scritch acaba el %1$s a las %2$s</string>
     <string name="weekly_jam_not_available">No hay ningun Scritch Jam en este momento. ¡Vuelve pronto para descubrir el próximo reto!</string>
+    <string name="jam_had_no_entries">Nadie participó en esta jam</string>
     <string name="yes_delete_it">Sí, eliminar</string>
     <string name="ends_in_d_h">Termina en %1$dd %2$dh</string>
     <string name="ends_in_h_m">Termina en %1$dh %2$dm</string>

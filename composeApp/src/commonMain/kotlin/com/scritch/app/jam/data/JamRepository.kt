@@ -24,8 +24,11 @@ class JamRepository(
 ) {
 
     fun getCurrentJamFlow(): Flow<JamDto?> {
+        val now = Timestamp.now()
         return Firebase.firestore
             .collection(JAM_COLLECTION)
+            .where { "startDate" lessThanOrEqualTo now }
+            .where { "endDate" greaterThanOrEqualTo now }
             .orderBy("startDate", Direction.DESCENDING)
             .limit(1)
             .snapshots()
@@ -37,8 +40,11 @@ class JamRepository(
     }
 
     suspend fun loadCurrentJam(): JamDto? {
+        val now = Timestamp.now()
         return Firebase.firestore
             .collection(JAM_COLLECTION)
+            .where { "startDate" lessThanOrEqualTo now }
+            .where { "endDate" greaterThanOrEqualTo now }
             .orderBy("startDate", Direction.DESCENDING)
             .limit(1)
             .get()

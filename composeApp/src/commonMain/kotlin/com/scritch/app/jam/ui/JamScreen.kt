@@ -34,9 +34,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.scritch.app.jam.JamFeedState
 import com.scritch.app.jam.JamScreenDialog
@@ -62,6 +65,7 @@ import kotlinx.datetime.toInstant
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.jam_had_no_entries
 import scritch.composeapp.generated.resources.pick_one_from_the_gallery
 import scritch.composeapp.generated.resources.show_contributions
 import scritch.composeapp.generated.resources.show_contributions_subtitle
@@ -83,31 +87,28 @@ fun JamScreen(
     val viewState by viewModel.viewState.collectAsState()
 
     // Calculate jam expiration with smart adaptive ticking
-    val isJamExpired by remember(viewState.endDate) {
-        derivedStateOf {
-            viewState.endDate?.toInstant(TimeZone.currentSystemDefault())?.let { endInstant ->
-                Clock.System.now() > endInstant
-            } ?: false
-        }
-    }
+    var isJamExpired by remember { mutableStateOf(false) }
 
     // Smart ticking: adjust frequency based on time remaining
     LaunchedEffect(viewState.endDate) {
         if (viewState.endDate != null) {
-            val endInstant = viewState.endDate!!.toInstant(TimeZone.currentSystemDefault())
+            viewState.endDate?.toInstant(TimeZone.currentSystemDefault())?.let { endInstant ->
+                while (true) {
+                    val now = Clock.System.now()
+                    val timeLeft = endInstant - now
 
-            while (true) {
-                val now = Clock.System.now()
-                val timeLeft = endInstant - now
+                    // Update expiration state
+                    isJamExpired = now > endInstant
 
-                val delayMs = when {
-                    timeLeft <= 0.minutes -> break // Jam has ended, stop ticking
-                    timeLeft <= 10.minutes -> 1_000L // Tick every second in final 10 minutes
-                    timeLeft <= 1.hours -> 60_000L // Tick every minute in final hour
-                    else -> 600_000L // Tick every 10 minutes otherwise
+                    val delayMs = when {
+                        timeLeft <= 0.minutes -> break // Jam has ended, stop ticking
+                        timeLeft <= 10.minutes -> 1_000L // Tick every second in final 10 minutes
+                        timeLeft <= 1.hours -> 60_000L // Tick every minute in final hour
+                        else -> 600_000L // Tick every 10 minutes otherwise
+                    }
+
+                    delay(delayMs)
                 }
-
-                delay(delayMs)
             }
         }
     }
@@ -229,6 +230,7 @@ fun JamScreen(
                 isUserSubmission = dialog.isUserSubmission,
                 moderationStatus = dialog.moderationStatus,
                 nickname = dialog.nickname,
+                isJamExpired = isJamExpired,
                 onDismissRequest = viewModel::onDismissDialog,
                 onRetrySubmission = if (dialog.isUserSubmission) viewModel::onSubmitWork else null,
                 onDeleteSubmission = if (dialog.isUserSubmission) viewModel::onRemoveSubmission else null,
@@ -374,21 +376,36 @@ private fun LazyListScope.jamFeed(
             }
         }
     } else {
-        // Empty state - show user submission slot and empty feed cell
-        item {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                UserSubmissionCell(
-                    submissionState = submissionState,
-                    onSubmitWork = onSubmitWork,
-                    onModerationStatusClick = onModerationStatusClick,
-                    onShowPreview = onShowUserPreview,
-                    isJamExpired = isJamExpired,
-                    modifier = Modifier.weight(1f)
-                )
-                EmptyFeedCell(
-                    modifier = Modifier.weight(1f)
+        // Empty state - show user submission slot and empty feed cell only if jam is active or user has submission
+        if (!isJamExpired || hasUserSubmission) {
+            item {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    UserSubmissionCell(
+                        submissionState = submissionState,
+                        onSubmitWork = onSubmitWork,
+                        onModerationStatusClick = onModerationStatusClick,
+                        onShowPreview = onShowUserPreview,
+                        isJamExpired = isJamExpired,
+                        modifier = Modifier.weight(1f)
+                    )
+                    EmptyFeedCell(
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+        } else {
+            // Expired jam with no contributions
+            item {
+                Text(
+                    text = stringResource(Res.string.jam_had_no_entries),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(64.dp)
                 )
             }
         }

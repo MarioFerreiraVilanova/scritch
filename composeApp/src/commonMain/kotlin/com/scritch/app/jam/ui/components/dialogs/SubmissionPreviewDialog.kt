@@ -54,6 +54,7 @@ fun SubmissionPreviewDialog(
     isUserSubmission: Boolean,
     moderationStatus: ModerationStatus,
     nickname: String,
+    isJamExpired: Boolean,
     onDismissRequest: () -> Unit,
     onRetrySubmission: (() -> Unit)?,
     onDeleteSubmission: (() -> Unit)?,
@@ -141,30 +142,38 @@ fun SubmissionPreviewDialog(
             }
             
             // Action buttons for user submissions
-            if (isUserSubmission && (onRetrySubmission != null || onDeleteSubmission != null)) {
+            if (isUserSubmission && ((!isJamExpired && onRetrySubmission != null) || onDeleteSubmission != null)) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    onRetrySubmission?.let { onRetry ->
-                        Button(
-                            onClick = onRetry,
-                            label = "Replace",
-                            icon = painterResource(Res.drawable.redo),
-                            style = ButtonStyle.Secondary,
-                            modifier = Modifier.weight(1f),
-                        )
+                    // Replace button - only show if jam is not expired
+                    if (!isJamExpired) {
+                        onRetrySubmission?.let { onRetry ->
+                            Button(
+                                onClick = onRetry,
+                                label = "Replace",
+                                icon = painterResource(Res.drawable.redo),
+                                style = ButtonStyle.Secondary,
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
                     }
                     
+                    // Delete button - always show for user submissions
                     onDeleteSubmission?.let { onDelete ->
                         Button(
                             onClick = onDelete,
                             label = "Delete",
                             icon = painterResource(Res.drawable.delete),
                             style = ButtonStyle.Negative,
-                            modifier = Modifier.weight(1f),
+                            modifier = if (!isJamExpired && onRetrySubmission != null) {
+                                Modifier.weight(1f)
+                            } else {
+                                Modifier.fillMaxWidth()
+                            },
                         )
                     }
                 }
@@ -186,6 +195,7 @@ private fun SubmissionPreviewDialogUserApprovedPreview() {
             isUserSubmission = true,
             moderationStatus = ModerationStatus.Approved,
             nickname = "Picasso47",
+            isJamExpired = false,
             onDismissRequest = {},
             onRetrySubmission = {},
             onDeleteSubmission = {},
@@ -207,6 +217,7 @@ private fun SubmissionPreviewDialogUserPendingPreview() {
             isUserSubmission = true,
             moderationStatus = ModerationStatus.Pending,
             nickname = "Picasso47",
+            isJamExpired = false,
             onDismissRequest = {},
             onRetrySubmission = {},
             onDeleteSubmission = {},
@@ -228,6 +239,7 @@ private fun SubmissionPreviewDialogUserRejectedPreview() {
             isUserSubmission = true,
             moderationStatus = ModerationStatus.Rejected,
             nickname = "Picasso47",
+            isJamExpired = false,
             onDismissRequest = {},
             onRetrySubmission = {},
             onDeleteSubmission = {},
@@ -249,6 +261,7 @@ private fun SubmissionPreviewDialogOtherUserPreview() {
             isUserSubmission = false,
             moderationStatus = ModerationStatus.Approved,
             nickname = "VanGogh203",
+            isJamExpired = false,
             onDismissRequest = {},
             onRetrySubmission = null,
             onDeleteSubmission = null,
