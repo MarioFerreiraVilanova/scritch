@@ -73,6 +73,8 @@
     <string name="weekly_jam_description">Join the Scritch Jam! A shared challenge to spark creativity and connect with artists worldwide.</string>
     <string name="weekly_jam_end_time">This Scritch will end on %1$s at %2$s</string>
     <string name="weekly_jam_not_available">There's no Scritch Jam at the moment — check back soon for the next challenge!</string>
+    <string name="no_jam_title">No Scritch Jam today</string>
+    <string name="no_jam_subtitle">The next global design challenge is coming soon. Take this time to explore solo mode and practice your skills.</string>
     <string name="jam_had_no_entries">This jam had no entries</string>
     <string name="yes_delete_it">Yes, delete it</string>
     <string name="ends_in_d_h">Ends in %1$dd %2$dh</string>

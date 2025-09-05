@@ -66,6 +66,8 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.jam_had_no_entries
+import scritch.composeapp.generated.resources.no_jam_subtitle
+import scritch.composeapp.generated.resources.no_jam_title
 import scritch.composeapp.generated.resources.pick_one_from_the_gallery
 import scritch.composeapp.generated.resources.show_contributions
 import scritch.composeapp.generated.resources.show_contributions_subtitle
@@ -448,11 +450,26 @@ private fun ShowContributionsToggle(
 
 @Composable
 private fun NoJamView() {
-    Text(
-        text = stringResource(Res.string.weekly_jam_not_available),
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onBackground,
-    )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, top = 48.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = stringResource(Res.string.no_jam_title),
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = stringResource(Res.string.no_jam_subtitle),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
