@@ -60,6 +60,9 @@
     <string name="upload_complete">Téléversement terminé.</string>
     <string name="upload_failed">Échec du téléversement</string>
     <string name="uploading_your_image">Téléversement de votre image...</string>
+    <string name="upload_rate_limit_title">Limite de Téléversements Atteinte</string>
+    <string name="upload_rate_limit_cooldown_message">Veuillez attendre %1$s avant de téléverser à nouveau. Cela aide à prévenir le spam et garde la communauté amusante pour tous.</string>
+    <string name="upload_rate_limit_window_message">Vous avez atteint la limite de téléversements pour cette période. Veuillez attendre %1$s avant de réessayer.</string>
     <string name="version">Version : %1$s</string>
     <string name="version_history">Historique des versions</string>
     <string name="version_notes_0_10">Corrections de bugs liés aux défis et ajout de la page À propos dans les paramètres</string>

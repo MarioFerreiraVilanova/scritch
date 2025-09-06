@@ -52,6 +52,7 @@ import com.scritch.app.jam.ui.components.dialogs.FileSizeExceededDialog
 import com.scritch.app.jam.ui.components.dialogs.ModerationStatusDialog
 import com.scritch.app.jam.ui.components.dialogs.SubmissionDeleteDialog
 import com.scritch.app.jam.ui.components.dialogs.SubmissionPreviewDialog
+import com.scritch.app.jam.ui.components.dialogs.UploadRateLimitDialog
 import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
 import com.scritch.app.uicomponents.PageLoader
@@ -275,6 +276,14 @@ fun JamScreen(
 
         JamScreenDialog.FileSizeExceeded -> {
             FileSizeExceededDialog(
+                onDismissRequest = viewModel::onDismissDialog,
+            )
+        }
+
+        is JamScreenDialog.UploadRateLimit -> {
+            UploadRateLimitDialog(
+                isRateLimited = dialog.isRateLimited,
+                remainingTime = dialog.remainingTime,
                 onDismissRequest = viewModel::onDismissDialog,
             )
         }

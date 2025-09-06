@@ -2,6 +2,7 @@ package com.scritch.app.jam
 
 import com.scritch.app.prompt.PromptViewState
 import kotlinx.datetime.LocalDateTime
+import kotlin.time.Duration
 
 data class JamViewState (
     val loadingState: LoadingState,
@@ -46,4 +47,8 @@ sealed class JamScreenDialog {
     data object GalleryPicker : JamScreenDialog()
     data object ModerationStatusExplanation : JamScreenDialog()
     data object FileSizeExceeded : JamScreenDialog()
+    data class UploadRateLimit(
+        val isRateLimited: Boolean,
+        val remainingTime: Duration
+    ) : JamScreenDialog()
 }

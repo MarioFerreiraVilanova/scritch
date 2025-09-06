@@ -11,6 +11,8 @@ import com.scritch.app.jam.data.JamRepository
 import com.scritch.app.prompt.PromptViewState
 import com.scritch.app.userprofile.UserProfileRepository
 import com.scritch.app.util.isFileSizeValid
+import com.scritch.app.util.UploadPermission
+import com.scritch.app.util.UploadRateLimit
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +34,8 @@ class JamViewModel(
 
     private val mutableViewState = MutableStateFlow(JamViewState.EMPTY)
     val viewState = mutableViewState.asStateFlow()
+    
+    private val uploadRateLimit = UploadRateLimit()
 
     init {
         // Set up real-time listener for jam updates
@@ -341,6 +345,37 @@ class JamViewModel(
         }
         
         viewModelScope.launch {
+            // Check rate limiting first
+            when (val permission = uploadRateLimit.checkUploadPermission()) {
+                is UploadPermission.Cooldown -> {
+                    println("JamViewModel: Upload blocked by cooldown, ${permission.remainingTime}")
+                    mutableViewState.update {
+                        it.copy(
+                            dialog = JamScreenDialog.UploadRateLimit(
+                                isRateLimited = false,
+                                remainingTime = permission.remainingTime
+                            )
+                        )
+                    }
+                    return@launch
+                }
+                is UploadPermission.RateLimited -> {
+                    println("JamViewModel: Upload blocked by rate limit, ${permission.windowResetTime}")
+                    mutableViewState.update {
+                        it.copy(
+                            dialog = JamScreenDialog.UploadRateLimit(
+                                isRateLimited = true,
+                                remainingTime = permission.windowResetTime
+                            )
+                        )
+                    }
+                    return@launch
+                }
+                UploadPermission.Allowed -> {
+                    // Continue with file size and upload validation
+                }
+            }
+            
             // Check file size before starting upload
             val isValidSize = isFileSizeValid(imagePath)
             when (isValidSize) {
@@ -373,6 +408,10 @@ class JamViewModel(
         println("JamViewModel: Starting upload for path: $imagePath")
         val imageUri = UriUtils.parse(imagePath)
         println("JamViewModel: Parsed URI: $imageUri")
+        
+        // Record the upload attempt for rate limiting
+        uploadRateLimit.recordUploadAttempt()
+        
         try {
             mutableViewState.update {
                 it.copy(
