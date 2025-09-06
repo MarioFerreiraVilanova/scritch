@@ -10,6 +10,7 @@ import com.scritch.app.jam.data.JamDto
 import com.scritch.app.jam.data.JamRepository
 import com.scritch.app.prompt.PromptViewState
 import com.scritch.app.userprofile.UserProfileRepository
+import com.scritch.app.util.isFileSizeValid
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -340,7 +341,29 @@ class JamViewModel(
         }
         
         viewModelScope.launch {
-            uploadSubmission(imagePath)
+            // Check file size before starting upload
+            val isValidSize = isFileSizeValid(imagePath)
+            when (isValidSize) {
+                false -> {
+                    // File is too large, show error dialog
+                    println("JamViewModel: File size exceeded limit, showing dialog")
+                    mutableViewState.update {
+                        it.copy(
+                            dialog = JamScreenDialog.FileSizeExceeded
+                        )
+                    }
+                }
+                true -> {
+                    // File size is valid, proceed with upload
+                    uploadSubmission(imagePath)
+                }
+                null -> {
+                    // Could not determine file size, proceed with upload anyway
+                    // (better to attempt upload than block user for technical issue)
+                    println("JamViewModel: Could not determine file size, proceeding with upload")
+                    uploadSubmission(imagePath)
+                }
+            }
         }
     }
 

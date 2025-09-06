@@ -48,6 +48,7 @@ import com.scritch.app.jam.ui.components.EmptyFeedCell
 import com.scritch.app.jam.ui.components.JamHeader
 import com.scritch.app.jam.ui.components.SubmissionCell
 import com.scritch.app.jam.ui.components.UserSubmissionCell
+import com.scritch.app.jam.ui.components.dialogs.FileSizeExceededDialog
 import com.scritch.app.jam.ui.components.dialogs.ModerationStatusDialog
 import com.scritch.app.jam.ui.components.dialogs.SubmissionDeleteDialog
 import com.scritch.app.jam.ui.components.dialogs.SubmissionPreviewDialog
@@ -269,6 +270,12 @@ fun JamScreen(
                     // TODO handle the error, maybe show a snack bar or something
                     viewModel.onDismissDialog()
                 },
+            )
+        }
+
+        JamScreenDialog.FileSizeExceeded -> {
+            FileSizeExceededDialog(
+                onDismissRequest = viewModel::onDismissDialog,
             )
         }
     }

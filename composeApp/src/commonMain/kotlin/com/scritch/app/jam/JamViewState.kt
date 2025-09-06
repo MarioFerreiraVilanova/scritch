@@ -45,4 +45,5 @@ sealed class JamScreenDialog {
     data object ImageSourceSheet : JamScreenDialog()
     data object GalleryPicker : JamScreenDialog()
     data object ModerationStatusExplanation : JamScreenDialog()
+    data object FileSizeExceeded : JamScreenDialog()
 }

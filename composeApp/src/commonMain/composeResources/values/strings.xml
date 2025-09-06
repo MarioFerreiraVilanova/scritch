@@ -24,6 +24,8 @@
     <string name="development">Development: : %1$s</string>
     <string name="edit_your_entry">Edit your entry</string>
     <string name="feedback_questions">Feedback, suggestions?</string>
+    <string name="file_size_exceeded_title">File Size Too Large</string>
+    <string name="file_size_exceeded_message">The selected image is too large. Please choose an image smaller than 8MB or take a new photo.</string>
     <string name="generate_prompt">Generate prompt</string>
     <string name="landing_screen_description_1">Scritch is an app designed to inspire your drawings and </string>
     <string name="landing_screen_description_2">help you develop new skills </string>

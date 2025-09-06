@@ -24,6 +24,8 @@
     <string name="development">Desarrollo: %1$s</string>
     <string name="edit_your_entry">Editar tu participación</string>
     <string name="feedback_questions">¿Sugerencias o comentarios?</string>
+    <string name="file_size_exceeded_title">Archivo Demasiado Grande</string>
+    <string name="file_size_exceeded_message">La imagen seleccionada es demasiado grande. Por favor, elige una imagen menor a 8MB o toma una nueva foto.</string>
     <string name="generate_prompt">Generar reto</string>
     <string name="landing_screen_description_1">Scritch es una app pensada para inspirar tus dibujos y </string>
     <string name="landing_screen_description_2">ayudarte a desarrollar nuevas habilidades </string>
