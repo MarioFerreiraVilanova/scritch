@@ -1,5 +1,6 @@
 package com.scritch.app.util
 
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import platform.Foundation.*
@@ -7,6 +8,7 @@ import platform.Foundation.*
 /**
  * iOS implementation for file size checking.
  */
+@OptIn(ExperimentalForeignApi::class)
 actual suspend fun getFileSizeInBytes(pathOrUri: String): Long? = withContext(Dispatchers.Default) {
     try {
         val nsUrl = if (pathOrUri.startsWith("file://")) {
