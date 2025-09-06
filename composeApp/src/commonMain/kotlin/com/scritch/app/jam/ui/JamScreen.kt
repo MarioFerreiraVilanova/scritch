@@ -54,7 +54,7 @@ import com.scritch.app.jam.ui.components.dialogs.SubmissionPreviewDialog
 import com.scritch.app.prompt.Prompt
 import com.scritch.app.prompt.TipsSheet
 import com.scritch.app.uicomponents.PageLoader
-import io.github.ismoy.imagepickerkmp.GalleryPickerLauncher
+import io.github.ismoy.imagepickerkmp.presentation.ui.components.GalleryPickerLauncher
 import kotlinx.coroutines.delay
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant

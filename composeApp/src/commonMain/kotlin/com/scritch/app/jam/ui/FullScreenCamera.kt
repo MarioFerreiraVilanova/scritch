@@ -1,13 +1,13 @@
 package com.scritch.app.jam.ui
 
 import androidx.compose.runtime.Composable
-import io.github.ismoy.imagepickerkmp.CameraPhotoHandler
-import io.github.ismoy.imagepickerkmp.ImagePickerConfig
-import io.github.ismoy.imagepickerkmp.ImagePickerLauncher
+import io.github.ismoy.imagepickerkmp.domain.config.ImagePickerConfig
+import io.github.ismoy.imagepickerkmp.domain.models.PhotoResult
+import io.github.ismoy.imagepickerkmp.presentation.ui.components.ImagePickerLauncher
 
 @Composable
 fun FullScreenCamera(
-    onPhotoCaptured: (CameraPhotoHandler.PhotoResult) -> Unit,
+    onPhotoCaptured: (PhotoResult) -> Unit,
     onError: (Exception) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -16,6 +16,7 @@ fun FullScreenCamera(
             onPhotoCaptured = onPhotoCaptured,
             onError = onError,
             onDismiss = onDismiss,
+            directCameraLaunch = true,
         )
     )
 }
