@@ -55,6 +55,7 @@ The app heavily relies on Firebase services:
 - Storage for image uploads
 - Analytics for usage tracking
 - Crashlytics for error reporting
+- **Cloud Functions for server-side logic** (see Cloud Functions section below)
 
 ### Platform-Specific Code
 - **commonMain/**: Shared business logic, UI, and data layer
@@ -179,3 +180,75 @@ admins/{userId}
 #### Storage Structure
 - **Path**: `weekly_jam/{jamId}/{userId}.jpg`
 - **Usage**: User submission images for weekly jams
+
+## Firebase Cloud Functions
+
+The project includes a complete Firebase Cloud Functions setup for server-side logic, located in the `functions/` directory.
+
+### Development Commands
+
+#### Cloud Functions
+- `cd functions && npm install` - Install function dependencies
+- `cd functions && npm run build` - Build TypeScript functions
+- `cd functions && npm run serve` - Run local emulators for testing
+- `./deploy-functions.sh` - Deploy functions to Firebase (requires Firebase CLI login)
+- `firebase functions:log` - View function execution logs
+
+### Project Structure
+```
+functions/
+├── src/
+│   ├── index.ts          # Main entry point (imports/exports all functions)
+│   ├── moderation.ts     # Auto-moderation and community reporting
+│   ├── admin.ts          # Admin tools and manual overrides
+│   ├── jams.ts           # Jam management (placeholder for future)
+│   ├── notifications.ts  # Push notifications (placeholder for future)
+│   └── analytics.ts      # Custom analytics (placeholder for future)
+├── package.json          # Node.js dependencies and scripts  
+├── tsconfig.json         # TypeScript configuration
+├── .eslintrc.js          # Code linting rules
+├── README.md             # Detailed function documentation
+└── .gitignore            # Ignore node_modules, build artifacts
+```
+
+### Current Functions (Organized by Module)
+
+#### Moderation Functions (`moderation.ts`)
+- **`moderateSubmission`**: Auto-moderates new submissions based on user report history
+- **`reportUser`**: Handles community reporting with automatic enforcement (3+ reports = auto-reject)
+- **`getUserModerationStatus`**: Get user's effective reports and moderation status (admin only)
+
+#### Admin Functions (`admin.ts`)
+- **`pardonUser`**: Clear user's report history for rehabilitation (admin only)
+- **`moderateSubmissionManually`**: Manual submission status override (admin only)
+- **`getModerationQueue`**: Get submissions requiring manual review (admin only)
+
+### Moderation System Features
+
+**Trust-First Approach**: Auto-approve all users by default, only flag problematic users
+**Community Reporting**: 3+ community reports automatically reject submissions
+**Credibility Recovery**: Time decay (6 months) + good behavior credits (10 approvals = -1 effective report)
+**Admin Tools**: Full override capabilities and user rehabilitation system
+
+### Adding New Functions
+
+When adding new Cloud Functions:
+1. **Choose appropriate module** or create new one (e.g., `jams.ts`, `notifications.ts`)
+2. **Add function to module file** with proper error handling and authentication
+3. **Export from module** (functions auto-exported via `index.ts`)
+4. **Update `functions/README.md`** with function documentation
+5. **Test locally** with `npm run serve` 
+6. **Deploy** with `./deploy-functions.sh`
+7. **Update this CLAUDE.md** if the function adds new architectural patterns
+
+### Database Collections Used by Functions
+- `user_reports`: Community reports and moderation tracking
+- `user_profiles`: User data for moderation calculations
+- `weekly_jam/{jamId}/submissions`: Submission documents (auto-moderated)
+- `admins`: Admin privilege verification
+
+### Security & Authentication
+- All admin functions verify user exists in `admins` collection
+- Functions use Firebase Admin SDK with full database privileges
+- User authentication verified via `context.auth` in callable functions
+- Firestore security rules work alongside function-based moderation

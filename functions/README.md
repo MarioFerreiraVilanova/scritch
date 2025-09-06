@@ -50,21 +50,42 @@ This directory contains Firebase Cloud Functions for automated moderation and tr
    firebase deploy --only functions
    ```
 
+## Function Organization
+
+Functions are organized by feature in separate TypeScript modules:
+
+### `moderation.ts` - Content Moderation
+- **`moderateSubmission`**: Auto-moderation trigger for new submissions
+- **`reportUser`**: Community reporting system  
+- **`getUserModerationStatus`**: Get user moderation status (admin only)
+
+### `admin.ts` - Admin Tools
+- **`pardonUser`**: Clear user's report history (admin only)
+- **`moderateSubmissionManually`**: Manual moderation override (admin only)
+- **`getModerationQueue`**: Get pending submissions for review (admin only)
+
+### Placeholder Modules (Ready for Future Development)
+- **`jams.ts`**: Jam creation, scheduling, statistics
+- **`notifications.ts`**: Push notifications, email digests
+- **`analytics.ts`**: Custom analytics and reporting
+
 ## Function Details
 
-### `moderateSubmission`
+### Moderation Functions
 
+#### `moderateSubmission`
 **Trigger**: New document created in `weekly_jam/{jamId}/submissions/{userId}`
+**Module**: `moderation.ts`
 
 **Behavior**:
-- **Auto-approves all users by default** (trust-first approach)
-- Only requires manual review if user has 2+ confirmed reports
+- Auto-approves all users by default (trust-first approach)
+- Only requires manual review if user has 2+ effective reports
 - Admin users are always auto-approved
 - Graceful fallback to auto-approve on any errors
 
-### `reportUser`
-
+#### `reportUser`
 **Trigger**: HTTPS callable function
+**Module**: `moderation.ts`
 
 **Parameters**:
 ```json
@@ -81,9 +102,9 @@ This directory contains Firebase Cloud Functions for automated moderation and tr
 - Marks reports as "confirmed" when threshold reached
 - Users with 2+ confirmed reports require manual review for future submissions
 
-### `getUserTrust`
-
+#### `getUserModerationStatus`
 **Trigger**: HTTPS callable function (Admin only)
+**Module**: `moderation.ts`
 
 **Parameters**:
 ```json
@@ -92,7 +113,52 @@ This directory contains Firebase Cloud Functions for automated moderation and tr
 }
 ```
 
-**Returns**: User trust score and level for admin dashboard
+**Returns**: User effective reports and moderation status
+
+### Admin Functions
+
+#### `pardonUser`
+**Trigger**: HTTPS callable function (Admin only)
+**Module**: `admin.ts`
+
+**Parameters**:
+```json
+{
+  "userId": "string",
+  "reason": "string"
+}
+```
+
+**Behavior**: Clears all confirmed reports for a user
+
+#### `moderateSubmissionManually`
+**Trigger**: HTTPS callable function (Admin only)
+**Module**: `admin.ts`
+
+**Parameters**:
+```json
+{
+  "jamId": "string",
+  "userId": "string", 
+  "status": "approved|rejected|pending",
+  "reason": "string"
+}
+```
+
+**Behavior**: Manually override submission status
+
+#### `getModerationQueue`
+**Trigger**: HTTPS callable function (Admin only)  
+**Module**: `admin.ts`
+
+**Parameters**:
+```json
+{
+  "limit": "number" (optional, default: 50)
+}
+```
+
+**Returns**: Array of submissions requiring manual review
 
 ## Moderation Strategy: "Trust First, Verify Later"
 
