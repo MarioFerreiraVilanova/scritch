@@ -62,9 +62,12 @@ import io.github.ismoy.imagepickerkmp.GalleryPickerLauncher
 import kotlinx.coroutines.delay
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.camera
+import scritch.composeapp.generated.resources.image
 import scritch.composeapp.generated.resources.jam_had_no_entries
 import scritch.composeapp.generated.resources.no_jam_subtitle
 import scritch.composeapp.generated.resources.no_jam_title
@@ -507,7 +510,7 @@ private fun ImageSourcePickerSheet(
                     },
                     leadingContent = {
                         Icon(
-                            imageVector = Icons.Default.CameraAlt,
+                            painter = painterResource(Res.drawable.camera),
                             contentDescription = null,
                         )
                     },
@@ -524,7 +527,7 @@ private fun ImageSourcePickerSheet(
                     },
                     leadingContent = {
                         Icon(
-                            imageVector = Icons.Default.Image,
+                            painter = painterResource(Res.drawable.image),
                             contentDescription = null,
                         )
                     },
