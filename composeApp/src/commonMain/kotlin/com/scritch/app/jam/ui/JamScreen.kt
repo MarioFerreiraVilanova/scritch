@@ -453,7 +453,7 @@ private fun NoJamView() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, top = 48.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
