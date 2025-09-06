@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -47,6 +48,7 @@ fun SettingsScreen(
     onBackPress: () -> Unit,
     onCategoryPress: (Category) -> Unit,
     onGoToAbout: () -> Unit,
+    onGoToAdminPanel: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = koinViewModel<SettingsViewModel>(),
 ) {
@@ -129,6 +131,33 @@ fun SettingsScreen(
                         )
                     }
                 )
+            }
+
+            // Admin Panel - only show for admins
+            if (viewState.isAdmin) {
+                item {
+                    ListItem(
+                        headlineContent = {
+                            Text("Admin Panel")
+                        },
+                        supportingContent = {
+                            Text(
+                                text = "Moderation tools and admin settings",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        },
+                        leadingContent = {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = null,
+                            )
+                        },
+                        modifier = Modifier.clickable {
+                            onGoToAdminPanel()
+                        }
+                    )
+                }
             }
 
             item {

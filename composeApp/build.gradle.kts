@@ -42,7 +42,7 @@ kotlin {
     //jvm("desktop")
     
     listOf(
-        iosX64(),
+        // iosX64(), // Temporarily disabled due to Firebase KMP compatibility
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -78,6 +78,7 @@ kotlin {
             implementation(libs.gitlive.firebase.kotlin.analytics)
             implementation(libs.gitlive.firebase.kotlin.auth)
             implementation(libs.gitlive.firebase.kotlin.firestore)
+            implementation(libs.gitlive.firebase.kotlin.functions)
             implementation(libs.gitlive.firebase.kotlin.storage)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.image.picker.kmp)

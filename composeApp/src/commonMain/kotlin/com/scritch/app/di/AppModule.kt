@@ -1,5 +1,7 @@
 package com.scritch.app.di
 
+import com.scritch.app.admin.AdminRepository
+import com.scritch.app.admin.ModerationQueueViewModel
 import com.scritch.app.analytics.AnalyticsRepository
 import com.scritch.app.app.AppViewModel
 import com.scritch.app.auth.AuthenticationRepository
@@ -22,6 +24,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val appModule = module {
+    singleOf(::AdminRepository)
     singleOf(::AnalyticsRepository)
     singleOf(::AuthenticationRepository)
     singleOf(::CategoryRepository)
@@ -33,6 +36,7 @@ val appModule = module {
     viewModelOf(::AppViewModel)
     viewModelOf(::JamViewModel)
     viewModelOf(::LandingViewModel)
+    viewModelOf(::ModerationQueueViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::SoloViewModel)
     viewModelOf(::SplashViewModel)

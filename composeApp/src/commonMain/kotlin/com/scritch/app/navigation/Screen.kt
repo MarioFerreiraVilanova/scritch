@@ -15,6 +15,8 @@ import kotlinx.serialization.Serializable
     @Serializable object Home
     @Serializable object Settings
     @Serializable object VersionHistory
+    @Serializable object AdminPanel
+    @Serializable object ModerationQueue
     @Serializable data class WizardMediumSelection(
         val category: Int,
         val step: Int?,

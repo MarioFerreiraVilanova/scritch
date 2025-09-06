@@ -15,6 +15,8 @@ import com.scritch.app.app.AppViewState
 import com.scritch.app.home.HomeScreen
 import com.scritch.app.jam.ui.FullScreenCamera
 import com.scritch.app.landing.LandingScreen
+import com.scritch.app.admin.AdminPanelScreen
+import com.scritch.app.admin.ModerationQueueScreen
 import com.scritch.app.settings.SettingsScreen
 import com.scritch.app.settings.about.AboutScreen
 import com.scritch.app.settings.versionhistory.VersionHistoryScreen
@@ -133,6 +135,9 @@ private fun NavGraphBuilder.authenticatedSubGraph(
                 },
                 onGoToAbout = {
                     navController.navigate(Authenticated.About)
+                },
+                onGoToAdminPanel = {
+                    navController.navigate(Authenticated.AdminPanel)
                 }
             )
         }
@@ -150,6 +155,25 @@ private fun NavGraphBuilder.authenticatedSubGraph(
 
         composable<Authenticated.VersionHistory> {
             VersionHistoryScreen(
+                onBackPress = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable<Authenticated.AdminPanel> {
+            AdminPanelScreen(
+                onBackPress = {
+                    navController.popBackStack()
+                },
+                onGoToModerationQueue = {
+                    navController.navigate(Authenticated.ModerationQueue)
+                }
+            )
+        }
+
+        composable<Authenticated.ModerationQueue> {
+            ModerationQueueScreen(
                 onBackPress = {
                     navController.popBackStack()
                 }
