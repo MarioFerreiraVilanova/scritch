@@ -22,7 +22,7 @@ This directory contains Firebase Cloud Functions for automated moderation and tr
    ```json
    {
      "projects": {
-       "default": "your-actual-project-id"
+       "default": "scritch-2daff"
      }
    }
    ```

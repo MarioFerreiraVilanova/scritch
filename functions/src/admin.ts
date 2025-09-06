@@ -1,10 +1,10 @@
-import * as functions from "firebase-functions";
+import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
 
 const db = admin.firestore();
 
 // Admin function to pardon a user (reset their moderation status)
-export const pardonUser = functions.https.onCall(async (data, context) => {
+export const pardonUser = functions.https.onCall(async (data: any, context: any) => {
   // Verify admin access
   if (!context.auth) {
     throw new functions.https.HttpsError("unauthenticated", "User must be authenticated");
@@ -50,7 +50,7 @@ export const pardonUser = functions.https.onCall(async (data, context) => {
 });
 
 // Admin function to manually moderate a submission
-export const moderateSubmissionManually = functions.https.onCall(async (data, context) => {
+export const moderateSubmissionManually = functions.https.onCall(async (data: any, context: any) => {
   // Verify admin access
   if (!context.auth) {
     throw new functions.https.HttpsError("unauthenticated", "User must be authenticated");
@@ -102,7 +102,7 @@ export const moderateSubmissionManually = functions.https.onCall(async (data, co
 });
 
 // Admin function to get moderation queue (submissions requiring review)
-export const getModerationQueue = functions.https.onCall(async (data, context) => {
+export const getModerationQueue = functions.https.onCall(async (data: any, context: any) => {
   // Verify admin access
   if (!context.auth) {
     throw new functions.https.HttpsError("unauthenticated", "User must be authenticated");

@@ -1,4 +1,4 @@
-import * as functions from "firebase-functions";
+import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
 
 const db = admin.firestore();
@@ -69,8 +69,7 @@ async function determineInitialStatus(userId: string): Promise<string> {
 // Main moderation function - triggers when a new submission is created
 export const moderateSubmission = functions.firestore
   .document("weekly_jam/{jamId}/submissions/{userId}")
-  .onCreate(async (snap, context) => {
-    const submission = snap.data();
+  .onCreate(async (snap: any, context: any) => {
     const userId = context.params.userId;
 
     console.log(`New submission from user ${userId}`);
@@ -94,7 +93,7 @@ export const moderateSubmission = functions.firestore
         console.log(`Auto-approved submission from user ${userId}`);
       }
 
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error in moderation:", error);
       
       // Fallback to pending on error
@@ -107,7 +106,7 @@ export const moderateSubmission = functions.firestore
   });
 
 // Function to handle user reports
-export const reportUser = functions.https.onCall(async (data, context) => {
+export const reportUser = functions.https.onCall(async (data: any, context: any) => {
   // Verify user is authenticated
   if (!context.auth) {
     throw new functions.https.HttpsError("unauthenticated", "User must be authenticated");
@@ -177,7 +176,7 @@ export const reportUser = functions.https.onCall(async (data, context) => {
 });
 
 // Function to get user moderation status (for admin dashboard)
-export const getUserModerationStatus = functions.https.onCall(async (data, context) => {
+export const getUserModerationStatus = functions.https.onCall(async (data: any, context: any) => {
   // Verify admin access
   if (!context.auth) {
     throw new functions.https.HttpsError("unauthenticated", "User must be authenticated");
