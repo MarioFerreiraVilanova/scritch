@@ -10,6 +10,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `./gradlew composeApp:assembleRelease` - Build release Android APK  
 - `./gradlew composeApp:clean` - Clean build artifacts
 
+### iOS Build Notes
+- **Kotlin Native Cache Workaround**: Due to cache corruption issues with `androidx.navigation` library, `kotlin.native.cacheKind=none` is set in `gradle.properties` to ensure iOS builds work correctly in both command line and Xcode
+- **Bundle ID Warning**: iOS builds show bundle ID inference warnings - can be ignored or resolved by specifying explicit bundle ID
+
 ### Testing
 - `./gradlew composeApp:test` - Run all unit tests
 - `./gradlew composeApp:testDebugUnitTest` - Run debug unit tests

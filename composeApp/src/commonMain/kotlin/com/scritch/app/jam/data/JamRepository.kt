@@ -2,18 +2,18 @@ package com.scritch.app.jam.data
 
 import com.scritch.app.jam.Cursor
 import com.scritch.app.jam.Page
-import com.scritch.app.jam.data.SubmissionDto
+import com.scritch.app.userprofile.UserProfileRepository
 import com.scritch.app.util.storageFileFromString
+import com.scritch.app.util.uploadFileToStorage
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.Timestamp
 import dev.gitlive.firebase.firestore.firestore
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import dev.gitlive.firebase.storage.storage
 import dev.gitlive.firebase.storage.storageMetadata
-import com.scritch.app.userprofile.UserProfileRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlin.time.ExperimentalTime
 
 private const val JAM_COLLECTION = "weekly_jam"
@@ -63,31 +63,49 @@ class JamRepository(
         mimeType: String = "image/jpeg",
         onProgress: ((Int) -> Unit)? = null
     ): SubmissionDto {
+        println("JamRepository: Starting submitWeeklyJamImageResumable")
+        println("JamRepository: jamId=$jamId, uid=$uid, pathOrUri=$pathOrUri")
         deleteWeeklyJamSubmission(
             jamId = jamId,
             uid = uid,
         )
 
         val storagePath = "$JAM_COLLECTION/$jamId/$uid.jpg"
+        println("JamRepository: Storage path: $storagePath")
 
         val ref = Firebase.storage.reference(storagePath)
         val file = storageFileFromString(pathOrUri)
+        println("JamRepository: Got storage file reference")
 
         val meta = storageMetadata { contentType = mimeType }
+        println("JamRepository: Starting Firebase Storage upload...")
 
-        // Resumable upload with progress updates
-        ref.putFileResumable(file, meta).collect { prog ->
-            val transferred = prog.bytesTransferred.toLong()
-            val total = prog.totalByteCount.toLong()
-            val pct = if (total > 0L) ((transferred * 100L) / total).toInt() else 0
-            onProgress?.invoke(pct.coerceIn(0, 99)) // we'll send 100 after success
+        // Use platform-specific upload (Android: resumable with progress, iOS: simple for reliability)
+        uploadFileToStorage(
+            ref = ref,
+            file = file,
+            meta = meta,
+            onProgress = onProgress
+        )
+        println("JamRepository: Upload completed successfully")
+
+        println("JamRepository: Getting download URL...")
+        val downloadUrl = try {
+            // Sometimes there's a brief delay before download URL is available
+            kotlinx.coroutines.delay(1000) // Wait 1 second
+            ref.getDownloadUrl()
+        } catch (e: Exception) {
+            println("JamRepository: Failed to get download URL: ${e.message}")
+            throw e
         }
-
-        val downloadUrl = ref.getDownloadUrl()
+        println("JamRepository: Got download URL: $downloadUrl")
 
         // Get user's nickname
+        println("JamRepository: Getting user profile for uid: $uid")
         val userProfile = userProfileRepository.userProfile(uid)
-        val nickname = userProfile?.nickname ?: throw Exception("User must have a nickname to submit")
+        val nickname =
+            userProfile?.nickname ?: throw Exception("User must have a nickname to submit")
+        println("JamRepository: Got nickname: $nickname")
 
         // Write/merge submission metadata (doc id == uid → one per user per week)
         val submission = SubmissionDto(
@@ -109,10 +127,17 @@ class JamRepository(
             "nickname" to nickname
         )
 
-        Firebase.firestore
-            .collection(JAM_COLLECTION).document(jamId)
-            .collection("submissions").document(uid)
-            .set(data)
+        println("JamRepository: Saving submission to Firestore...")
+        try {
+            Firebase.firestore
+                .collection(JAM_COLLECTION).document(jamId)
+                .collection("submissions").document(uid)
+                .set(data)
+            println("JamRepository: Successfully saved submission to Firestore")
+        } catch (e: Exception) {
+            println("JamRepository: Failed to save to Firestore: ${e.message}")
+            throw e
+        }
 
         onProgress?.invoke(100)
         return submission

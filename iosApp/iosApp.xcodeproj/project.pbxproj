@@ -17,6 +17,7 @@
 		ED452EB72DAD8CB0005823BE /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = ED452EB62DAD8CB0005823BE /* FirebaseCore */; };
 		ED452EB92DAD8CB0005823BE /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = ED452EB82DAD8CB0005823BE /* FirebaseCrashlytics */; };
 		ED452EBB2DAD8CB0005823BE /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = ED452EBA2DAD8CB0005823BE /* FirebaseFirestore */; };
+		ED452EBC2DAD8CB0005823BE /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = ED452EBD2DAD8CB0005823BE /* FirebaseStorage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 				ED452EB72DAD8CB0005823BE /* FirebaseCore in Frameworks */,
 				ED452EBB2DAD8CB0005823BE /* FirebaseFirestore in Frameworks */,
 				ED452EB52DAD8CB0005823BE /* FirebaseAuth in Frameworks */,
+				ED452EBC2DAD8CB0005823BE /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,6 +125,7 @@
 				ED452EB62DAD8CB0005823BE /* FirebaseCore */,
 				ED452EB82DAD8CB0005823BE /* FirebaseCrashlytics */,
 				ED452EBA2DAD8CB0005823BE /* FirebaseFirestore */,
+				ED452EBD2DAD8CB0005823BE /* FirebaseStorage */,
 			);
 			productName = iosApp;
 			productReference = 7555FF7B242A565900829871 /* Scritch.app */;
@@ -453,6 +456,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = ED452EB12DAD8CB0005823BE /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		ED452EBD2DAD8CB0005823BE /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ED452EB12DAD8CB0005823BE /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

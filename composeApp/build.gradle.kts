@@ -71,6 +71,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.navigation.compose)
+            implementation(libs.androidx.core.uri)
             implementation(libs.digitalia.htmlconverter)
             implementation(libs.kamel.image)
             implementation(libs.kotlinx.datetime)

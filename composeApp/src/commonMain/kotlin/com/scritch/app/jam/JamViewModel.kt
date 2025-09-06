@@ -329,6 +329,16 @@ class JamViewModel(
     }
 
     fun onImageCaptured(imagePath: String) {
+        println("JamViewModel: onImageCaptured called with path: $imagePath")
+        
+        // Check if already uploading to prevent duplicate uploads
+        val currentState = viewState.value.submissionState
+        if (currentState is SubmissionViewState.ImageTakenLocally && 
+            currentState.uploadStatus is SubmissionUploadState.Uploading) {
+            println("JamViewModel: Upload already in progress, ignoring duplicate call")
+            return
+        }
+        
         viewModelScope.launch {
             uploadSubmission(imagePath)
         }
@@ -337,7 +347,9 @@ class JamViewModel(
     private suspend fun uploadSubmission(
         imagePath: String,
     ) {
+        println("JamViewModel: Starting upload for path: $imagePath")
         val imageUri = UriUtils.parse(imagePath)
+        println("JamViewModel: Parsed URI: $imageUri")
         try {
             mutableViewState.update {
                 it.copy(
@@ -374,6 +386,8 @@ class JamViewModel(
                 )
             }
         } catch (exception: Exception) {
+            println("JamViewModel: Upload failed with error: ${exception.message}")
+            exception.printStackTrace()
             mutableViewState.update {
                 it.copy(
                     submissionState = SubmissionViewState.ImageTakenLocally(
