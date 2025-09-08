@@ -3,81 +3,75 @@ package com.scritch.app.admin
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
-import dev.gitlive.firebase.functions.functions
+import dev.gitlive.firebase.firestore.Direction
+import dev.gitlive.firebase.firestore.FieldValue
+import com.scritch.app.jam.data.SubmissionDto
+import com.scritch.app.userprofile.UserProfileDto
 
 class AdminRepository {
     private val firestore = Firebase.firestore
-    private val functions = Firebase.functions
 
     /**
      * Check if the current user is an admin by looking up their ID in the admins collection
      */
     suspend fun isUserAdmin(userId: String): Boolean {
         return try {
-            println("AdminRepository: Checking admin status for user ID: $userId")
             val adminDoc = firestore.collection("admins").document(userId).get()
-            val exists = adminDoc.exists
-            println("AdminRepository: User $userId admin status: $exists")
-            exists
+            adminDoc.exists
         } catch (e: Exception) {
-            println("AdminRepository: Error checking admin status: ${e.message}")
             false
         }
     }
 
     /**
-     * Get the moderation queue - submissions requiring manual review
+     * Get the moderation queue - submissions requiring manual review (direct Firestore)
      */
     suspend fun getModerationQueue(limit: Int = 50): ModerationQueueResponse {
         return try {
-            println("AdminRepository: Calling getModerationQueue with limit: $limit")
+            // Get all pending submissions across all jams using collection group query
+            val pendingSubmissions = firestore.collectionGroup("submissions")
+                .where { "status" equalTo "pending" }
+                .orderBy("createdAt", Direction.DESCENDING)
+                .limit(limit)
+                .get()
             
-            // Ensure user is authenticated
-            val currentUser = Firebase.auth.currentUser
-            println("AdminRepository: Current user: ${currentUser?.uid}")
-            if (currentUser == null) {
-                println("AdminRepository: No authenticated user")
-                return ModerationQueueResponse(
-                    success = false,
-                    queue = emptyList(),
-                    total = 0,
-                )
-            }
-            
-            // For now, let's just try the regular call
-            val getModerationQueueFunction = functions.httpsCallable("getModerationQueue")
-            val request = mapOf("limit" to limit)
-            val result = getModerationQueueFunction(request)
-            
-            // Parse the result - you'll need to adapt this based on your Firebase Functions response
-            val data = result.data<Map<String, Any>>()
-            println("AdminRepository: Firebase function returned: $data")
-            val success = data["success"] as? Boolean ?: false
-            val queueData = data["queue"] as? List<Map<String, Any>> ?: emptyList()
-            val total = (data["total"] as? Number)?.toInt() ?: 0
-            println("AdminRepository: Parsed - success: $success, queue size: ${queueData.size}, total: $total")
-            
-            val queue = queueData.map { item ->
+            val queue = pendingSubmissions.documents.mapNotNull { doc ->
+                val submission = doc.data<SubmissionDto>()
+                val jamId = doc.reference.parent.parent?.id
+                val userId = submission.userId
+                val imageUrl = submission.imageUrl
+                
+                // Skip if mandatory fields are null
+                if (jamId == null || userId == null || imageUrl == null) {
+                    return@mapNotNull null
+                }
+                
+                // Get user profile for display name
+                val userProfile = try {
+                    firestore.collection("user_profiles").document(userId).get()
+                        .data<UserProfileDto>()
+                } catch (e: Exception) {
+                    null
+                }
+                
                 ModerationQueueItem(
-                    jamId = item["jamId"] as? String ?: "",
-                    userId = item["userId"] as? String ?: "",
-                    submissionId = item["submissionId"] as? String ?: "",
-                    imageUrl = item["imageUrl"] as? String ?: "",
-                    nickname = item["nickname"] as? String ?: "Unknown",
-                    confirmedReports = (item["confirmedReports"] as? Number)?.toInt() ?: 0,
-                    effectiveReports = (item["effectiveReports"] as? Number)?.toInt() ?: 0,
-                    createdAt = (item["createdAt"] as? Number)?.toLong() ?: 0L,
+                    jamId = jamId,
+                    userId = userId,
+                    submissionId = doc.id,
+                    imageUrl = imageUrl,
+                    nickname = userProfile?.nickname ?: "Unknown",
+                    confirmedReports = 0, // We can add this later if needed
+                    effectiveReports = 0, // We can add this later if needed  
+                    createdAt = submission.createdAt?.seconds?.times(1000) ?: 0L,
                 )
             }
             
             ModerationQueueResponse(
-                success = success,
+                success = true,
                 queue = queue,
-                total = total,
+                total = queue.size,
             )
         } catch (e: Exception) {
-            println("AdminRepository: Error calling getModerationQueue: ${e.message}")
-            e.printStackTrace()
             ModerationQueueResponse(
                 success = false,
                 queue = emptyList(),
@@ -87,7 +81,7 @@ class AdminRepository {
     }
 
     /**
-     * Manually moderate a submission (approve/reject)
+     * Manually moderate a submission (approve/reject) - direct Firestore update
      */
     suspend fun moderateSubmission(
         jamId: String,
@@ -96,7 +90,17 @@ class AdminRepository {
         reason: String
     ): ModerateSubmissionResponse {
         return try {
-            // Ensure user is authenticated
+            // Validate status
+            if (!listOf("approved", "rejected", "pending").contains(status)) {
+                return ModerateSubmissionResponse(
+                    success = false,
+                    message = "Invalid status. Must be approved, rejected, or pending",
+                    jamId = jamId,
+                    userId = userId,
+                    newStatus = status,
+                )
+            }
+            
             val currentUser = Firebase.auth.currentUser
             if (currentUser == null) {
                 return ModerateSubmissionResponse(
@@ -108,22 +112,40 @@ class AdminRepository {
                 )
             }
             
-            val moderateFunction = functions.httpsCallable("moderateSubmissionManually")
-            val request = mapOf(
-                "jamId" to jamId,
-                "userId" to userId,
-                "status" to status,
-                "reason" to reason
-            )
-            val result = moderateFunction(request)
+            // Update submission status directly in Firestore
+            val submissionRef = firestore.collection("weekly_jam")
+                .document(jamId)
+                .collection("submissions")
+                .document(userId)
             
-            val data = result.data<Map<String, Any>>()
+            val submission = submissionRef.get()
+            if (!submission.exists) {
+                return ModerateSubmissionResponse(
+                    success = false,
+                    message = "Submission not found",
+                    jamId = jamId,
+                    userId = userId,
+                    newStatus = status,
+                )
+            }
+            
+            // Update with moderation info
+            submissionRef.update(
+                mapOf(
+                    "status" to status,
+                    "moderatedBy" to currentUser.uid,
+                    "moderatedAt" to FieldValue.serverTimestamp,
+                    "moderationReason" to reason,
+                    "autoModerated" to false,
+                )
+            )
+            
             ModerateSubmissionResponse(
-                success = data["success"] as? Boolean ?: false,
-                message = data["message"] as? String ?: "",
-                jamId = data["jamId"] as? String ?: jamId,
-                userId = data["userId"] as? String ?: userId,
-                newStatus = data["newStatus"] as? String ?: status,
+                success = true,
+                message = "Submission status updated to $status",
+                jamId = jamId,
+                userId = userId,
+                newStatus = status,
             )
         } catch (e: Exception) {
             ModerateSubmissionResponse(

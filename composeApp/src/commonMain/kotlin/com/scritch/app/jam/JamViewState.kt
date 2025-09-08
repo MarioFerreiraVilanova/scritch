@@ -40,7 +40,8 @@ sealed class JamScreenDialog {
         val imageUrl: String,
         val isUserSubmission: Boolean,
         val moderationStatus: ModerationStatus,
-        val nickname: String
+        val nickname: String,
+        val userId: String
     ) : JamScreenDialog()
     data object SubmissionDeleteConfirmation : JamScreenDialog()
     data object ImageSourceSheet : JamScreenDialog()

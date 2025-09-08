@@ -9,6 +9,7 @@ import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.LoadUserOptionsUseCase
 import com.scritch.app.jam.data.JamRepository
 import com.scritch.app.jam.JamViewModel
+import com.scritch.app.reporting.ReportRepository
 import com.scritch.app.solomode.SoloViewModel
 import com.scritch.app.landing.LandingViewModel
 import com.scritch.app.settings.SettingsViewModel
@@ -29,6 +30,7 @@ val appModule = module {
     singleOf(::AuthenticationRepository)
     singleOf(::CategoryRepository)
     singleOf(::JamRepository)
+    singleOf(::ReportRepository)
     singleOf(::UserDataRepository)
     singleOf(::UserProfileRepository)
 

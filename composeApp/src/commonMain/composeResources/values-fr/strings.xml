@@ -42,6 +42,14 @@
     <string name="prompt_settings">Paramètres du générateur d'idées</string>
     <string name="rejected">Rejetée</string>
     <string name="retry">Réessayer</string>
+    <string name="report_button">Signaler</string>
+    <string name="report_submission_title">Signaler l'envoi de %1$s</string>
+    <string name="report_submission_question">Pourquoi signalez-vous cet envoi ?</string>
+    <string name="report_reason_inappropriate_content">Contenu inapproprié</string>
+    <string name="report_reason_spam">Spam</string>
+    <string name="report_reason_harassment">Harcèlement</string>
+    <string name="report_reason_copyright">Violation de droits d'auteur</string>
+    <string name="report_reason_other">Autre</string>
     <string name="review_pending">En attente de révision</string>
     <string name="review_pending_message">Votre participation est actuellement en cours de révision par nos modérateurs. Cela prend généralement 24 à 48 heures.</string>
     <string name="send_us_an_email">Envoyez-nous un email !</string>

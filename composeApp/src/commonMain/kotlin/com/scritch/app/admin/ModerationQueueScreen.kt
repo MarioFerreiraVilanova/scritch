@@ -27,6 +27,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -73,44 +74,45 @@ fun ModerationQueueScreen(
             )
         }
     ) { innerPadding ->
-        when {
-            viewState.isLoading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
+        PullToRefreshBox(
+            isRefreshing = viewState.isLoading,
+            onRefresh = { viewModel.loadModerationQueue() },
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            when {
+                viewState.isLoading && viewState.queue.isEmpty() -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
-            }
-            viewState.queue.isEmpty() -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "No submissions requiring review",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
-            else -> {
-                LazyColumn(
-                    contentPadding = innerPadding,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                ) {
-                    items(viewState.queue) { item ->
-                        ModerationQueueItemCard(
-                            item = item,
-                            onApprove = { viewModel.approveSubmission(item.jamId, item.userId) },
-                            onReject = { viewModel.rejectSubmission(item.jamId, item.userId) },
-                            isProcessing = viewState.processingItems.contains("${item.jamId}/${item.userId}"),
+                viewState.queue.isEmpty() -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No submissions requiring review",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
+                    }
+                }
+                else -> {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    ) {
+                        items(viewState.queue) { item ->
+                            ModerationQueueItemCard(
+                                item = item,
+                                onApprove = { viewModel.approveSubmission(item.jamId, item.userId) },
+                                onReject = { viewModel.rejectSubmission(item.jamId, item.userId) },
+                                isProcessing = viewState.processingItems.contains("${item.jamId}/${item.userId}"),
+                            )
+                        }
                     }
                 }
             }

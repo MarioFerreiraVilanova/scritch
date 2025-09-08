@@ -21,9 +21,9 @@ class ModerationQueueViewModel(
     fun loadModerationQueue() {
         viewModelScope.launch {
             _viewState.value = _viewState.value.copy(isLoading = true, error = null)
-            
+
             val response = adminRepository.getModerationQueue()
-            
+
             if (response.success) {
                 _viewState.value = _viewState.value.copy(
                     queue = response.queue,
@@ -39,16 +39,31 @@ class ModerationQueueViewModel(
     }
 
     fun approveSubmission(jamId: String, userId: String) {
-        moderateSubmission(jamId, userId, "approved", "Approved by admin")
+        moderateSubmission(
+            jamId = jamId,
+            userId = userId,
+            status = "approved",
+            reason = "Approved by admin"
+        )
     }
 
     fun rejectSubmission(jamId: String, userId: String) {
-        moderateSubmission(jamId, userId, "rejected", "Rejected by admin")
+        moderateSubmission(
+            jamId = jamId,
+            userId = userId,
+            status = "rejected",
+            reason = "Rejected by admin"
+        )
     }
 
-    private fun moderateSubmission(jamId: String, userId: String, status: String, reason: String) {
+    private fun moderateSubmission(
+        jamId: String,
+        userId: String,
+        status: String,
+        reason: String,
+    ) {
         val itemKey = "$jamId/$userId"
-        
+
         viewModelScope.launch {
             // Add to processing set
             _viewState.value = _viewState.value.copy(
@@ -59,8 +74,8 @@ class ModerationQueueViewModel(
 
             if (response.success) {
                 // Remove the item from the queue since it's been processed
-                val updatedQueue = _viewState.value.queue.filterNot { 
-                    it.jamId == jamId && it.userId == userId 
+                val updatedQueue = _viewState.value.queue.filterNot {
+                    it.jamId == jamId && it.userId == userId
                 }
                 _viewState.value = _viewState.value.copy(
                     queue = updatedQueue,

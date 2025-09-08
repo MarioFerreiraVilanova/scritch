@@ -17,12 +17,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,9 +44,12 @@ import io.kamel.image.asyncPainterResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import com.scritch.app.jam.ui.components.dialogs.ReportSubmissionDialog
+import com.scritch.app.reporting.ReportReason
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.delete
 import scritch.composeapp.generated.resources.redo
+import scritch.composeapp.generated.resources.report_button
 import scritch.composeapp.generated.resources.scritch_jam_by
 import scritch.composeapp.generated.resources.submission_preview
 import scritch.composeapp.generated.resources.your_contribution
@@ -59,7 +66,9 @@ fun SubmissionPreviewDialog(
     onRetrySubmission: (() -> Unit)?,
     onDeleteSubmission: (() -> Unit)?,
     onModerationStatusClick: (() -> Unit)?,
+    onReportSubmission: ((ReportReason) -> Unit)?,
 ) {
+    var showReportDialog by remember { mutableStateOf(false) }
     ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -178,7 +187,32 @@ fun SubmissionPreviewDialog(
                     }
                 }
             }
+            
+            // Report button for other users' submissions
+            if (!isUserSubmission && onReportSubmission != null) {
+                TextButton(
+                    onClick = { showReportDialog = true },
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Text(
+                        text = stringResource(Res.string.report_button),
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
         }
+    }
+    
+    // Report dialog
+    if (showReportDialog && onReportSubmission != null) {
+        ReportSubmissionDialog(
+            nickname = nickname,
+            onDismiss = { showReportDialog = false },
+            onConfirm = { reason ->
+                onReportSubmission(reason)
+                showReportDialog = false
+            }
+        )
     }
 }
 
@@ -200,6 +234,7 @@ private fun SubmissionPreviewDialogUserApprovedPreview() {
             onRetrySubmission = {},
             onDeleteSubmission = {},
             onModerationStatusClick = {},
+            onReportSubmission = null,
         )
     }
 }
@@ -222,6 +257,7 @@ private fun SubmissionPreviewDialogUserPendingPreview() {
             onRetrySubmission = {},
             onDeleteSubmission = {},
             onModerationStatusClick = {},
+            onReportSubmission = null,
         )
     }
 }
@@ -244,6 +280,7 @@ private fun SubmissionPreviewDialogUserRejectedPreview() {
             onRetrySubmission = {},
             onDeleteSubmission = {},
             onModerationStatusClick = {},
+            onReportSubmission = null,
         )
     }
 }
@@ -266,6 +303,7 @@ private fun SubmissionPreviewDialogOtherUserPreview() {
             onRetrySubmission = null,
             onDeleteSubmission = null,
             onModerationStatusClick = null,
+            onReportSubmission = { },
         )
     }
 }

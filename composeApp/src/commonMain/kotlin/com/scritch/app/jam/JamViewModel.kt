@@ -9,6 +9,8 @@ import com.scritch.app.categories.OptionState
 import com.scritch.app.jam.data.JamDto
 import com.scritch.app.jam.data.JamRepository
 import com.scritch.app.prompt.PromptViewState
+import com.scritch.app.reporting.ReportRepository
+import com.scritch.app.reporting.ReportReason
 import com.scritch.app.userprofile.UserProfileRepository
 import com.scritch.app.util.isFileSizeValid
 import com.scritch.app.util.UploadPermission
@@ -30,6 +32,7 @@ class JamViewModel(
     private val jamRepository: JamRepository,
     private val categoryRepository: CategoryRepository,
     private val userProfileRepository: UserProfileRepository,
+    private val reportRepository: ReportRepository,
 ) : ViewModel() {
 
     private val mutableViewState = MutableStateFlow(JamViewState.EMPTY)
@@ -296,7 +299,8 @@ class JamViewModel(
                         imageUrl = submission.imageUrl,
                         isUserSubmission = true,
                         moderationStatus = submission.moderationStatus,
-                        nickname = nickname
+                        nickname = nickname,
+                        userId = currentUserId
                     ),
                 )
             }
@@ -311,7 +315,8 @@ class JamViewModel(
                     imageUrl = submission.imageUrl,
                     isUserSubmission = false,
                     moderationStatus = submission.status,
-                    nickname = submission.nickname
+                    nickname = submission.nickname,
+                    userId = userId
                 ),
             )
         }
@@ -330,6 +335,26 @@ class JamViewModel(
             it.copy(
                 dialog = null,
             )
+        }
+    }
+
+    fun onReportSubmission(reason: ReportReason) {
+        viewModelScope.launch {
+            val currentDialog = mutableViewState.value.dialog
+            if (currentDialog is JamScreenDialog.EntryPreview && !currentDialog.isUserSubmission) {
+                val jamId = mutableViewState.value.jamId ?: return@launch
+                val result = reportRepository.submitReport(
+                    reportedUserId = currentDialog.userId,
+                    submissionId = currentDialog.userId, // submissionId is same as userId in this structure
+                    jamId = jamId,
+                    reason = reason.displayText
+                )
+                
+                // Show success/error feedback - for now just dismiss dialog
+                mutableViewState.update {
+                    it.copy(dialog = null)
+                }
+            }
         }
     }
 

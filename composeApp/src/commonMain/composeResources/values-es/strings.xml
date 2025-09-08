@@ -42,6 +42,14 @@
     <string name="prompt_settings">Configuración de retos</string>
     <string name="rejected">Rechazada</string>
     <string name="retry">Reintentar</string>
+    <string name="report_button">Reportar</string>
+    <string name="report_submission_title">Reportar envío de %1$s</string>
+    <string name="report_submission_question">¿Por qué reportas este envío?</string>
+    <string name="report_reason_inappropriate_content">Contenido inapropiado</string>
+    <string name="report_reason_spam">Spam</string>
+    <string name="report_reason_harassment">Acoso</string>
+    <string name="report_reason_copyright">Violación de derechos de autor</string>
+    <string name="report_reason_other">Otro</string>
     <string name="review_pending">Pendiente de revisión</string>
     <string name="review_pending_message">Tu participación está siendo revisada por nuestros moderadores. Esto suele llevar entre 24 y 48 horas.</string>
     <string name="send_us_an_email">¡Envíanos un correo!</string>

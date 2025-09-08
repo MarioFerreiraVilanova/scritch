@@ -42,6 +42,14 @@
     <string name="prompt_settings">Prompt settings</string>
     <string name="rejected">Rejected</string>
     <string name="retry">Retry</string>
+    <string name="report_button">Report</string>
+    <string name="report_submission_title">Report submission by %1$s</string>
+    <string name="report_submission_question">Why are you reporting this submission?</string>
+    <string name="report_reason_inappropriate_content">Inappropriate content</string>
+    <string name="report_reason_spam">Spam</string>
+    <string name="report_reason_harassment">Harassment</string>
+    <string name="report_reason_copyright">Copyright violation</string>
+    <string name="report_reason_other">Other</string>
     <string name="review_pending">Pending review</string>
     <string name="review_pending_message">Your submission is currently being reviewed by our moderators. This typically takes 24-48 hours.</string>
     <string name="send_us_an_email">Send us an email!</string>

@@ -41,7 +41,6 @@ gitlive-firebase-kotlin-auth = { module = "dev.gitlive:firebase-auth", version.r
 gitlive-firebase-kotlin-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = "firebase-gitlive-sdk" }
 gitlive-firebase-kotlin-analytics = { module = "dev.gitlive:firebase-analytics", version.ref = "firebase-gitlive-sdk" }
 gitlive-firebase-kotlin-storage = { module = "dev.gitlive:firebase-storage", version.ref = "firebase-gitlive-sdk" }
-gitlive-firebase-kotlin-functions = { module = "dev.gitlive:firebase-functions", version.ref = "firebase-gitlive-sdk" }
 
 # Koin dependencies
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
