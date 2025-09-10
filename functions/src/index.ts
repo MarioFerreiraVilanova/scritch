@@ -5,7 +5,7 @@ admin.initializeApp();
 
 // Export all functions from organized modules
 export * from "./moderation";
-export * from "./admin";
+// admin functions moved to client-side operations
 
 // Placeholder exports for future modules
 // Uncomment as you add functions to these modules:
