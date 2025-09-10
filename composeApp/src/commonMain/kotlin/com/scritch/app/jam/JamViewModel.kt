@@ -343,7 +343,7 @@ class JamViewModel(
             val currentDialog = mutableViewState.value.dialog
             if (currentDialog is JamScreenDialog.EntryPreview && !currentDialog.isUserSubmission) {
                 val jamId = mutableViewState.value.jamId ?: return@launch
-                val result = reportRepository.submitReport(
+                reportRepository.submitReport(
                     reportedUserId = currentDialog.userId,
                     submissionId = currentDialog.userId, // submissionId is same as userId in this structure
                     jamId = jamId,

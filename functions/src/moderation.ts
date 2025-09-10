@@ -105,95 +105,59 @@ export const moderateSubmission = functions.firestore
     }
   });
 
-// Function to handle user reports
-export const reportUser = functions.https.onCall(async (data: any, context: any) => {
-  // Verify user is authenticated
-  if (!context.auth) {
-    throw new functions.https.HttpsError("unauthenticated", "User must be authenticated");
-  }
+// reportUser function replaced by client-side report creation + processUserReport trigger
+// getUserModerationStatus function can be replaced by direct Firestore queries in admin panel
 
-  const { reportedUserId, submissionId, reason } = data;
-  const reporterId = context.auth.uid;
+// Process user reports when they are created (trigger-based)
+export const processUserReport = functions.firestore
+  .document("user_reports/{reportId}")
+  .onCreate(async (snap: any, context: any) => {
+    const report = snap.data();
+    const { submissionId, jamId, reportedUserId } = report;
 
-  // Prevent self-reporting
-  if (reporterId === reportedUserId) {
-    throw new functions.https.HttpsError("invalid-argument", "Cannot report yourself");
-  }
+    console.log(`Processing new report for submission ${submissionId} in jam ${jamId}`);
 
-  try {
-    // Create report document
-    await db.collection("user_reports").add({
-      reporterId,
-      reportedUserId,
-      submissionId,
-      reason,
-      status: "pending",
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
-
-    // Count reports for this submission
-    const submissionReports = await db.collection("user_reports")
-      .where("submissionId", "==", submissionId)
-      .where("status", "in", ["pending", "confirmed"])
-      .get();
-
-    // Auto-confirm report if 3+ people report the same submission
-    if (submissionReports.size >= 3) {
-      // Mark all reports for this submission as confirmed
-      const batch = db.batch();
-      submissionReports.docs.forEach(doc => {
-        batch.update(doc.ref, { status: "confirmed" });
-      });
-      await batch.commit();
-
-      // Hide the submission
-      const submissionRef = db.doc(`weekly_jam/${submissionId.split("/")[0]}/submissions/${reportedUserId}`);
-      await submissionRef.update({
-        status: "rejected",
-        rejectionReason: "multiple_community_reports",
-        rejectedAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
-
-      console.log(`Auto-rejected submission ${submissionId} due to ${submissionReports.size} reports`);
-      
-      // Check if user now needs manual review for future submissions
-      const totalConfirmedReports = await db.collection("user_reports")
-        .where("reportedUserId", "==", reportedUserId)
-        .where("status", "==", "confirmed")
+    try {
+      // Count total reports for this specific submission
+      const allReports = await db.collection("user_reports")
+        .where("submissionId", "==", submissionId)
         .get();
 
-      if (totalConfirmedReports.size >= 2) {
-        console.log(`User ${reportedUserId} now requires manual review for future submissions`);
+      console.log(`Total reports for submission ${submissionId}: ${allReports.size}`);
+
+      // If 3+ reports → Auto-reject submission and confirm all reports
+      if (allReports.size >= 3) {
+        console.log(`Threshold reached! Auto-rejecting submission ${submissionId}`);
+
+        // Update submission status to "rejected"
+        await db.collection("weekly_jam")
+          .doc(jamId)
+          .collection("submissions")
+          .doc(submissionId)
+          .update({
+            status: "rejected",
+            moderatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            autoModerated: true,
+            moderationReason: `Auto-rejected due to ${allReports.size} community reports`
+          });
+
+        // Mark all reports for this submission as "confirmed"
+        const batch = db.batch();
+        allReports.docs.forEach(doc => {
+          batch.update(doc.ref, { status: "confirmed" });
+        });
+        await batch.commit();
+
+        console.log(`Confirmed ${allReports.size} reports for submission ${submissionId}`);
+
+        // Log the action for monitoring
+        console.log(`User ${reportedUserId} submission auto-rejected due to community reports`);
+      } else {
+        console.log(`Report recorded. ${allReports.size}/3 reports needed for auto-rejection`);
       }
+
+    } catch (error: any) {
+      console.error("Error processing user report:", error);
+      // Don't throw - we want the report to be saved even if processing fails
     }
-
-    return { success: true, message: "Report submitted successfully" };
-
-  } catch (error) {
-    console.error("Error submitting report:", error);
-    throw new functions.https.HttpsError("internal", "Failed to submit report");
-  }
-});
-
-// Function to get user moderation status (for admin dashboard)
-export const getUserModerationStatus = functions.https.onCall(async (data: any, context: any) => {
-  // Verify admin access
-  if (!context.auth) {
-    throw new functions.https.HttpsError("unauthenticated", "User must be authenticated");
-  }
-
-  const adminDoc = await db.collection("admins").doc(context.auth.uid).get();
-  if (!adminDoc.exists) {
-    throw new functions.https.HttpsError("permission-denied", "Admin access required");
-  }
-
-  const { userId } = data;
-  const effectiveReports = await getEffectiveReportCount(userId);
-
-  return {
-    userId,
-    effectiveReports,
-    needsReview: effectiveReports >= 2,
-    status: effectiveReports >= 2 ? "manual_review" : "auto_approved",
-  };
-});
+  });

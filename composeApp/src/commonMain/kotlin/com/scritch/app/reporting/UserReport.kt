@@ -1,7 +1,9 @@
 package com.scritch.app.reporting
 
 import dev.gitlive.firebase.firestore.Timestamp
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class UserReport(
     val reporterId: String,
     val reportedUserId: String,
