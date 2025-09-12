@@ -50,3 +50,18 @@ composeApp/src/commonMain/kotlin/
 - **No Hardcoded Strings**: Use string resources consistently
 - **StateFlow Observation**: UI components observe ViewModel state
 - **Koin Injection**: Use constructor injection for dependencies
+
+## Localization Workflow Preferences
+
+**Preferred Agent Usage**: Use parallel localization agents for efficiency when localizing UI screens.
+
+**Workflow**: When localizing hardcoded strings in UI files:
+1. Group strings by logical sections (navigation, forms, actions, etc.)
+2. Launch multiple localization-text-creator agents in parallel using single message with multiple Task calls
+3. Each agent should handle 3-6 related strings to maintain context while maximizing speed
+
+**Example groupings**:
+- Navigation & Headers (titles, back buttons, success messages)
+- Form Fields (labels, placeholders, validation)  
+- Actions & Buttons (primary actions, confirmations)
+- Content Sections (previews, categories, options)

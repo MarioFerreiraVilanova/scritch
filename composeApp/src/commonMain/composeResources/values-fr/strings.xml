@@ -20,12 +20,14 @@
     <string name="cancel">Annuler</string>
     <string name="concept_and_design">Concept et design : %1$s</string>
     <string name="continue_word">Continuer</string>
+    <string name="create_jam">Créer Jam</string>
     <string name="create_new_jam">Créer Nouvelle Jam</string>
     <string name="create_new_jam_description">Crée une nouvelle jam hebdomadaire avec des défis personnalisés et des dates</string>
     <string name="delete">Supprimer</string>
     <string name="delete_entry">Supprimer la participation</string>
     <string name="development">Développement : %1$s</string>
     <string name="edit_your_entry">Modifier votre participation</string>
+    <string name="end_date">Date de Fin</string>
     <string name="feedback_questions">Des retours ou des suggestions ?</string>
     <string name="file_size_exceeded_title">Fichier Trop Volumineux</string>
     <string name="file_size_exceeded_message">L'image sélectionnée est trop volumineuse. Veuillez choisir une image de moins de 8Mo ou prendre une nouvelle photo.</string>
@@ -42,6 +44,7 @@
     <string name="ok">OK</string>
     <string name="other">Autre</string>
     <string name="pick_one_from_the_gallery">Choisir depuis la galerie</string>
+    <string name="preview">Aperçu</string>
     <string name="prompt_settings">Paramètres du générateur d'idées</string>
     <string name="rejected">Rejetée</string>
     <string name="retry">Réessayer</string>
@@ -58,9 +61,11 @@
     <string name="review_pending_message">Votre participation est actuellement en cours de révision par nos modérateurs. Cela prend généralement 24 à 48 heures.</string>
     <string name="send_us_an_email">Envoyez-nous un email !</string>
     <string name="settings">Paramètres</string>
+    <string name="support">Support</string>
     <string name="show_contributions">Afficher les contributions</string>
     <string name="show_contributions_subtitle">Voir comment d'autres ont relevé le défi</string>
     <string name="solo_mode">Mode Solo</string>
+    <string name="start_date">Date de Début</string>
     <string name="status_approved">Terminé !</string>
     <string name="status_pending">En attente de révision</string>
     <string name="submission_preview">Aperçu de la participation</string>
@@ -90,8 +95,11 @@
     <string name="weekly_jam_not_available">Il n'y a pas de Scritch Jam en cours. Revenez bientôt pour découvrir le prochain défi !</string>
     <string name="no_jam_title">Pas de Scritch Jam aujourd'hui</string>
     <string name="no_jam_subtitle">Le prochain défi de design global arrive bientôt. Profitez de ce temps pour explorer le mode solo et pratiquer vos compétences.</string>
+    <string name="jam_created_successfully">Jam créée avec succès !</string>
     <string name="jam_had_no_entries">Personne n'a participé à ce jam</string>
     <string name="jam_management">Gestion des Jams</string>
+    <string name="jam_name">Nom de Jam</string>
+    <string name="jam_name_placeholder">ex., 2025-37</string>
     <string name="yes_delete_it">Oui, supprimer</string>
     <string name="ends_in_d_h">Se termine dans %1$dj %2$dh</string>
     <string name="ends_in_h_m">Se termine dans %1$dh %2$dm</string>

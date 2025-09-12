@@ -56,6 +56,25 @@ import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.ExperimentalTime
+import org.jetbrains.compose.resources.stringResource
+import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.back
+import scritch.composeapp.generated.resources.cancel
+import scritch.composeapp.generated.resources.constraint_optional
+import scritch.composeapp.generated.resources.create_jam
+import scritch.composeapp.generated.resources.create_new_jam
+import scritch.composeapp.generated.resources.end_date
+import scritch.composeapp.generated.resources.jam_created_successfully
+import scritch.composeapp.generated.resources.jam_name
+import scritch.composeapp.generated.resources.jam_name_placeholder
+import scritch.composeapp.generated.resources.medium
+import scritch.composeapp.generated.resources.none
+import scritch.composeapp.generated.resources.ok
+import scritch.composeapp.generated.resources.preview
+import scritch.composeapp.generated.resources.prompt_elements
+import scritch.composeapp.generated.resources.start_date
+import scritch.composeapp.generated.resources.support
+import scritch.composeapp.generated.resources.topic_optional
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
@@ -74,9 +93,11 @@ fun CreateJamScreen(
         }
     }
 
+    val jamCreatedSuccessMessage = stringResource(Res.string.jam_created_successfully)
+    
     LaunchedEffect(viewState.isCreateSuccessful) {
         if (viewState.isCreateSuccessful) {
-            snackbarHostState.showSnackbar("Jam created successfully!")
+            snackbarHostState.showSnackbar(jamCreatedSuccessMessage)
             onBackPress()
         }
     }
@@ -85,12 +106,12 @@ fun CreateJamScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("Create New Jam") },
+                title = { Text(stringResource(Res.string.create_new_jam)) },
                 navigationIcon = {
                     IconButton(onClick = onBackPress) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(Res.string.back)
                         )
                     }
                 }
@@ -120,8 +141,8 @@ fun CreateJamScreen(
                 OutlinedTextField(
                     value = viewState.jamName,
                     onValueChange = viewModel::onJamNameChanged,
-                    label = { Text("Jam Name") },
-                    placeholder = { Text("e.g., 2025-37") },
+                    label = { Text(stringResource(Res.string.jam_name)) },
+                    placeholder = { Text(stringResource(Res.string.jam_name_placeholder)) },
                     isError = viewState.validationErrors.jamName != null,
                     supportingText = viewState.validationErrors.jamName?.let { { Text(it) } },
                     modifier = Modifier.fillMaxWidth()
@@ -129,14 +150,14 @@ fun CreateJamScreen(
 
                 // Date Pickers
                 DatePickerField(
-                    label = "Start Date",
+                    label = stringResource(Res.string.start_date),
                     selectedDate = viewState.startDate,
                     onDateSelected = viewModel::onStartDateChanged,
                     error = viewState.validationErrors.startDate
                 )
 
                 DatePickerField(
-                    label = "End Date",
+                    label = stringResource(Res.string.end_date),
                     selectedDate = viewState.endDate,
                     onDateSelected = viewModel::onEndDateChanged,
                     error = viewState.validationErrors.endDate
@@ -144,33 +165,33 @@ fun CreateJamScreen(
 
                 // Category Selections
                 Text(
-                    text = "Prompt Elements",
+                    text = stringResource(Res.string.prompt_elements),
                     style = MaterialTheme.typography.titleMedium,
                 )
 
                 CategoryDropdown(
-                    label = "Topic (Optional)",
+                    label = stringResource(Res.string.topic_optional),
                     options = viewState.topicOptions,
                     selectedOption = viewState.selectedTopic,
                     onOptionSelected = viewModel::onTopicSelected
                 )
 
                 CategoryDropdown(
-                    label = "Medium",
+                    label = stringResource(Res.string.medium),
                     options = viewState.mediumOptions,
                     selectedOption = viewState.selectedMedium,
                     onOptionSelected = viewModel::onMediumSelected
                 )
 
                 CategoryDropdown(
-                    label = "Support",
+                    label = stringResource(Res.string.support),
                     options = viewState.supportOptions,
                     selectedOption = viewState.selectedSupport,
                     onOptionSelected = viewModel::onSupportSelected
                 )
 
                 CategoryDropdown(
-                    label = "Constraint (Optional)",
+                    label = stringResource(Res.string.constraint_optional),
                     options = viewState.constraintOptions,
                     selectedOption = viewState.selectedConstraint,
                     onOptionSelected = viewModel::onConstraintSelected
@@ -189,7 +210,7 @@ fun CreateJamScreen(
                     HorizontalDivider()
                     
                     Text(
-                        text = "Preview",
+                        text = stringResource(Res.string.preview),
                         style = MaterialTheme.typography.titleMedium,
                     )
                     
@@ -216,7 +237,7 @@ fun CreateJamScreen(
                     if (viewState.isCreating) {
                         CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
                     } else {
-                        Text("Create Jam")
+                        Text(stringResource(Res.string.create_jam))
                     }
                 }
             }
@@ -281,12 +302,12 @@ private fun DatePickerField(
                         showDatePicker = false
                     }
                 ) {
-                    Text("OK")
+                    Text(stringResource(Res.string.ok))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel")
+                    Text(stringResource(Res.string.cancel))
                 }
             }
         ) {
@@ -327,7 +348,7 @@ private fun CategoryDropdown(
             // None option for optional fields
             if (label.contains("Optional")) {
                 DropdownMenuItem(
-                    text = { Text("None") },
+                    text = { Text(stringResource(Res.string.none)) },
                     onClick = {
                         onOptionSelected(null)
                         expanded = false
