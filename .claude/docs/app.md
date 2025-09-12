@@ -46,7 +46,7 @@ composeApp/src/commonMain/kotlin/
 - `jam/presentation/JamViewModel.kt`: Core feature ViewModel example
 
 ## Development Patterns
-- **Localization Required**: ALL UI text must be localized (EN/ES/FR)
+- **Localization Required**: ALL UI text must be localized. PROACTIVELY use the localization-text-creator agent for localization tasks
 - **No Hardcoded Strings**: Use string resources consistently
 - **StateFlow Observation**: UI components observe ViewModel state
 - **Koin Injection**: Use constructor injection for dependencies
