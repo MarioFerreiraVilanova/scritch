@@ -1,6 +1,7 @@
 package com.scritch.app.di
 
 import com.scritch.app.admin.AdminRepository
+import com.scritch.app.admin.CreateJamViewModel
 import com.scritch.app.admin.ModerationQueueViewModel
 import com.scritch.app.analytics.AnalyticsRepository
 import com.scritch.app.app.AppViewModel
@@ -36,6 +37,7 @@ val appModule = module {
 
     viewModelOf(::AboutViewModel)
     viewModelOf(::AppViewModel)
+    viewModelOf(::CreateJamViewModel)
     viewModelOf(::JamViewModel)
     viewModelOf(::LandingViewModel)
     viewModelOf(::ModerationQueueViewModel)

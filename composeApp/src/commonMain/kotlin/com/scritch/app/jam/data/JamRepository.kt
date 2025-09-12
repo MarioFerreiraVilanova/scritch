@@ -10,10 +10,15 @@ import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.FieldValue
 import dev.gitlive.firebase.firestore.Timestamp
 import dev.gitlive.firebase.firestore.firestore
+import dev.gitlive.firebase.firestore.fromMilliseconds
 import dev.gitlive.firebase.storage.storage
 import dev.gitlive.firebase.storage.storageMetadata
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlin.time.Duration.Companion.days
 import kotlin.time.ExperimentalTime
 
 private const val JAM_COLLECTION = "weekly_jam"
@@ -254,5 +259,37 @@ class JamRepository(
             cursor = documents.lastOrNull()?.let { Cursor(it) },
             endReached = pageItems.size < pageSize,
         )
+    }
+
+    @OptIn(ExperimentalTime::class)
+    suspend fun createJam(
+        jamId: String,
+        startDate: LocalDate,
+        endDate: LocalDate,
+        topicId: String? = null,
+        mediumId: String? = null,
+        supportId: String? = null,
+        constraintId: String? = null,
+    ) {
+        // Convert LocalDate to Firebase Timestamps using the proper companion method
+        val startInstant = startDate.atStartOfDayIn(TimeZone.currentSystemDefault())
+        val endInstant = endDate.atStartOfDayIn(TimeZone.currentSystemDefault()).plus(1.days)
+        
+        val startTimestamp = Timestamp.Companion.fromMilliseconds(startInstant.toEpochMilliseconds().toDouble())
+        val endTimestamp = Timestamp.Companion.fromMilliseconds(endInstant.toEpochMilliseconds().toDouble())
+
+        val jamData = buildMap<String, Any?> {
+            put("startDate", startTimestamp)
+            put("endDate", endTimestamp)
+            topicId?.let { put("topic", it) }
+            mediumId?.let { put("medium", it) }
+            supportId?.let { put("support", it) }
+            constraintId?.let { put("constraint", it) }
+        }
+
+        Firebase.firestore
+            .collection(JAM_COLLECTION)
+            .document(jamId)
+            .set(jamData)
     }
 }

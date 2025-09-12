@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 fun AdminPanelScreen(
     onBackPress: () -> Unit,
     onGoToModerationQueue: () -> Unit,
+    onGoToCreateJam: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -49,6 +51,34 @@ fun AdminPanelScreen(
         LazyColumn(
             contentPadding = innerPadding,
         ) {
+            item {
+                SectionTitle("Jam Management")
+            }
+
+            item {
+                ListItem(
+                    headlineContent = {
+                        Text("Create New Jam")
+                    },
+                    supportingContent = {
+                        Text(
+                            text = "Create a new weekly jam with custom prompts and dates",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        onGoToCreateJam()
+                    }
+                )
+            }
+
             item {
                 SectionTitle("Moderation Tools")
             }

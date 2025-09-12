@@ -16,6 +16,7 @@ import com.scritch.app.home.HomeScreen
 import com.scritch.app.jam.ui.FullScreenCamera
 import com.scritch.app.landing.LandingScreen
 import com.scritch.app.admin.AdminPanelScreen
+import com.scritch.app.admin.CreateJamScreen
 import com.scritch.app.admin.ModerationQueueScreen
 import com.scritch.app.settings.SettingsScreen
 import com.scritch.app.settings.about.AboutScreen
@@ -168,12 +169,23 @@ private fun NavGraphBuilder.authenticatedSubGraph(
                 },
                 onGoToModerationQueue = {
                     navController.navigate(Authenticated.ModerationQueue)
+                },
+                onGoToCreateJam = {
+                    navController.navigate(Authenticated.CreateJam)
                 }
             )
         }
 
         composable<Authenticated.ModerationQueue> {
             ModerationQueueScreen(
+                onBackPress = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable<Authenticated.CreateJam> {
+            CreateJamScreen(
                 onBackPress = {
                     navController.popBackStack()
                 }
