@@ -18,6 +18,16 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
+import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.admin_panel
+import scritch.composeapp.generated.resources.back
+import scritch.composeapp.generated.resources.jam_management
+import scritch.composeapp.generated.resources.create_new_jam
+import scritch.composeapp.generated.resources.create_new_jam_description
+import scritch.composeapp.generated.resources.moderation_tools
+import scritch.composeapp.generated.resources.moderation_queue
+import scritch.composeapp.generated.resources.review_submissions_manual_approval_description
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,14 +42,14 @@ fun AdminPanelScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Admin Panel")
+                    Text(stringResource(Res.string.admin_panel))
                 },
                 navigationIcon = {
                     IconButton(
                         content = {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                                contentDescription = "Back",
+                                contentDescription = stringResource(Res.string.back),
                             )
                         },
                         onClick = onBackPress
@@ -52,17 +62,17 @@ fun AdminPanelScreen(
             contentPadding = innerPadding,
         ) {
             item {
-                SectionTitle("Jam Management")
+                SectionTitle(stringResource(Res.string.jam_management))
             }
 
             item {
                 ListItem(
                     headlineContent = {
-                        Text("Create New Jam")
+                        Text(stringResource(Res.string.create_new_jam))
                     },
                     supportingContent = {
                         Text(
-                            text = "Create a new weekly jam with custom prompts and dates",
+                            text = stringResource(Res.string.create_new_jam_description),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -80,17 +90,17 @@ fun AdminPanelScreen(
             }
 
             item {
-                SectionTitle("Moderation Tools")
+                SectionTitle(stringResource(Res.string.moderation_tools))
             }
 
             item {
                 ListItem(
                     headlineContent = {
-                        Text("Moderation Queue")
+                        Text(stringResource(Res.string.moderation_queue))
                     },
                     supportingContent = {
                         Text(
-                            text = "Review submissions requiring manual approval",
+                            text = stringResource(Res.string.review_submissions_manual_approval_description),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )

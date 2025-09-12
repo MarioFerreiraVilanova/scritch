@@ -10,6 +10,7 @@
 
     <!-- Strings -->
     <string name="about">À propos</string>
+    <string name="admin_panel">Panneau d'Administration</string>
     <string name="app_name">Scritch</string>
     <string name="are_you_sure_delete_entry">Voulez-vous vraiment supprimer cette participation ?</string>
     <string name="back">Retour</string>
@@ -19,6 +20,8 @@
     <string name="cancel">Annuler</string>
     <string name="concept_and_design">Concept et design : %1$s</string>
     <string name="continue_word">Continuer</string>
+    <string name="create_new_jam">Créer Nouvelle Jam</string>
+    <string name="create_new_jam_description">Crée une nouvelle jam hebdomadaire avec des défis personnalisés et des dates</string>
     <string name="delete">Supprimer</string>
     <string name="delete_entry">Supprimer la participation</string>
     <string name="development">Développement : %1$s</string>
@@ -42,6 +45,7 @@
     <string name="prompt_settings">Paramètres du générateur d'idées</string>
     <string name="rejected">Rejetée</string>
     <string name="retry">Réessayer</string>
+    <string name="review_submissions_manual_approval_description">Examinez les soumissions nécessitant une approbation manuelle</string>
     <string name="report_button">Signaler</string>
     <string name="report_submission_title">Signaler l'envoi de %1$s</string>
     <string name="report_submission_question">Pourquoi signalez-vous cet envoi ?</string>
@@ -87,6 +91,7 @@
     <string name="no_jam_title">Pas de Scritch Jam aujourd'hui</string>
     <string name="no_jam_subtitle">Le prochain défi de design global arrive bientôt. Profitez de ce temps pour explorer le mode solo et pratiquer vos compétences.</string>
     <string name="jam_had_no_entries">Personne n'a participé à ce jam</string>
+    <string name="jam_management">Gestion des Jams</string>
     <string name="yes_delete_it">Oui, supprimer</string>
     <string name="ends_in_d_h">Se termine dans %1$dj %2$dh</string>
     <string name="ends_in_h_m">Se termine dans %1$dh %2$dm</string>
@@ -100,6 +105,8 @@
     <string name="you">Tu</string>
     <string name="your_nickname">Ton pseudonyme</string>
     <string name="loading">Chargement…</string>
+    <string name="moderation_queue">File de Modération</string>
+    <string name="moderation_tools">Outils de Modération</string>
     <string name="your_contribution">Ta contribution (%1$s)</string>
     <string name="scritch_jam_by">Scritch Jam par %1$s</string>
 

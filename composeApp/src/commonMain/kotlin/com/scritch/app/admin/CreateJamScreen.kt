@@ -57,7 +57,7 @@ import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalMaterial3Api::class, kotlin.time.ExperimentalTime::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 fun CreateJamScreen(
     onBackPress: () -> Unit,
