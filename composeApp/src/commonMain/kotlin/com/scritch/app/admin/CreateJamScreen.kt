@@ -63,8 +63,10 @@ import scritch.composeapp.generated.resources.cancel
 import scritch.composeapp.generated.resources.constraint_optional
 import scritch.composeapp.generated.resources.create_jam
 import scritch.composeapp.generated.resources.create_new_jam
+import scritch.composeapp.generated.resources.edit_jam_title
 import scritch.composeapp.generated.resources.end_date
 import scritch.composeapp.generated.resources.jam_created_successfully
+import scritch.composeapp.generated.resources.jam_updated_successfully
 import scritch.composeapp.generated.resources.jam_name
 import scritch.composeapp.generated.resources.jam_name_placeholder
 import scritch.composeapp.generated.resources.medium
@@ -72,6 +74,7 @@ import scritch.composeapp.generated.resources.none
 import scritch.composeapp.generated.resources.ok
 import scritch.composeapp.generated.resources.preview
 import scritch.composeapp.generated.resources.prompt_elements
+import scritch.composeapp.generated.resources.save_jam
 import scritch.composeapp.generated.resources.start_date
 import scritch.composeapp.generated.resources.support
 import scritch.composeapp.generated.resources.topic_optional
@@ -85,6 +88,7 @@ fun CreateJamScreen(
 ) {
     val viewState by viewModel.viewState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val isEditMode = viewModel.isEditMode
 
     LaunchedEffect(viewState.error) {
         viewState.error?.let { error ->
@@ -93,11 +97,15 @@ fun CreateJamScreen(
         }
     }
 
-    val jamCreatedSuccessMessage = stringResource(Res.string.jam_created_successfully)
-    
+    val successMessage = if (isEditMode) {
+        stringResource(Res.string.jam_updated_successfully)
+    } else {
+        stringResource(Res.string.jam_created_successfully)
+    }
+
     LaunchedEffect(viewState.isCreateSuccessful) {
         if (viewState.isCreateSuccessful) {
-            snackbarHostState.showSnackbar(jamCreatedSuccessMessage)
+            snackbarHostState.showSnackbar(successMessage)
             onBackPress()
         }
     }
@@ -106,7 +114,15 @@ fun CreateJamScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(Res.string.create_new_jam)) },
+                title = {
+                    Text(
+                        if (isEditMode) {
+                            stringResource(Res.string.edit_jam_title)
+                        } else {
+                            stringResource(Res.string.create_new_jam)
+                        }
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackPress) {
                         Icon(
@@ -140,7 +156,8 @@ fun CreateJamScreen(
                 // Jam Name
                 OutlinedTextField(
                     value = viewState.jamName,
-                    onValueChange = viewModel::onJamNameChanged,
+                    onValueChange = if (isEditMode) { {} } else { viewModel::onJamNameChanged },
+                    readOnly = isEditMode,
                     label = { Text(stringResource(Res.string.jam_name)) },
                     placeholder = { Text(stringResource(Res.string.jam_name_placeholder)) },
                     isError = viewState.validationErrors.jamName != null,
@@ -237,7 +254,11 @@ fun CreateJamScreen(
                     if (viewState.isCreating) {
                         CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
                     } else {
-                        Text(stringResource(Res.string.create_jam))
+                        Text(
+                            stringResource(
+                                if (isEditMode) Res.string.save_jam else Res.string.create_jam
+                            )
+                        )
                     }
                 }
             }

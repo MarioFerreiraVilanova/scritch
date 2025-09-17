@@ -292,4 +292,71 @@ class JamRepository(
             .document(jamId)
             .set(jamData)
     }
+
+    suspend fun getAllJams(
+        cursor: Cursor? = null,
+        pageSize: Int = 20,
+    ): Page<JamDto> {
+        val query = Firebase.firestore
+            .collection(JAM_COLLECTION)
+            .orderBy("endDate", Direction.DESCENDING)
+
+        val finalQuery = if (cursor == null) {
+            query
+        } else {
+            query.startAfter(cursor.lastDoc)
+        }
+
+        val documents = finalQuery.limit(pageSize).get().documents
+
+        val pageItems = documents.map { snapshot ->
+            JamDto(snapshot)
+        }
+
+        return Page(
+            items = pageItems,
+            cursor = documents.lastOrNull()?.let { Cursor(it) },
+            endReached = pageItems.size < pageSize,
+        )
+    }
+
+    suspend fun getJam(jamId: String): JamDto? {
+        return Firebase.firestore
+            .collection(JAM_COLLECTION)
+            .document(jamId)
+            .get()
+            .takeIf { it.exists }
+            ?.let { JamDto(it) }
+    }
+
+    @OptIn(ExperimentalTime::class)
+    suspend fun updateJam(
+        jamId: String,
+        startDate: LocalDate,
+        endDate: LocalDate,
+        topicId: String? = null,
+        mediumId: String? = null,
+        supportId: String? = null,
+        constraintId: String? = null,
+    ) {
+        val startInstant = startDate.atStartOfDayIn(TimeZone.currentSystemDefault())
+        val endInstant = endDate.atStartOfDayIn(TimeZone.currentSystemDefault()).plus(1.days)
+
+        val startTimestamp = Timestamp.Companion.fromMilliseconds(startInstant.toEpochMilliseconds().toDouble())
+        val endTimestamp = Timestamp.Companion.fromMilliseconds(endInstant.toEpochMilliseconds().toDouble())
+
+        val jamData = buildMap<String, Any?> {
+            put("startDate", startTimestamp)
+            put("endDate", endTimestamp)
+            topicId?.let { put("topic", it) }
+            mediumId?.let { put("medium", it) }
+            supportId?.let { put("support", it) }
+            constraintId?.let { put("constraint", it) }
+        }
+
+        Firebase.firestore
+            .collection(JAM_COLLECTION)
+            .document(jamId)
+            .update(jamData)
+    }
 }

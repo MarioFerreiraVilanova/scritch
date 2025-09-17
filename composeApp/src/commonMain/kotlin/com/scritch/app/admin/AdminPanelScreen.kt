@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Gavel
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,6 +26,8 @@ import scritch.composeapp.generated.resources.back
 import scritch.composeapp.generated.resources.jam_management
 import scritch.composeapp.generated.resources.create_new_jam
 import scritch.composeapp.generated.resources.create_new_jam_description
+import scritch.composeapp.generated.resources.manage_existing_jams
+import scritch.composeapp.generated.resources.manage_existing_jams_description
 import scritch.composeapp.generated.resources.moderation_tools
 import scritch.composeapp.generated.resources.moderation_queue
 import scritch.composeapp.generated.resources.review_submissions_manual_approval_description
@@ -35,6 +38,7 @@ fun AdminPanelScreen(
     onBackPress: () -> Unit,
     onGoToModerationQueue: () -> Unit,
     onGoToCreateJam: () -> Unit,
+    onGoToJamManagement: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -85,6 +89,30 @@ fun AdminPanelScreen(
                     },
                     modifier = Modifier.clickable {
                         onGoToCreateJam()
+                    }
+                )
+            }
+
+            item {
+                ListItem(
+                    headlineContent = {
+                        Text(stringResource(Res.string.manage_existing_jams))
+                    },
+                    supportingContent = {
+                        Text(
+                            text = stringResource(Res.string.manage_existing_jams_description),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.List,
+                            contentDescription = null,
+                        )
+                    },
+                    modifier = Modifier.clickable {
+                        onGoToJamManagement()
                     }
                 )
             }

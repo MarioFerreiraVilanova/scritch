@@ -17,6 +17,7 @@ import com.scritch.app.jam.ui.FullScreenCamera
 import com.scritch.app.landing.LandingScreen
 import com.scritch.app.admin.AdminPanelScreen
 import com.scritch.app.admin.CreateJamScreen
+import com.scritch.app.admin.JamManagementScreen
 import com.scritch.app.admin.ModerationQueueScreen
 import com.scritch.app.settings.SettingsScreen
 import com.scritch.app.settings.about.AboutScreen
@@ -172,6 +173,9 @@ private fun NavGraphBuilder.authenticatedSubGraph(
                 },
                 onGoToCreateJam = {
                     navController.navigate(Authenticated.CreateJam)
+                },
+                onGoToJamManagement = {
+                    navController.navigate(Authenticated.JamManagement)
                 }
             )
         }
@@ -185,6 +189,25 @@ private fun NavGraphBuilder.authenticatedSubGraph(
         }
 
         composable<Authenticated.CreateJam> {
+            CreateJamScreen(
+                onBackPress = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable<Authenticated.JamManagement> {
+            JamManagementScreen(
+                onBackPress = {
+                    navController.popBackStack()
+                },
+                onEditJam = { jamId ->
+                    navController.navigate(Authenticated.EditJam(jamId))
+                }
+            )
+        }
+
+        composable<Authenticated.EditJam> {
             CreateJamScreen(
                 onBackPress = {
                     navController.popBackStack()

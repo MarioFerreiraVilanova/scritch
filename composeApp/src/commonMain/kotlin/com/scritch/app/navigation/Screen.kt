@@ -18,6 +18,8 @@ import kotlinx.serialization.Serializable
     @Serializable object AdminPanel
     @Serializable object ModerationQueue
     @Serializable object CreateJam
+    @Serializable object JamManagement
+    @Serializable data class EditJam(val jamId: String)
     @Serializable data class WizardMediumSelection(
         val category: Int,
         val step: Int?,

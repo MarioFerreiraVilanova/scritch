@@ -27,9 +27,13 @@
     <string name="delete">Eliminar</string>
     <string name="delete_entry">Eliminar participación</string>
     <string name="development">Desarrollo: %1$s</string>
+    <string name="edit_jam">Editar Jam</string>
+    <string name="edit_jam_title">Editar Jam</string>
     <string name="edit_your_entry">Editar tu participación</string>
     <string name="end_date">Fecha Final</string>
     <string name="feedback_questions">¿Sugerencias o comentarios?</string>
+    <string name="failed_to_load_jams">Error al cargar jams</string>
+    <string name="failed_to_update_jam">Error al actualizar jam</string>
     <string name="file_size_exceeded_title">Archivo Demasiado Grande</string>
     <string name="file_size_exceeded_message">La imagen seleccionada es demasiado grande. Por favor, elige una imagen menor a 8MB o toma una nueva foto.</string>
     <string name="generate_prompt">Generar reto</string>
@@ -42,6 +46,7 @@
     <string name="landing_screen_second_description_1">Los retos se basan en usar distintos medios artísticos y soportes. ¿No tienes algunos o no los quieres usar? No pasa nada, </string>
     <string name="landing_screen_second_description_2">¡puedes personalizar todo desde ajustes!</string>
     <string name="no_category_imposed">Sin %1$s impuesta</string>
+    <string name="no_jams_found">No se encontraron jams</string>
     <string name="ok">Vale</string>
     <string name="other">Otro</string>
     <string name="pick_one_from_the_gallery">Elegir de la galería</string>
@@ -49,6 +54,7 @@
     <string name="prompt_settings">Configuración de retos</string>
     <string name="rejected">Rechazada</string>
     <string name="retry">Reintentar</string>
+    <string name="save_jam">Guardar Jam</string>
     <string name="review_submissions_manual_approval_description">Revisa envíos que requieren aprobación manual</string>
     <string name="report_button">Reportar</string>
     <string name="report_submission_title">Reportar envío de %1$s</string>
@@ -101,6 +107,7 @@
     <string name="jam_management">Gestión de Jams</string>
     <string name="jam_name">Nombre de Jam</string>
     <string name="jam_name_placeholder">ej., 2025-37</string>
+    <string name="jam_updated_successfully">¡Jam actualizada exitosamente!</string>
     <string name="yes_delete_it">Sí, eliminar</string>
     <string name="ends_in_d_h">Termina en %1$dd %2$dh</string>
     <string name="ends_in_h_m">Termina en %1$dh %2$dm</string>
@@ -114,7 +121,11 @@
     <string name="you">Tú</string>
     <string name="your_nickname">Tu apodo</string>
     <string name="loading">Cargando…</string>
+    <string name="loading_more_jams">Cargando más jams…</string>
     <string name="logout">Cerrar sesión</string>
+    <string name="manage_jams_description">Ver y gestionar todas las jams existentes en la comunidad</string>
+    <string name="manage_existing_jams">Gestionar jams existentes</string>
+    <string name="manage_existing_jams_description">Ver y editar los retos artísticos semanales existentes</string>
     <string name="moderation_queue">Cola de Moderación</string>
     <string name="moderation_tools">Herramientas de Moderación</string>
     <string name="your_contribution">Tu contribución (%1$s)</string>

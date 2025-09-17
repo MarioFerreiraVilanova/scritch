@@ -28,9 +28,13 @@
     <string name="delete">Delete</string>
     <string name="delete_entry">Delete entry</string>
     <string name="development">Development: : %1$s</string>
+    <string name="edit_jam">Edit Jam</string>
+    <string name="edit_jam_title">Edit Jam</string>
     <string name="edit_your_entry">Edit your entry</string>
     <string name="end_date">End Date</string>
     <string name="feedback_questions">Feedback, suggestions?</string>
+    <string name="failed_to_load_jams">Failed to load jams</string>
+    <string name="failed_to_update_jam">Failed to update jam</string>
     <string name="file_size_exceeded_title">File Size Too Large</string>
     <string name="file_size_exceeded_message">The selected image is too large. Please choose an image smaller than 8MB or take a new photo.</string>
     <string name="generate_prompt">Generate prompt</string>
@@ -43,6 +47,7 @@
     <string name="landing_screen_second_description_1">The challenges mainly involve using different art mediums and supports. Don’t have or want to use some? No worries, </string>
     <string name="landing_screen_second_description_2">you can customize everything in the settings!</string>
     <string name="no_category_imposed">No %1$s imposed</string>
+    <string name="no_jams_found">No jams found</string>
     <string name="none">None</string>
     <string name="ok">OK</string>
     <string name="other">Other</string>
@@ -52,6 +57,7 @@
     <string name="prompt_settings">Prompt settings</string>
     <string name="rejected">Rejected</string>
     <string name="retry">Retry</string>
+    <string name="save_jam">Save Jam</string>
     <string name="review_submissions_manual_approval_description">Review submissions requiring manual approval</string>
     <string name="report_button">Report</string>
     <string name="report_submission_title">Report submission by %1$s</string>
@@ -107,6 +113,7 @@
     <string name="jam_management">Jam Management</string>
     <string name="jam_name">Jam Name</string>
     <string name="jam_name_placeholder">e.g., 2025-37</string>
+    <string name="jam_updated_successfully">Jam updated successfully!</string>
     <string name="yes_delete_it">Yes, delete it</string>
     <string name="ends_in_d_h">Ends in %1$dd %2$dh</string>
     <string name="ends_in_h_m">Ends in %1$dh %2$dm</string>
@@ -120,7 +127,11 @@
     <string name="you">You</string>
     <string name="your_nickname">Your nickname</string>
     <string name="loading">Loading…</string>
+    <string name="loading_more_jams">Loading more jams…</string>
     <string name="logout">Logout</string>
+    <string name="manage_jams_description">View and manage all existing jams in the community</string>
+    <string name="manage_existing_jams">Manage existing jams</string>
+    <string name="manage_existing_jams_description">View and edit existing weekly art challenges</string>
     <string name="medium">Medium</string>
     <string name="moderation_queue">Moderation Queue</string>
     <string name="moderation_tools">Moderation Tools</string>

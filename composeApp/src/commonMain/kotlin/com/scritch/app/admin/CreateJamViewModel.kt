@@ -1,11 +1,18 @@
 package com.scritch.app.admin
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.scritch.app.categories.Category
 import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.OptionState
+import com.scritch.app.jam.data.JamDto
 import com.scritch.app.jam.data.JamRepository
+import com.scritch.app.navigation.Authenticated
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 
 class CreateJamViewModel(
+    savedStateHandle: SavedStateHandle,
     private val jamRepository: JamRepository,
     private val categoryRepository: CategoryRepository,
 ) : ViewModel() {
@@ -20,8 +28,20 @@ class CreateJamViewModel(
     private val _viewState = MutableStateFlow(CreateJamViewState.EMPTY)
     val viewState: StateFlow<CreateJamViewState> = _viewState.asStateFlow()
 
+    private val editJamArgs: Authenticated.EditJam? = try {
+        savedStateHandle.toRoute<Authenticated.EditJam>()
+    } catch (e: Exception) {
+        null
+    }
+
+    val isEditMode = editJamArgs != null
+    private val originalJamId = editJamArgs?.jamId
+
     init {
         loadCategoryOptions()
+        originalJamId?.let { jamId ->
+            loadExistingJam(jamId)
+        }
     }
 
     private fun loadCategoryOptions() {
@@ -57,6 +77,60 @@ class CreateJamViewModel(
                 )
             }
         }
+    }
+
+    private fun loadExistingJam(jamId: String) {
+        viewModelScope.launch {
+            try {
+                val jam = jamRepository.getJam(jamId)
+                if (jam != null) {
+                    populateFormWithJamData(jam)
+                } else {
+                    _viewState.value = _viewState.value.copy(
+                        error = "Jam not found: $jamId"
+                    )
+                }
+            } catch (e: Exception) {
+                _viewState.value = _viewState.value.copy(
+                    error = "Failed to load jam: ${e.message}"
+                )
+            }
+        }
+    }
+
+    @OptIn(ExperimentalTime::class)
+    private fun populateFormWithJamData(jam: JamDto) {
+        val currentState = _viewState.value
+
+        val startDate = jam.startDate?.toLocalDateTime(TimeZone.currentSystemDefault())?.date
+        val endDate = jam.endDate?.toLocalDateTime(TimeZone.currentSystemDefault())?.date
+
+        val selectedTopic = jam.topic?.let { topicId ->
+            currentState.topicOptions.find { it.id == topicId }
+        }
+        val selectedMedium = jam.medium?.let { mediumId ->
+            currentState.mediumOptions.find { it.id == mediumId }
+        }
+        val selectedSupport = jam.support?.let { supportId ->
+            currentState.supportOptions.find { it.id == supportId }
+        }
+        val selectedConstraint = jam.constraint?.let { constraintId ->
+            currentState.constraintOptions.find { it.id == constraintId }
+        }
+
+        val newState = currentState.copy(
+            jamName = jam.id,
+            startDate = startDate,
+            endDate = endDate,
+            selectedTopic = selectedTopic,
+            selectedMedium = selectedMedium,
+            selectedSupport = selectedSupport,
+            selectedConstraint = selectedConstraint,
+        )
+
+        _viewState.value = newState.copy(
+            validationErrors = validateForm(newState)
+        )
     }
 
     fun onJamNameChanged(name: String) {
@@ -122,15 +196,27 @@ class CreateJamViewModel(
 
         viewModelScope.launch {
             try {
-                jamRepository.createJam(
-                    jamId = currentState.jamName,
-                    startDate = currentState.startDate!!,
-                    endDate = currentState.endDate!!,
-                    topicId = currentState.selectedTopic?.id,
-                    mediumId = currentState.selectedMedium?.id,
-                    supportId = currentState.selectedSupport?.id,
-                    constraintId = currentState.selectedConstraint?.id,
-                )
+                if (isEditMode && originalJamId != null) {
+                    jamRepository.updateJam(
+                        jamId = originalJamId!!,
+                        startDate = currentState.startDate!!,
+                        endDate = currentState.endDate!!,
+                        topicId = currentState.selectedTopic?.id,
+                        mediumId = currentState.selectedMedium?.id,
+                        supportId = currentState.selectedSupport?.id,
+                        constraintId = currentState.selectedConstraint?.id,
+                    )
+                } else {
+                    jamRepository.createJam(
+                        jamId = currentState.jamName,
+                        startDate = currentState.startDate!!,
+                        endDate = currentState.endDate!!,
+                        topicId = currentState.selectedTopic?.id,
+                        mediumId = currentState.selectedMedium?.id,
+                        supportId = currentState.selectedSupport?.id,
+                        constraintId = currentState.selectedConstraint?.id,
+                    )
+                }
                 
                 // Success
                 _viewState.value = currentState.copy(
