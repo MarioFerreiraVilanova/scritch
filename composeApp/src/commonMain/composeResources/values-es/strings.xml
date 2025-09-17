@@ -11,6 +11,7 @@
     <!-- Strings -->
     <string name="about">Acerca de</string>
     <string name="admin_panel">Panel de Administración</string>
+    <string name="admin_tools_description">Herramientas de moderación y configuraciones de admin</string>
     <string name="app_name">Scritch</string>
     <string name="are_you_sure_delete_entry">¿Seguro que quieres eliminar esta participación?</string>
     <string name="back">Atrás</string>
@@ -113,6 +114,7 @@
     <string name="you">Tú</string>
     <string name="your_nickname">Tu apodo</string>
     <string name="loading">Cargando…</string>
+    <string name="logout">Cerrar sesión</string>
     <string name="moderation_queue">Cola de Moderación</string>
     <string name="moderation_tools">Herramientas de Moderación</string>
     <string name="your_contribution">Tu contribución (%1$s)</string>
