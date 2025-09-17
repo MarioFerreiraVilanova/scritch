@@ -58,6 +58,7 @@
     <string name="rejected">Rejected</string>
     <string name="retry">Retry</string>
     <string name="save_jam">Save Jam</string>
+    <string name="save_changes">Save changes</string>
     <string name="review_submissions_manual_approval_description">Review submissions requiring manual approval</string>
     <string name="report_button">Report</string>
     <string name="report_submission_title">Report submission by %1$s</string>

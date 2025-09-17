@@ -142,6 +142,13 @@ class CreateJamViewModel(
             selectedMedium = selectedMedium,
             selectedSupport = selectedSupport,
             selectedConstraint = selectedConstraint,
+            // Store original values for change tracking
+            originalStartDate = startDate,
+            originalEndDate = endDate,
+            originalSelectedTopic = selectedTopic,
+            originalSelectedMedium = selectedMedium,
+            originalSelectedSupport = selectedSupport,
+            originalSelectedConstraint = selectedConstraint,
         )
 
         _viewState.value = newState.copy(

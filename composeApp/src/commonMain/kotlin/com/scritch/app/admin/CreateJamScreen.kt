@@ -75,6 +75,7 @@ import scritch.composeapp.generated.resources.ok
 import scritch.composeapp.generated.resources.preview
 import scritch.composeapp.generated.resources.prompt_elements
 import scritch.composeapp.generated.resources.save_jam
+import scritch.composeapp.generated.resources.save_changes
 import scritch.composeapp.generated.resources.start_date
 import scritch.composeapp.generated.resources.support
 import scritch.composeapp.generated.resources.topic_optional
@@ -245,10 +246,11 @@ fun CreateJamScreen(
                     }
                 }
 
-                // Create Button
+                // Create/Save Button
                 Button(
                     onClick = viewModel::onCreateJam,
-                    enabled = viewState.isFormValid && !viewState.isCreating,
+                    enabled = viewState.isFormValid && !viewState.isCreating &&
+                             (if (isEditMode) viewState.hasChanges else true),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     if (viewState.isCreating) {
@@ -256,7 +258,10 @@ fun CreateJamScreen(
                     } else {
                         Text(
                             stringResource(
-                                if (isEditMode) Res.string.save_jam else Res.string.create_jam
+                                when {
+                                    isEditMode -> Res.string.save_changes
+                                    else -> Res.string.create_jam
+                                }
                             )
                         )
                     }

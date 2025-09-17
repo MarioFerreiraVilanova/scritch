@@ -55,6 +55,7 @@
     <string name="rejected">Rechazada</string>
     <string name="retry">Reintentar</string>
     <string name="save_jam">Guardar Jam</string>
+    <string name="save_changes">Guardar cambios</string>
     <string name="review_submissions_manual_approval_description">Revisa envíos que requieren aprobación manual</string>
     <string name="report_button">Reportar</string>
     <string name="report_submission_title">Reportar envío de %1$s</string>

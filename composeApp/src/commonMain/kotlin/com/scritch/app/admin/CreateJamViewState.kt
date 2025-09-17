@@ -27,6 +27,13 @@ data class CreateJamViewState(
     val error: String?,
     val validationErrors: ValidationErrors,
     val isCreateSuccessful: Boolean,
+    // Original values for change tracking in edit mode
+    val originalStartDate: LocalDate? = null,
+    val originalEndDate: LocalDate? = null,
+    val originalSelectedTopic: OptionState? = null,
+    val originalSelectedMedium: OptionState? = null,
+    val originalSelectedSupport: OptionState? = null,
+    val originalSelectedConstraint: OptionState? = null,
 ) {
     val promptViewState: PromptViewState
         get() = PromptViewState(
@@ -38,11 +45,19 @@ data class CreateJamViewState(
         )
 
     val isFormValid: Boolean
-        get() = validationErrors.isEmpty() && 
+        get() = validationErrors.isEmpty() &&
                 promptViewState.valid &&
                 jamName.isNotBlank() &&
                 startDate != null &&
                 endDate != null
+
+    val hasChanges: Boolean
+        get() = startDate != originalStartDate ||
+                endDate != originalEndDate ||
+                selectedTopic?.id != originalSelectedTopic?.id ||
+                selectedMedium?.id != originalSelectedMedium?.id ||
+                selectedSupport?.id != originalSelectedSupport?.id ||
+                selectedConstraint?.id != originalSelectedConstraint?.id
 
     companion object {
         val EMPTY = CreateJamViewState(

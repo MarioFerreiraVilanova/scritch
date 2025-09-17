@@ -55,6 +55,7 @@
     <string name="rejected">Rejetée</string>
     <string name="retry">Réessayer</string>
     <string name="save_jam">Sauvegarder Jam</string>
+    <string name="save_changes">Enregistrer les modifications</string>
     <string name="review_submissions_manual_approval_description">Examinez les soumissions nécessitant une approbation manuelle</string>
     <string name="report_button">Signaler</string>
     <string name="report_submission_title">Signaler l'envoi de %1$s</string>
