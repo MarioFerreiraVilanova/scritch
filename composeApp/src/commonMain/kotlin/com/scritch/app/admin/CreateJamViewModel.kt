@@ -39,9 +39,6 @@ class CreateJamViewModel(
 
     init {
         loadCategoryOptions()
-        originalJamId?.let { jamId ->
-            loadExistingJam(jamId)
-        }
     }
 
     private fun loadCategoryOptions() {
@@ -70,6 +67,11 @@ class CreateJamViewModel(
                     constraintOptions = constraintOptions,
                     isLoading = false,
                 )
+
+                // After options are loaded, load existing jam data if in edit mode
+                originalJamId?.let { jamId ->
+                    loadExistingJam(jamId)
+                }
             } catch (e: Exception) {
                 _viewState.value = _viewState.value.copy(
                     isLoading = false,
@@ -102,6 +104,15 @@ class CreateJamViewModel(
     private fun populateFormWithJamData(jam: JamDto) {
         val currentState = _viewState.value
 
+        println("CreateJamViewModel: Populating form with jam data:")
+        println("  jamId: ${jam.id}")
+        println("  topic: ${jam.topic}")
+        println("  medium: ${jam.medium}")
+        println("  support: ${jam.support}")
+        println("  constraint: ${jam.constraint}")
+        println("  Available topic options: ${currentState.topicOptions.map { "${it.id}: ${it.name}" }}")
+        println("  Available medium options: ${currentState.mediumOptions.map { "${it.id}: ${it.name}" }}")
+
         val startDate = jam.startDate?.toLocalDateTime(TimeZone.currentSystemDefault())?.date
         val endDate = jam.endDate?.toLocalDateTime(TimeZone.currentSystemDefault())?.date
 
@@ -117,6 +128,11 @@ class CreateJamViewModel(
         val selectedConstraint = jam.constraint?.let { constraintId ->
             currentState.constraintOptions.find { it.id == constraintId }
         }
+
+        println("  Found selectedTopic: ${selectedTopic?.name}")
+        println("  Found selectedMedium: ${selectedMedium?.name}")
+        println("  Found selectedSupport: ${selectedSupport?.name}")
+        println("  Found selectedConstraint: ${selectedConstraint?.name}")
 
         val newState = currentState.copy(
             jamName = jam.id,
