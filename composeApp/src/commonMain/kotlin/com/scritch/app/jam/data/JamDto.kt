@@ -3,8 +3,8 @@ package com.scritch.app.jam.data
 import dev.gitlive.firebase.firestore.DocumentSnapshot
 import dev.gitlive.firebase.firestore.Timestamp
 import dev.gitlive.firebase.firestore.toMilliseconds
-import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 data class JamDto(
@@ -14,7 +14,9 @@ data class JamDto(
     val support: String?,
     val topic: String?,
     val startDate: Instant?,
-    val endDate: Instant?
+    val endDate: Instant?,
+    val submissionCount: Int = 0,
+    val participants: List<String> = emptyList()
 ){
     constructor(documentSnapshot: DocumentSnapshot): this(
         id = documentSnapshot.id,
@@ -27,6 +29,8 @@ data class JamDto(
         },
         endDate = documentSnapshot.get<Timestamp?>("endDate")?.let {
             Instant.fromEpochMilliseconds(it.toMilliseconds().toLong())
-        }
+        },
+        submissionCount = documentSnapshot.get<Long?>("submissionCount")?.toInt() ?: 0,
+        participants = documentSnapshot.get<List<String>?>("participants") ?: emptyList()
     )
 }

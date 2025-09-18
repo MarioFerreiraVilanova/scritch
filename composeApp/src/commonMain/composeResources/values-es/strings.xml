@@ -13,12 +13,14 @@
     <string name="admin_panel">Panel de Administración</string>
     <string name="admin_tools_description">Herramientas de moderación y configuraciones de admin</string>
     <string name="app_name">Scritch</string>
+    <string name="archives">Archivos</string>
     <string name="are_you_sure_delete_entry">¿Seguro que quieres eliminar esta participación?</string>
     <string name="back">Atrás</string>
     <string name="back_to_home">Volver al inicio</string>
     <string name="back_to_settings">Volver a ajustes</string>
     <string name="no_one_contributed_yet">Nadie ha contribuido aún</string>
     <string name="cancel">Cancelar</string>
+    <string name="contributed">contribuyó</string>
     <string name="concept_and_design">Concepto y diseño: %1$s</string>
     <string name="continue_word">Continuar</string>
     <string name="create_jam">Crear Jam</string>
@@ -51,6 +53,7 @@
     <string name="landing_screen_second_description_2">¡puedes personalizar todo desde ajustes!</string>
     <string name="no_category_imposed">Sin %1$s impuesta</string>
     <string name="no_jams_found">No se encontraron jams</string>
+    <string name="no_past_jams_found">No se encontraron jams pasadas</string>
     <string name="ok">Vale</string>
     <string name="other">Otro</string>
     <string name="pick_one_from_the_gallery">Elegir de la galería</string>
@@ -92,6 +95,7 @@
     <string name="upload_rate_limit_title">Límite de Subidas Alcanzado</string>
     <string name="upload_rate_limit_cooldown_message">Por favor espera %1$s antes de subir otra imagen. Esto ayuda a prevenir spam y mantiene la comunidad divertida para todos.</string>
     <string name="upload_rate_limit_window_message">Has alcanzado el límite de subidas para este período. Por favor espera %1$s antes de intentar de nuevo.</string>
+    <string name="view_past_jam">Ver Jam Pasada</string>
     <string name="version">Versión: %1$s</string>
     <string name="version_history">Historial de versiones</string>
     <string name="version_notes_0_10">Se corrigieron errores relacionados con los retos y se añadió la sección Acerca de en ajustes</string>
@@ -108,11 +112,13 @@
     <string name="no_jam_title">No hay Scritch Jam hoy</string>
     <string name="no_jam_subtitle">El próximo desafío global de diseño llega pronto. Aprovecha este tiempo para explorar el modo individual y practicar tus habilidades.</string>
     <string name="jam_created_successfully">¡Jam creada exitosamente!</string>
+    <string name="jam_has_ended">Esta jam ha terminado</string>
     <string name="jam_deleted_successfully">¡Jam eliminada exitosamente!</string>
     <string name="jam_had_no_entries">Nadie participó en esta jam</string>
     <string name="jam_management">Gestión de Jams</string>
     <string name="jam_name">Nombre de Jam</string>
     <string name="jam_name_placeholder">ej., 2025-37</string>
+    <string name="jam_period">Período de jam: %1$s a %2$s</string>
     <string name="jam_status_finished">Terminada</string>
     <string name="jam_status_ongoing">En curso</string>
     <string name="jam_status_planned">Planificada</string>
@@ -131,6 +137,7 @@
     <string name="your_nickname">Tu apodo</string>
     <string name="loading">Cargando…</string>
     <string name="loading_more_jams">Cargando más jams…</string>
+    <string name="loading_more_past_jams">Cargando más jams pasadas…</string>
     <string name="logout">Cerrar sesión</string>
     <string name="manage_jams_description">Ver y gestionar todas las jams existentes en la comunidad</string>
     <string name="manage_existing_jams">Gestionar jams existentes</string>
@@ -139,6 +146,7 @@
     <string name="moderation_tools">Herramientas de Moderación</string>
     <string name="your_contribution">Tu contribución (%1$s)</string>
     <string name="scritch_jam_by">Scritch Jam por %1$s</string>
+    <string name="scritch_jam_archives">Archivos de Scritch Jam</string>
 
     <!-- Plurals -->
     <plurals name="category_art_medium">
@@ -165,5 +173,9 @@
     <plurals name="category_topic">
         <item quantity="one">Tema</item>
         <item quantity="other">Temas</item>
+    </plurals>
+    <plurals name="contributions_count">
+        <item quantity="one">%1$d contribución</item>
+        <item quantity="other">%1$d contribuciones</item>
     </plurals>
 </resources>

@@ -1,6 +1,7 @@
 package com.scritch.app.jam
 
 import androidx.core.uri.UriUtils
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.scritch.app.categories.Category
@@ -33,20 +34,27 @@ class JamViewModel(
     private val categoryRepository: CategoryRepository,
     private val userProfileRepository: UserProfileRepository,
     private val reportRepository: ReportRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val mutableViewState = MutableStateFlow(JamViewState.EMPTY)
     val viewState = mutableViewState.asStateFlow()
     
     private val uploadRateLimit = UploadRateLimit()
+    private val pastJamId: String? = savedStateHandle.get<String>("jamId")
 
     init {
-        // Set up real-time listener for jam updates
-        jamRepository.getCurrentJamFlow()
-            .onEach { jamDto ->
-                handleJamUpdate(jamDto)
-            }
-            .launchIn(viewModelScope)
+        if (pastJamId != null) {
+            // Load specific past jam
+            loadPastJam(pastJamId)
+        } else {
+            // Set up real-time listener for current jam updates
+            jamRepository.getCurrentJamFlow()
+                .onEach { jamDto ->
+                    handleJamUpdate(jamDto)
+                }
+                .launchIn(viewModelScope)
+        }
     }
 
     fun onRefresh() {
@@ -125,6 +133,7 @@ class JamViewModel(
                 it.copy(
                     loadingState = LoadingState.LOADED,
                     jamId = jamDto.id,
+                    startDate = jamDto.startDate?.toLocalDateTime(TimeZone.currentSystemDefault()),
                     endDate = jamDto.endDate?.toLocalDateTime(TimeZone.currentSystemDefault()),
                     promptViewState = PromptViewState(
                         topic = topic,
@@ -482,6 +491,24 @@ class JamViewModel(
                         uploadStatus = SubmissionUploadState.Error(exception),
                     )
                 )
+            }
+        }
+    }
+
+    private fun loadPastJam(jamId: String) {
+        viewModelScope.launch {
+            try {
+                mutableViewState.update { it.copy(loadingState = LoadingState.INITIAL_LOADING) }
+
+                val jamDto = jamRepository.getJam(jamId)
+                if (jamDto != null) {
+                    handleJamUpdate(jamDto)
+                } else {
+                    mutableViewState.update { it.copy(loadingState = LoadingState.NO_JAM) }
+                }
+            } catch (e: Exception) {
+                println("JamViewModel: Failed to load past jam: ${e.message}")
+                mutableViewState.update { it.copy(loadingState = LoadingState.NO_JAM) }
             }
         }
     }

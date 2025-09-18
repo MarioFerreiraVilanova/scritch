@@ -13,9 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +26,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -59,11 +63,13 @@ import com.scritch.app.uicomponents.PageLoader
 import io.github.ismoy.imagepickerkmp.presentation.ui.components.GalleryPickerLauncher
 import kotlinx.coroutines.delay
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.toInstant
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.archives
 import scritch.composeapp.generated.resources.camera
 import scritch.composeapp.generated.resources.image
 import scritch.composeapp.generated.resources.jam_had_no_entries
@@ -83,6 +89,7 @@ fun JamScreen(
     chosenImagePath: String?,
     onOpenCamera: () -> Unit,
     onImagePathReceived: () -> Unit,
+    onNavigateToArchives: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: JamViewModel = koinViewModel(),
 ) {
@@ -122,8 +129,42 @@ fun JamScreen(
         onImagePathReceived()
     }
 
+    val isPastJam = viewState.endDate?.let { endDate ->
+        Clock.System.now() > endDate.toInstant(TimeZone.currentSystemDefault())
+    } ?: false
+
     Scaffold(
         modifier = modifier,
+        topBar = {
+            TopAppBar(
+                title = {
+                    if (isPastJam) {
+                        val startDate = viewState.startDate
+                        val endDate = viewState.endDate
+                        if (startDate != null && endDate != null) {
+                            Text(
+                                text = "${startDate.day}/${
+                                    startDate.month.number.toString().padStart(2, '0')
+                                }/${startDate.year} to ${endDate.day}/${
+                                    endDate.month.number.toString().padStart(2, '0')
+                                }/${endDate.year}",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                    }
+                },
+                actions = {
+                    if (!isPastJam) {
+                        IconButton(onClick = onNavigateToArchives) {
+                            Icon(
+                                imageVector = Icons.Default.Layers,
+                                contentDescription = stringResource(Res.string.archives)
+                            )
+                        }
+                    }
+                }
+            )
+        }
     ) { contentPadding ->
         PullToRefreshBox(
             isRefreshing = isRefreshing,

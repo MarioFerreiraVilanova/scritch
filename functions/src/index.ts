@@ -5,10 +5,10 @@ admin.initializeApp();
 
 // Export all functions from organized modules
 export * from "./moderation";
+export * from "./jams";
 // admin functions moved to client-side operations
 
 // Placeholder exports for future modules
 // Uncomment as you add functions to these modules:
-// export * from "./jams";
-// export * from "./notifications"; 
+// export * from "./notifications";
 // export * from "./analytics";

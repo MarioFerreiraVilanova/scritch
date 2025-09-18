@@ -19,7 +19,9 @@ import kotlinx.serialization.Serializable
     @Serializable object ModerationQueue
     @Serializable object CreateJam
     @Serializable object JamManagement
+    @Serializable object JamArchives
     @Serializable data class EditJam(val jamId: String)
+    @Serializable data class ViewPastJam(val jamId: String)
     @Serializable data class WizardMediumSelection(
         val category: Int,
         val step: Int?,
@@ -61,4 +63,6 @@ import kotlinx.serialization.Serializable
 object HomeScreen {
     @Serializable object SoloMode
     @Serializable object WeeklyJam
+    @Serializable object JamArchives
+    @Serializable data class ViewPastJam(val jamId: String)
 }

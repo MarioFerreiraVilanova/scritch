@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.scritch.app.jam.ui.JamScreen
+import com.scritch.app.jam.ui.JamArchivesScreen
 import com.scritch.app.navigation.HomeScreen
 import com.scritch.app.solomode.SoloScreen
 import com.scritch.app.theme.NavigationBarItemColors
@@ -137,6 +138,30 @@ private fun HomeNavGraph(
                 chosenImagePath = chosenImagePath,
                 onOpenCamera = onOpenCamera,
                 onImagePathReceived = onImagePathReceived,
+                onNavigateToArchives = {
+                    navController.navigate(HomeScreen.JamArchives)
+                },
+            )
+        }
+
+        composable<HomeScreen.JamArchives> {
+            JamArchivesScreen(
+                onBackPress = {
+                    navController.popBackStack()
+                },
+                onJamClick = { jamId ->
+                    navController.navigate(HomeScreen.ViewPastJam(jamId))
+                }
+            )
+        }
+
+        composable<HomeScreen.ViewPastJam> {
+            JamScreen(
+                chosenImagePath = null,
+                onOpenCamera = { },
+                onImagePathReceived = { },
+                onNavigateToArchives = { },
+                // The jamId will be picked up from SavedStateHandle by the ViewModel
             )
         }
     }

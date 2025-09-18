@@ -19,6 +19,7 @@ import com.scritch.app.admin.AdminPanelScreen
 import com.scritch.app.admin.CreateJamScreen
 import com.scritch.app.admin.JamManagementScreen
 import com.scritch.app.admin.ModerationQueueScreen
+import com.scritch.app.jam.ui.JamArchivesScreen
 import com.scritch.app.settings.SettingsScreen
 import com.scritch.app.settings.about.AboutScreen
 import com.scritch.app.settings.versionhistory.VersionHistoryScreen

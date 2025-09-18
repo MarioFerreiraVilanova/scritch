@@ -11,6 +11,7 @@ import com.scritch.app.categories.CategoryRepository
 import com.scritch.app.categories.LoadUserOptionsUseCase
 import com.scritch.app.jam.data.JamRepository
 import com.scritch.app.jam.JamViewModel
+import com.scritch.app.jam.ui.JamArchivesViewModel
 import com.scritch.app.reporting.ReportRepository
 import com.scritch.app.solomode.SoloViewModel
 import com.scritch.app.landing.LandingViewModel
@@ -39,6 +40,7 @@ val appModule = module {
     viewModelOf(::AboutViewModel)
     viewModelOf(::AppViewModel)
     viewModelOf(::CreateJamViewModel)
+    viewModelOf(::JamArchivesViewModel)
     viewModelOf(::JamManagementViewModel)
     viewModelOf(::JamViewModel)
     viewModelOf(::LandingViewModel)

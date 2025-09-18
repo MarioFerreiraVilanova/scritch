@@ -366,4 +366,37 @@ class JamRepository(
             .document(jamId)
             .delete()
     }
+
+    suspend fun getPastJams(
+        cursor: Cursor? = null,
+        pageSize: Int = 20,
+    ): Page<JamDto> {
+        val now = Timestamp.now()
+        val query = Firebase.firestore
+            .collection(JAM_COLLECTION)
+            .where { "endDate" lessThan now }
+            .orderBy("endDate", Direction.DESCENDING)
+
+        val finalQuery = if (cursor == null) {
+            query
+        } else {
+            query.startAfter(cursor.lastDoc)
+        }
+
+        val documents = finalQuery.limit(pageSize).get().documents
+
+        val pageItems = documents.map { snapshot ->
+            JamDto(snapshot)
+        }
+
+        return Page(
+            items = pageItems,
+            cursor = documents.lastOrNull()?.let { Cursor(it) },
+            endReached = pageItems.size < pageSize,
+        )
+    }
+
+    fun userParticipatedInJam(jam: JamDto, userId: String): Boolean {
+        return jam.participants.contains(userId)
+    }
 }
