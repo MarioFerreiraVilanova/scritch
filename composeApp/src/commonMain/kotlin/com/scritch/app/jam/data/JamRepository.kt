@@ -359,4 +359,11 @@ class JamRepository(
             .document(jamId)
             .update(jamData)
     }
+
+    suspend fun deleteJam(jamId: String) {
+        Firebase.firestore
+            .collection(JAM_COLLECTION)
+            .document(jamId)
+            .delete()
+    }
 }

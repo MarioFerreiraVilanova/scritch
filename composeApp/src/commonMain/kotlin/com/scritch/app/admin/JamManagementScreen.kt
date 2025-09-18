@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,12 +33,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.scritch.app.admin.components.DeleteJamDialog
+import com.scritch.app.admin.components.StatusBadge
 import com.scritch.app.jam.data.JamDto
+import com.scritch.app.jam.data.getStatus
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.ExperimentalTime
@@ -45,6 +51,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.back
+import scritch.composeapp.generated.resources.delete_jam
 import scritch.composeapp.generated.resources.edit_jam
 import scritch.composeapp.generated.resources.failed_to_load_jams
 import scritch.composeapp.generated.resources.jam_management
@@ -62,6 +69,8 @@ fun JamManagementScreen(
 ) {
     val viewState by viewModel.viewState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    var jamToDelete by remember { mutableStateOf<JamDto?>(null) }
     val listState = rememberLazyListState()
 
     LaunchedEffect(viewState.error) {
@@ -156,6 +165,7 @@ fun JamManagementScreen(
                     JamListItem(
                         jam = jam,
                         onEditClick = { onEditJam(jam.id) },
+                        onDeleteClick = { jamToDelete = jam },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -185,6 +195,18 @@ fun JamManagementScreen(
             }
         }
     }
+
+    jamToDelete?.let { jam ->
+        DeleteJamDialog(
+            jamName = jam.id,
+            onConfirm = {
+                viewModel.deleteJam(jam.id) {
+                    jamToDelete = null
+                }
+            },
+            onDismiss = { jamToDelete = null }
+        )
+    }
 }
 
 @OptIn(ExperimentalTime::class)
@@ -192,6 +214,7 @@ fun JamManagementScreen(
 private fun JamListItem(
     jam: JamDto,
     onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -217,11 +240,25 @@ private fun JamListItem(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)
                 )
+
+                StatusBadge(
+                    status = jam.getStatus(),
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+
                 IconButton(onClick = onEditClick) {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = stringResource(Res.string.edit_jam),
                         tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                IconButton(onClick = onDeleteClick) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = stringResource(Res.string.delete_jam),
+                        tint = MaterialTheme.colorScheme.error
                     )
                 }
             }

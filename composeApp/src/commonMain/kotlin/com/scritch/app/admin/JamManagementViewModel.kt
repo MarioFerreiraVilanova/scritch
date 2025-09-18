@@ -66,4 +66,23 @@ class JamManagementViewModel(
     fun onDismissError() {
         _viewState.value = _viewState.value.copy(error = null)
     }
+
+    fun deleteJam(jamId: String, onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            try {
+                jamRepository.deleteJam(jamId)
+
+                // Remove the jam from the local list
+                val currentState = _viewState.value
+                val updatedJams = currentState.jams.filter { it.id != jamId }
+                _viewState.value = currentState.copy(jams = updatedJams)
+
+                onSuccess()
+            } catch (e: Exception) {
+                _viewState.value = _viewState.value.copy(
+                    error = "Failed to delete jam: ${e.message}"
+                )
+            }
+        }
+    }
 }
