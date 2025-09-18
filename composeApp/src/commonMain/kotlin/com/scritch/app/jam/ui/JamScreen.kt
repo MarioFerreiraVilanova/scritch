@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -70,6 +71,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.archives
+import scritch.composeapp.generated.resources.back
 import scritch.composeapp.generated.resources.camera
 import scritch.composeapp.generated.resources.image
 import scritch.composeapp.generated.resources.jam_had_no_entries
@@ -90,6 +92,7 @@ fun JamScreen(
     onOpenCamera: () -> Unit,
     onImagePathReceived: () -> Unit,
     onNavigateToArchives: () -> Unit,
+    onBackPress: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     viewModel: JamViewModel = koinViewModel(),
 ) {
@@ -153,13 +156,32 @@ fun JamScreen(
                         }
                     }
                 },
+                navigationIcon = {
+                    if (isPastJam && onBackPress != null) {
+                        IconButton(onClick = onBackPress) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = stringResource(Res.string.back)
+                            )
+                        }
+                    }
+                },
                 actions = {
                     if (!isPastJam) {
                         IconButton(onClick = onNavigateToArchives) {
-                            Icon(
-                                imageVector = Icons.Default.Layers,
-                                contentDescription = stringResource(Res.string.archives)
-                            )
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Layers,
+                                    contentDescription = stringResource(Res.string.archives)
+                                )
+                                Text(
+                                    text = stringResource(Res.string.archives),
+                                    style = MaterialTheme.typography.labelMedium
+                                )
+                            }
                         }
                     }
                 }

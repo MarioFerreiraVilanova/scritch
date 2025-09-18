@@ -161,6 +161,9 @@ private fun HomeNavGraph(
                 onOpenCamera = { },
                 onImagePathReceived = { },
                 onNavigateToArchives = { },
+                onBackPress = {
+                    navController.popBackStack()
+                },
                 // The jamId will be picked up from SavedStateHandle by the ViewModel
             )
         }
