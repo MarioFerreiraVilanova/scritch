@@ -18,7 +18,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -48,15 +47,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.scritch.app.categories.OptionState
 import com.scritch.app.prompt.Prompt
-import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
-import org.koin.compose.viewmodel.koinViewModel
-import kotlin.time.ExperimentalTime
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.back
 import scritch.composeapp.generated.resources.cancel
@@ -66,19 +63,20 @@ import scritch.composeapp.generated.resources.create_new_jam
 import scritch.composeapp.generated.resources.edit_jam_title
 import scritch.composeapp.generated.resources.end_date
 import scritch.composeapp.generated.resources.jam_created_successfully
-import scritch.composeapp.generated.resources.jam_updated_successfully
 import scritch.composeapp.generated.resources.jam_name
 import scritch.composeapp.generated.resources.jam_name_placeholder
+import scritch.composeapp.generated.resources.jam_updated_successfully
 import scritch.composeapp.generated.resources.medium
 import scritch.composeapp.generated.resources.none
 import scritch.composeapp.generated.resources.ok
 import scritch.composeapp.generated.resources.preview
 import scritch.composeapp.generated.resources.prompt_elements
-import scritch.composeapp.generated.resources.save_jam
 import scritch.composeapp.generated.resources.save_changes
 import scritch.composeapp.generated.resources.start_date
 import scritch.composeapp.generated.resources.support
 import scritch.composeapp.generated.resources.topic_optional
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
@@ -157,7 +155,11 @@ fun CreateJamScreen(
                 // Jam Name
                 OutlinedTextField(
                     value = viewState.jamName,
-                    onValueChange = if (isEditMode) { {} } else { viewModel::onJamNameChanged },
+                    onValueChange = if (isEditMode) {
+                        {}
+                    } else {
+                        viewModel::onJamNameChanged
+                    },
                     readOnly = isEditMode,
                     label = { Text(stringResource(Res.string.jam_name)) },
                     placeholder = { Text(stringResource(Res.string.jam_name_placeholder)) },
@@ -226,12 +228,12 @@ fun CreateJamScreen(
                 // Prompt Preview
                 if (viewState.promptViewState.valid) {
                     HorizontalDivider()
-                    
+
                     Text(
                         text = stringResource(Res.string.preview),
                         style = MaterialTheme.typography.titleMedium,
                     )
-                    
+
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         colors = CardDefaults.cardColors(
@@ -250,7 +252,7 @@ fun CreateJamScreen(
                 Button(
                     onClick = viewModel::onCreateJam,
                     enabled = viewState.isFormValid && !viewState.isCreating &&
-                             (if (isEditMode) viewState.hasChanges else true),
+                            (if (isEditMode) viewState.hasChanges else true),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     if (viewState.isCreating) {
@@ -283,9 +285,9 @@ private fun DatePickerField(
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = selectedDate?.let { date ->
             LocalDateTime(
-                date.year, 
-                date.month, 
-                date.day, 
+                date.year,
+                date.month,
+                date.day,
                 0, 0, 0, 0
             ).toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
         }
@@ -322,7 +324,8 @@ private fun DatePickerField(
                     onClick = {
                         datePickerState.selectedDateMillis?.let { millis ->
                             val instant = Instant.fromEpochMilliseconds(millis)
-                            val localDate = instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
+                            val localDate =
+                                instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
                             onDateSelected(localDate)
                         }
                         showDatePicker = false
@@ -381,7 +384,7 @@ private fun CategoryDropdown(
                     }
                 )
             }
-            
+
             options.forEach { option ->
                 DropdownMenuItem(
                     text = { Text(option.name) },
