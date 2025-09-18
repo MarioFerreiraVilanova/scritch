@@ -5,7 +5,10 @@
       "Bash(cd:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(./gradlew:*)",
+      "Read(//Users/marioprivate/.konan/dependencies/llvm-19-aarch64-macos-essentials-79/bin/**)",
+      "Bash(/Users/marioprivate/.konan/dependencies/llvm-19-aarch64-macos-essentials-79/bin/clang --version)"
     ],
     "deny": [],
     "ask": []
