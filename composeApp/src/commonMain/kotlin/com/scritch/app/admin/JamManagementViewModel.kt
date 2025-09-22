@@ -8,10 +8,13 @@ import com.scritch.app.jam.data.JamRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.ExperimentalTime
 
 class JamManagementViewModel(
     private val jamRepository: JamRepository,
+    private val adminRepository: AdminRepository,
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(JamManagementViewState.EMPTY)
@@ -25,10 +28,10 @@ class JamManagementViewModel(
         val currentState = _viewState.value
 
         if (refresh) {
-            _viewState.value = JamManagementViewState.EMPTY.copy(isLoading = true)
+            _viewState.update { JamManagementViewState.EMPTY.copy(isLoading = true) }
             loadJamsInternal(null)
         } else if (!currentState.isLoading && !currentState.endReached) {
-            _viewState.value = currentState.copy(isLoadingMore = true)
+            _viewState.update { it.copy(isLoadingMore = true) }
             loadJamsInternal(currentState.cursor)
         }
     }
@@ -45,26 +48,30 @@ class JamManagementViewModel(
                     currentState.jams + page.items
                 }
 
-                _viewState.value = currentState.copy(
-                    jams = newJams,
-                    cursor = page.cursor,
-                    endReached = page.endReached,
-                    isLoading = false,
-                    isLoadingMore = false,
-                    error = null,
-                )
+                _viewState.update {
+                    it.copy(
+                        jams = newJams,
+                        cursor = page.cursor,
+                        endReached = page.endReached,
+                        isLoading = false,
+                        isLoadingMore = false,
+                        error = null,
+                    )
+                }
             } catch (e: Exception) {
-                _viewState.value = _viewState.value.copy(
-                    isLoading = false,
-                    isLoadingMore = false,
-                    error = "Failed to load jams: ${e.message}"
-                )
+                _viewState.update {
+                    it.copy(
+                        isLoading = false,
+                        isLoadingMore = false,
+                        error = "Failed to load jams: ${e.message}"
+                    )
+                }
             }
         }
     }
 
     fun onDismissError() {
-        _viewState.value = _viewState.value.copy(error = null)
+        _viewState.update { it.copy(error = null) }
     }
 
     fun deleteJam(jamId: String, onSuccess: () -> Unit) {
@@ -73,15 +80,55 @@ class JamManagementViewModel(
                 jamRepository.deleteJam(jamId)
 
                 // Remove the jam from the local list
-                val currentState = _viewState.value
-                val updatedJams = currentState.jams.filter { it.id != jamId }
-                _viewState.value = currentState.copy(jams = updatedJams)
+                _viewState.update { currentState ->
+                    val updatedJams = currentState.jams.filter { it.id != jamId }
+                    currentState.copy(jams = updatedJams)
+                }
 
                 onSuccess()
             } catch (e: Exception) {
-                _viewState.value = _viewState.value.copy(
-                    error = "Failed to delete jam: ${e.message}"
-                )
+                _viewState.update {
+                    it.copy(error = "Failed to delete jam: ${e.message}")
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalTime::class)
+    fun recalculateJamStats(jamId: String) {
+        viewModelScope.launch {
+            try {
+                val result = adminRepository.recalculateJamStats(jamId)
+
+                if (result.success) {
+                    // Update the local jam data with new stats
+                    _viewState.update { currentState ->
+                        val updatedJams = currentState.jams.map { jam ->
+                            if (jam.id == jamId) {
+                                jam.copy(
+                                    submissionCount = result.submissionCount,
+                                    participants = emptyList() // We don't get participant IDs back, just count
+                                )
+                            } else {
+                                jam
+                            }
+                        }
+                        currentState.copy(jams = updatedJams)
+                    }
+
+                    // Show success message
+                    _viewState.update {
+                        it.copy(error = "Stats recalculated: ${result.submissionCount} submissions, ${result.participantCount} participants")
+                    }
+                } else {
+                    _viewState.update {
+                        it.copy(error = result.message)
+                    }
+                }
+            } catch (e: Exception) {
+                _viewState.update {
+                    it.copy(error = "Failed to recalculate stats: ${e.message}")
+                }
             }
         }
     }

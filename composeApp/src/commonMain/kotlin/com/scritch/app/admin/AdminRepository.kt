@@ -5,11 +5,13 @@ import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
 import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.FieldValue
+import dev.gitlive.firebase.functions.functions
 import com.scritch.app.jam.data.SubmissionDto
 import com.scritch.app.userprofile.UserProfileDto
 
 class AdminRepository {
     private val firestore = Firebase.firestore
+    private val functions = Firebase.functions
 
     /**
      * Check if the current user is an admin by looking up their ID in the admins collection
@@ -154,6 +156,39 @@ class AdminRepository {
                 jamId = jamId,
                 userId = userId,
                 newStatus = status,
+            )
+        }
+    }
+
+    /**
+     * Recalculates jam statistics using Firebase Cloud Functions
+     */
+    suspend fun recalculateJamStats(jamId: String): RecalculateStatsResponse {
+        return try {
+            val result = functions.httpsCallable("recalculateJamStats")
+                .invoke(mapOf("jamId" to jamId))
+
+            val data = result.data<Map<*,*>>()
+            if (data["success"] == true) {
+                RecalculateStatsResponse(
+                    success = true,
+                    message = "Stats recalculated successfully",
+                    jamId = jamId,
+                    submissionCount = (data["submissionCount"] as? Number)?.toInt() ?: 0,
+                    participantCount = (data["participantCount"] as? Number)?.toInt() ?: 0
+                )
+            } else {
+                RecalculateStatsResponse(
+                    success = false,
+                    message = "Failed to recalculate stats",
+                    jamId = jamId
+                )
+            }
+        } catch (e: Exception) {
+            RecalculateStatsResponse(
+                success = false,
+                message = "Error: ${e.message}",
+                jamId = jamId
             )
         }
     }

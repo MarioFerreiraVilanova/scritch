@@ -74,6 +74,8 @@
     <string name="report_reason_spam">Spam</string>
     <string name="report_reason_harassment">Harassment</string>
     <string name="report_reason_copyright">Copyright violation</string>
+    <string name="recalculate_stats">Recalculate Statistics</string>
+    <string name="recalculate_stats_description">Fix submission counts and participant data</string>
     <string name="report_reason_other">Other</string>
     <string name="review_pending">Pending review</string>
     <string name="review_pending_message">Your submission is currently being reviewed by our moderators. This typically takes 24-48 hours.</string>
@@ -117,6 +119,7 @@
     <string name="weekly_jam_not_available">There's no Scritch Jam at the moment — check back soon for the next challenge!</string>
     <string name="no_jam_title">No Scritch Jam today</string>
     <string name="no_jam_subtitle">The next global design challenge is coming soon. Take this time to explore solo mode and practice your skills.</string>
+    <string name="jam_admin_actions">Jam Actions</string>
     <string name="jam_created_successfully">Jam created successfully!</string>
     <string name="jam_has_ended">This jam has ended</string>
     <string name="jam_deleted_successfully">Jam deleted successfully!</string>
@@ -150,6 +153,7 @@
     <string name="manage_existing_jams_description">View and edit existing weekly art challenges</string>
     <string name="medium">Medium</string>
     <string name="moderation_queue">Moderation Queue</string>
+    <string name="more_options">More options</string>
     <string name="moderation_tools">Moderation Tools</string>
     <string name="your_contribution">Your contribution (%1$s)</string>
     <string name="scritch_jam_by">Scritch Jam by %1$s</string>

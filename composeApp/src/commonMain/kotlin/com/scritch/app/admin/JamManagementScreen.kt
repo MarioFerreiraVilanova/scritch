@@ -14,8 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.scritch.app.admin.components.DeleteJamDialog
+import com.scritch.app.admin.components.JamAdminActionsBottomSheet
 import com.scritch.app.admin.components.StatusBadge
 import com.scritch.app.jam.data.JamDto
 import com.scritch.app.jam.data.getStatus
@@ -51,12 +51,11 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.back
-import scritch.composeapp.generated.resources.delete_jam
-import scritch.composeapp.generated.resources.edit_jam
 import scritch.composeapp.generated.resources.failed_to_load_jams
 import scritch.composeapp.generated.resources.jam_management
 import scritch.composeapp.generated.resources.loading_more_jams
 import scritch.composeapp.generated.resources.manage_jams_description
+import scritch.composeapp.generated.resources.more_options
 import scritch.composeapp.generated.resources.no_jams_found
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,6 +70,7 @@ fun JamManagementScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     var jamToDelete by remember { mutableStateOf<JamDto?>(null) }
+    var jamForActions by remember { mutableStateOf<JamDto?>(null) }
     val listState = rememberLazyListState()
 
     LaunchedEffect(viewState.error) {
@@ -164,8 +164,7 @@ fun JamManagementScreen(
                 items(viewState.jams) { jam ->
                     JamListItem(
                         jam = jam,
-                        onEditClick = { onEditJam(jam.id) },
-                        onDeleteClick = { jamToDelete = jam },
+                        onMoreClick = { jamForActions = jam },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -207,18 +206,32 @@ fun JamManagementScreen(
             onDismiss = { jamToDelete = null }
         )
     }
+
+    jamForActions?.let { jam ->
+        JamAdminActionsBottomSheet(
+            jam = jam,
+            onDismiss = { jamForActions = null },
+            onEditJam = { onEditJam(jam.id) },
+            onDeleteJam = {
+                jamToDelete = jam
+                jamForActions = null
+            },
+            onRecalculateStats = {
+                viewModel.recalculateJamStats(jam.id)
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalTime::class)
 @Composable
 private fun JamListItem(
     jam: JamDto,
-    onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit,
+    onMoreClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier.clickable { onEditClick() },
+        modifier = modifier,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
@@ -246,19 +259,11 @@ private fun JamListItem(
                     modifier = Modifier.padding(end = 8.dp)
                 )
 
-                IconButton(onClick = onEditClick) {
+                IconButton(onClick = onMoreClick) {
                     Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = stringResource(Res.string.edit_jam),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-
-                IconButton(onClick = onDeleteClick) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = stringResource(Res.string.delete_jam),
-                        tint = MaterialTheme.colorScheme.error
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = stringResource(Res.string.more_options),
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }

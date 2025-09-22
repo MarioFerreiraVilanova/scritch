@@ -71,6 +71,8 @@
     <string name="report_reason_spam">Spam</string>
     <string name="report_reason_harassment">Harcèlement</string>
     <string name="report_reason_copyright">Violation de droits d'auteur</string>
+    <string name="recalculate_stats">Recalculer les Statistiques</string>
+    <string name="recalculate_stats_description">Corriger les décomptes d'envois et les données des participants</string>
     <string name="report_reason_other">Autre</string>
     <string name="review_pending">En attente de révision</string>
     <string name="review_pending_message">Votre participation est actuellement en cours de révision par nos modérateurs. Cela prend généralement 24 à 48 heures.</string>
@@ -111,6 +113,7 @@
     <string name="weekly_jam_not_available">Il n'y a pas de Scritch Jam en cours. Revenez bientôt pour découvrir le prochain défi !</string>
     <string name="no_jam_title">Pas de Scritch Jam aujourd'hui</string>
     <string name="no_jam_subtitle">Le prochain défi de design global arrive bientôt. Profitez de ce temps pour explorer le mode solo et pratiquer vos compétences.</string>
+    <string name="jam_admin_actions">Actions de Jam</string>
     <string name="jam_created_successfully">Jam créée avec succès !</string>
     <string name="jam_has_ended">Cette jam est terminée</string>
     <string name="jam_deleted_successfully">Jam supprimée avec succès !</string>
@@ -144,6 +147,7 @@
     <string name="manage_existing_jams_description">Voir et modifier les défis artistiques hebdomadaires existants</string>
     <string name="moderation_queue">File de Modération</string>
     <string name="moderation_tools">Outils de Modération</string>
+    <string name="more_options">Plus d'options</string>
     <string name="your_contribution">Ta contribution (%1$s)</string>
     <string name="scritch_jam_by">Scritch Jam par %1$s</string>
     <string name="scritch_jam_archives">Archives des Scritch Jam</string>
