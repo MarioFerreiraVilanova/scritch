@@ -2,6 +2,7 @@ package com.scritch.app.jam.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Layers
+import androidx.compose.material.icons.outlined.Layers
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -27,6 +30,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -168,13 +172,18 @@ fun JamScreen(
                 },
                 actions = {
                     if (!isPastJam) {
-                        IconButton(onClick = onNavigateToArchives) {
+                        TextButton(
+                            onClick = onNavigateToArchives,
+                            colors = ButtonDefaults.textButtonColors().copy(
+                                contentColor = MaterialTheme.colorScheme.onSurface,
+                            ),
+                        ){
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(4.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Layers,
+                                    imageVector = Icons.Outlined.Layers,
                                     contentDescription = stringResource(Res.string.archives)
                                 )
                                 Text(
@@ -188,48 +197,59 @@ fun JamScreen(
             )
         }
     ) { contentPadding ->
-        PullToRefreshBox(
-            isRefreshing = isRefreshing,
-            onRefresh = viewModel::onRefresh,
-            state = pullToRefreshState,
-            modifier = Modifier
-                .fillMaxSize()
-                .consumeWindowInsets(contentPadding)
-                .padding(contentPadding)
-        ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues.Absolute(
-                    left = 16.dp,
-                    right = 16.dp,
-                    top = 16.dp,
-                    bottom = 16.dp,
-                )
-            ) {
-                // Description / header
-                item {
-                    JamHeader(
-                        endDate = viewState.endDate,
-                    )
+        when (viewState.loadingState) {
+            LoadingState.INITIAL_LOADING -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .consumeWindowInsets(contentPadding)
+                        .padding(contentPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    PageLoader()
                 }
+            }
 
-                when (viewState.loadingState) {
-                    LoadingState.INITIAL_LOADING -> {
-                        item {
-                            PageLoader(
-                                modifier = Modifier.padding(64.dp)
-                            )
+            LoadingState.NO_JAM -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .consumeWindowInsets(contentPadding)
+                        .padding(contentPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    NoJamView()
+                }
+            }
+
+            else -> {
+                PullToRefreshBox(
+                    isRefreshing = isRefreshing,
+                    onRefresh = viewModel::onRefresh,
+                    state = pullToRefreshState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .consumeWindowInsets(contentPadding)
+                        .padding(contentPadding)
+                ) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues.Absolute(
+                            left = 16.dp,
+                            right = 16.dp,
+                            top = 16.dp,
+                            bottom = 16.dp,
+                        )
+                    ) {
+                        // Description / header (only for current jams, not past jams)
+                        if (!isPastJam) {
+                            item {
+                                JamHeader(
+                                    endDate = viewState.endDate,
+                                )
+                            }
                         }
-                    }
-
-                    LoadingState.NO_JAM -> {
-                        item {
-                            NoJamView()
-                        }
-                    }
-
-                    else -> {
                         // Prompt
                         item {
                             Prompt(

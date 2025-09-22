@@ -42,7 +42,7 @@ private fun promptFromViewState(
 
     return buildAnnotatedString {
         if (viewState.topic?.prompt != null) {
-            appendCategory(
+            AppendCategory(
                 option = viewState.topic,
                 suffix = if (viewState.support?.prompt != null || viewState.medium?.prompt != null) {
                     ", "
@@ -54,7 +54,7 @@ private fun promptFromViewState(
             )
         }
         if (viewState.support?.prompt != null) {
-            appendCategory(
+            AppendCategory(
                 option = viewState.support,
                 suffix = if (viewState.medium?.prompt != null) {
                     ", "
@@ -66,7 +66,7 @@ private fun promptFromViewState(
             )
         }
         if (viewState.medium?.prompt != null) {
-            appendCategory(
+            AppendCategory(
                 option = viewState.medium,
                 suffix = if (viewState.constraint?.prompt != null) {
                     ". "
@@ -76,7 +76,7 @@ private fun promptFromViewState(
             )
         }
         if (viewState.constraint?.prompt != null) {
-            appendCategory(
+            AppendCategory(
                 option = viewState.constraint,
                 suffix = "."
             )
@@ -86,7 +86,7 @@ private fun promptFromViewState(
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-private fun AnnotatedString.Builder.appendCategory(
+private fun AnnotatedString.Builder.AppendCategory(
     option: OptionState?,
     suffix: String?,
 ) {
