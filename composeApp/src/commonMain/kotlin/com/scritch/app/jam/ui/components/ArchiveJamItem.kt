@@ -20,22 +20,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.scritch.app.jam.data.JamDto
-import kotlinx.datetime.TimeZone
+import com.scritch.app.jam.ui.ArchiveJamViewState
 import kotlinx.datetime.number
-import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.contributed
 import scritch.composeapp.generated.resources.contributions_count
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 @Composable
 fun ArchiveJamItem(
-    jam: JamDto,
-    userParticipated: Boolean,
+    jam: ArchiveJamViewState,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -53,32 +48,22 @@ fun ArchiveJamItem(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             // Date range
-            val startDate = jam.startDate?.toLocalDateTime(TimeZone.currentSystemDefault())?.date
-            val endDate = jam.endDate?.toLocalDateTime(TimeZone.currentSystemDefault())?.date
-
-            if (startDate != null && endDate != null) {
+            if (jam.startDate != null && jam.endDate != null) {
                 Text(
-                    text = "${startDate.day}/${
-                        startDate.month.number.toString().padStart(2, '0')
-                    }/${startDate.year} to ${endDate.day}/${
-                        endDate.month.number.toString().padStart(2, '0')
-                    }/${endDate.year}",
+                    text = "${jam.startDate.day}/${
+                        jam.startDate.month.number.toString().padStart(2, '0')
+                    }/${jam.startDate.year} to ${jam.endDate.day}/${
+                        jam.endDate.month.number.toString().padStart(2, '0')
+                    }/${jam.endDate.year}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
             // Prompt text
-            val promptParts = listOfNotNull(
-                jam.topic,
-                jam.medium,
-                jam.support,
-                jam.constraint
-            )
-
-            if (promptParts.isNotEmpty()) {
+            jam.promptText?.let { text ->
                 Text(
-                    text = promptParts.joinToString(", "),
+                    text = text,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 3,
@@ -103,7 +88,7 @@ fun ArchiveJamItem(
                 )
 
                 // User participated indicator
-                if (userParticipated) {
+                if (jam.userParticipated) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         verticalAlignment = Alignment.CenterVertically

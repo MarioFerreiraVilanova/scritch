@@ -8,7 +8,12 @@
       "Bash(git push:*)",
       "Bash(./gradlew:*)",
       "Read(//Users/marioprivate/.konan/dependencies/llvm-19-aarch64-macos-essentials-79/bin/**)",
-      "Bash(/Users/marioprivate/.konan/dependencies/llvm-19-aarch64-macos-essentials-79/bin/clang --version)"
+      "Bash(/Users/marioprivate/.konan/dependencies/llvm-19-aarch64-macos-essentials-79/bin/clang --version)",
+      "Read(//Users/marioprivate/Downloads/**)",
+      "Bash(npm run build:*)",
+      "Bash(npm run deploy:*)",
+      "Bash(./deploy-functions.sh:*)",
+      "Bash(firebase functions:list:*)"
     ],
     "deny": [],
     "ask": []

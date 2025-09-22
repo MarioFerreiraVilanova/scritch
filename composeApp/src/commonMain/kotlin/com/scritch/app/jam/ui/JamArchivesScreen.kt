@@ -125,7 +125,6 @@ fun JamArchivesScreen(
                 items(viewState.jams) { jam ->
                     ArchiveJamItem(
                         jam = jam,
-                        userParticipated = viewModel.userParticipatedInJam(jam.id),
                         onClick = { onJamClick(jam.id) },
                         modifier = Modifier.fillMaxWidth()
                     )
