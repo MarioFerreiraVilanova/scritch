@@ -1,4 +1,4 @@
-import * as functions from "firebase-functions/v1";
+import { onDocumentCreated } from "firebase-functions/v2/firestore";
 import * as admin from "firebase-admin";
 
 const db = admin.firestore();
@@ -67,10 +67,11 @@ async function determineInitialStatus(userId: string): Promise<string> {
 }
 
 // Main moderation function - triggers when a new submission is created
-export const moderateSubmission = functions.firestore
-  .document("weekly_jam/{jamId}/submissions/{userId}")
-  .onCreate(async (snap: any, context: any) => {
-    const userId = context.params.userId;
+export const moderateSubmission = onDocumentCreated(
+  "weekly_jam/{jamId}/submissions/{userId}",
+  async (event) => {
+    const snap = event.data;
+    const userId = event.params.userId;
 
     console.log(`New submission from user ${userId}`);
 
@@ -79,14 +80,14 @@ export const moderateSubmission = functions.firestore
       const initialStatus = await determineInitialStatus(userId);
 
       // Update the submission with the determined status
-      await snap.ref.update({
+      await snap!.ref.update({
         status: initialStatus,
         autoModerated: true,
         moderatedAt: admin.firestore.FieldValue.serverTimestamp(),
         effectiveReports: await getEffectiveReportCount(userId),
       });
 
-      console.log(`Submission ${snap.id} set to status: ${initialStatus}`);
+      console.log(`Submission ${snap!.id} set to status: ${initialStatus}`);
 
       // If auto-approved, log for monitoring
       if (initialStatus === "approved") {
@@ -97,7 +98,7 @@ export const moderateSubmission = functions.firestore
       console.error("Error in moderation:", error);
       
       // Fallback to pending on error
-      await snap.ref.update({
+      await snap!.ref.update({
         status: "pending",
         moderationError: error.message,
         moderatedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -109,10 +110,11 @@ export const moderateSubmission = functions.firestore
 // getUserModerationStatus function can be replaced by direct Firestore queries in admin panel
 
 // Process user reports when they are created (trigger-based)
-export const processUserReport = functions.firestore
-  .document("user_reports/{reportId}")
-  .onCreate(async (snap: any, context: any) => {
-    const report = snap.data();
+export const processUserReport = onDocumentCreated(
+  "user_reports/{reportId}",
+  async (event) => {
+    const snap = event.data;
+    const report = snap!.data();
     const { submissionId, jamId, reportedUserId } = report;
 
     console.log(`Processing new report for submission ${submissionId} in jam ${jamId}`);

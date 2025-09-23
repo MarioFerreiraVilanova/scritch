@@ -1,4 +1,5 @@
-import * as functions from "firebase-functions/v1";
+import { onDocumentWritten } from "firebase-functions/v2/firestore";
+import { onCall } from "firebase-functions/v2/https";
 import * as admin from "firebase-admin";
 
 const db = admin.firestore();
@@ -6,11 +7,12 @@ const db = admin.firestore();
 /**
  * Updates submission count and participants list when submissions are created/updated/deleted
  */
-export const onSubmissionWrite = functions.firestore
-  .document("weekly_jam/{jamId}/submissions/{userId}")
-  .onWrite(async (change: any, context: any) => {
-    const jamId = context.params.jamId;
-    const userId = context.params.userId;
+export const onSubmissionWrite = onDocumentWritten(
+  "weekly_jam/{jamId}/submissions/{userId}",
+  async (event) => {
+    const change = event.data;
+    const jamId = event.params.jamId;
+    const userId = event.params.userId;
 
     try {
       const jamRef = db.collection("weekly_jam").doc(jamId);
@@ -68,20 +70,20 @@ export const onSubmissionWrite = functions.firestore
 /**
  * Recalculates submission count and participants for a jam (for data repair/migration)
  */
-export const recalculateJamStats = functions.https.onCall(async (data: any, context: any) => {
+export const recalculateJamStats = onCall(async (request) => {
   // Verify admin access
-  if (!context.auth) {
-    throw new functions.https.HttpsError("unauthenticated", "User must be authenticated");
+  if (!request.auth) {
+    throw new Error("User must be authenticated");
   }
 
-  const adminDoc = await db.collection("admins").doc(context.auth.uid).get();
+  const adminDoc = await db.collection("admins").doc(request.auth.uid).get();
   if (!adminDoc.exists) {
-    throw new functions.https.HttpsError("permission-denied", "Admin access required");
+    throw new Error("Admin access required");
   }
 
-  const { jamId } = data;
+  const { jamId } = request.data;
   if (!jamId) {
-    throw new functions.https.HttpsError("invalid-argument", "jamId is required");
+    throw new Error("jamId is required");
   }
 
   try {
@@ -117,6 +119,6 @@ export const recalculateJamStats = functions.https.onCall(async (data: any, cont
 
   } catch (error) {
     console.error(`Error recalculating stats for jam ${jamId}:`, error);
-    throw new functions.https.HttpsError("internal", "Failed to recalculate jam stats");
+    throw new Error("Failed to recalculate jam stats");
   }
 });
