@@ -165,25 +165,11 @@ class AdminRepository {
      */
     suspend fun recalculateJamStats(jamId: String): RecalculateStatsResponse {
         return try {
-            val result = functions.httpsCallable("recalculateJamStats")
-                .invoke(mapOf("jamId" to jamId))
+            val functionReference = functions.httpsCallable("recalculateJamStats")
+            val result = functionReference(data = mapOf("jamId" to jamId))
 
-            val data = result.data<Map<*,*>>()
-            if (data["success"] == true) {
-                RecalculateStatsResponse(
-                    success = true,
-                    message = "Stats recalculated successfully",
-                    jamId = jamId,
-                    submissionCount = (data["submissionCount"] as? Number)?.toInt() ?: 0,
-                    participantCount = (data["participantCount"] as? Number)?.toInt() ?: 0
-                )
-            } else {
-                RecalculateStatsResponse(
-                    success = false,
-                    message = "Failed to recalculate stats",
-                    jamId = jamId
-                )
-            }
+            val data = result.data<RecalculateStatsResponse>()
+            data.copy(message = "Stats recalculated successfully")
         } catch (e: Exception) {
             RecalculateStatsResponse(
                 success = false,

@@ -13,7 +13,11 @@
       "Bash(npm run build:*)",
       "Bash(npm run deploy:*)",
       "Bash(./deploy-functions.sh:*)",
-      "Bash(firebase functions:list:*)"
+      "Bash(firebase functions:list:*)",
+      "WebFetch(domain:firebase.google.com)",
+      "WebSearch",
+      "Bash(npm view:*)",
+      "Bash(firebase functions:delete moderateSubmission processUserReport onSubmissionWrite recalculateJamStats --force)"
     ],
     "deny": [],
     "ask": []
