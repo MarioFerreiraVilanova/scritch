@@ -38,11 +38,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
-import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -139,13 +139,14 @@ private fun ModerationQueueItemCard(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 // Submission Image
-                KamelImage(
-                    resource = asyncPainterResource(item.imageUrl),
+                KamelImage({ asyncPainterResource(item.imageUrl) },
                     contentDescription = "Submission by ${item.nickname}",
                     modifier = Modifier
                         .size(100.dp)
                         .clip(RoundedCornerShape(8.dp)),
+                    alignment = Alignment.Center,
                     contentScale = ContentScale.Crop,
+                    contentAlignment = Alignment.Center
                 )
 
                 // Submission Details
@@ -228,5 +229,5 @@ private fun formatDate(timestamp: Long): String {
     val instant = Instant.fromEpochMilliseconds(timestamp)
     val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
     val month = localDateTime.month.name.lowercase().replaceFirstChar { it.uppercase() }.take(3)
-    return "$month ${localDateTime.dayOfMonth}, ${localDateTime.hour.toString().padStart(2, '0')}:${localDateTime.minute.toString().padStart(2, '0')}"
+    return "$month ${localDateTime.day}, ${localDateTime.hour.toString().padStart(2, '0')}:${localDateTime.minute.toString().padStart(2, '0')}"
 }
