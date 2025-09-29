@@ -23,6 +23,7 @@ import scritch.composeapp.generated.resources.version_notes_0_11
 import scritch.composeapp.generated.resources.version_notes_0_12
 import scritch.composeapp.generated.resources.version_notes_0_13
 import scritch.composeapp.generated.resources.version_notes_0_14
+import scritch.composeapp.generated.resources.version_notes_0_15
 import scritch.composeapp.generated.resources.version_notes_0_7
 import scritch.composeapp.generated.resources.version_notes_0_8
 import scritch.composeapp.generated.resources.version_notes_0_9
@@ -77,6 +78,7 @@ fun VersionHistoryScreen(
 
 @Composable
 private fun generateVersionHistory(): List<Pair<String, String>> = listOf(
+    "0.15" to stringResource(Res.string.version_notes_0_15),
     "0.14" to stringResource(Res.string.version_notes_0_14),
     "0.13" to stringResource(Res.string.version_notes_0_13),
     "0.12" to stringResource(Res.string.version_notes_0_12),
