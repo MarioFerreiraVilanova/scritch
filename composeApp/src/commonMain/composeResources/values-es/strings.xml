@@ -13,14 +13,14 @@
     <string name="admin_panel">Panel de Administración</string>
     <string name="admin_tools_description">Herramientas de moderación y configuraciones de admin</string>
     <string name="app_name">Scritch</string>
-    <string name="archives">Archivos</string>
+    <string name="archives">Historial</string>
     <string name="are_you_sure_delete_entry">¿Seguro que quieres eliminar esta participación?</string>
     <string name="back">Atrás</string>
     <string name="back_to_home">Volver al inicio</string>
     <string name="back_to_settings">Volver a ajustes</string>
     <string name="no_one_contributed_yet">Nadie ha contribuido aún</string>
     <string name="cancel">Cancelar</string>
-    <string name="contributed">contribuyó</string>
+    <string name="contributed">contribuido</string>
     <string name="concept_and_design">Concepto y diseño: %1$s</string>
     <string name="continue_word">Continuar</string>
     <string name="create_jam">Crear Jam</string>
@@ -150,7 +150,7 @@
     <string name="more_options">Más opciones</string>
     <string name="your_contribution">Tu contribución (%1$s)</string>
     <string name="scritch_jam_by">Scritch Jam por %1$s</string>
-    <string name="scritch_jam_archives">Archivos de Scritch Jam</string>
+    <string name="scritch_jam_archives">Historial de Scritch Jams</string>
 
     <!-- Plurals -->
     <plurals name="category_art_medium">
