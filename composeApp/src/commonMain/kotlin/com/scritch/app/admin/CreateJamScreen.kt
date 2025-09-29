@@ -1,10 +1,9 @@
 package com.scritch.app.admin
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,8 +15,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -34,7 +31,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -48,18 +44,16 @@ import androidx.compose.ui.unit.dp
 import com.scritch.app.categories.OptionState
 import com.scritch.app.prompt.Prompt
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.back
-import scritch.composeapp.generated.resources.cancel
 import scritch.composeapp.generated.resources.constraint_optional
 import scritch.composeapp.generated.resources.create_jam
 import scritch.composeapp.generated.resources.create_new_jam
+import scritch.composeapp.generated.resources.day
 import scritch.composeapp.generated.resources.edit_jam_title
 import scritch.composeapp.generated.resources.end_date
 import scritch.composeapp.generated.resources.jam_created_successfully
@@ -67,18 +61,31 @@ import scritch.composeapp.generated.resources.jam_name
 import scritch.composeapp.generated.resources.jam_name_placeholder
 import scritch.composeapp.generated.resources.jam_updated_successfully
 import scritch.composeapp.generated.resources.medium
+import scritch.composeapp.generated.resources.month
 import scritch.composeapp.generated.resources.none
-import scritch.composeapp.generated.resources.ok
 import scritch.composeapp.generated.resources.preview
 import scritch.composeapp.generated.resources.prompt_elements
 import scritch.composeapp.generated.resources.save_changes
 import scritch.composeapp.generated.resources.start_date
 import scritch.composeapp.generated.resources.support
 import scritch.composeapp.generated.resources.topic_optional
+import scritch.composeapp.generated.resources.year
+import scritch.composeapp.generated.resources.january
+import scritch.composeapp.generated.resources.february
+import scritch.composeapp.generated.resources.march
+import scritch.composeapp.generated.resources.april
+import scritch.composeapp.generated.resources.may
+import scritch.composeapp.generated.resources.june
+import scritch.composeapp.generated.resources.july
+import scritch.composeapp.generated.resources.august
+import scritch.composeapp.generated.resources.september
+import scritch.composeapp.generated.resources.october
+import scritch.composeapp.generated.resources.november
+import scritch.composeapp.generated.resources.december
+import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateJamScreen(
     onBackPress: () -> Unit,
@@ -168,15 +175,15 @@ fun CreateJamScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // Date Pickers
-                DatePickerField(
+                // Date Dropdowns
+                DateDropdownField(
                     label = stringResource(Res.string.start_date),
                     selectedDate = viewState.startDate,
                     onDateSelected = viewModel::onStartDateChanged,
                     error = viewState.validationErrors.startDate
                 )
 
-                DatePickerField(
+                DateDropdownField(
                     label = stringResource(Res.string.end_date),
                     selectedDate = viewState.endDate,
                     onDateSelected = viewModel::onEndDateChanged,
@@ -275,72 +282,155 @@ fun CreateJamScreen(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
-private fun DatePickerField(
+private fun DateDropdownField(
     label: String,
     selectedDate: LocalDate?,
     onDateSelected: (LocalDate) -> Unit,
     error: String? = null,
 ) {
-    var showDatePicker by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = selectedDate?.let { date ->
-            LocalDateTime(
-                date.year,
-                date.month,
-                date.day,
-                0, 0, 0, 0
-            ).toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+    val currentYear = remember {
+        Clock.System.now()
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+            .year
+    }
+
+    val years = remember { listOf(currentYear, currentYear + 1) }
+    val months = listOf(
+        1 to stringResource(Res.string.january),
+        2 to stringResource(Res.string.february),
+        3 to stringResource(Res.string.march),
+        4 to stringResource(Res.string.april),
+        5 to stringResource(Res.string.may),
+        6 to stringResource(Res.string.june),
+        7 to stringResource(Res.string.july),
+        8 to stringResource(Res.string.august),
+        9 to stringResource(Res.string.september),
+        10 to stringResource(Res.string.october),
+        11 to stringResource(Res.string.november),
+        12 to stringResource(Res.string.december)
+    )
+
+    val selectedYear = selectedDate?.year ?: currentYear
+    val selectedMonth = selectedDate?.monthNumber ?: 1
+    val selectedDay = selectedDate?.dayOfMonth ?: 1
+
+    fun getDaysInMonth(year: Int, month: Int): Int {
+        return when (month) {
+            1, 3, 5, 7, 8, 10, 12 -> 31
+            4, 6, 9, 11 -> 30
+            2 -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
+            else -> 31
         }
-    )
+    }
 
-    OutlinedTextField(
-        value = selectedDate?.toString() ?: "",
-        onValueChange = { },
-        readOnly = true,
-        label = { Text(label) },
-        trailingIcon = {
-            ExposedDropdownMenuDefaults.TrailingIcon(expanded = showDatePicker)
-        },
-        isError = error != null,
-        supportingText = error?.let { { Text(it) } },
-        modifier = Modifier.fillMaxWidth(),
-        interactionSource = remember { MutableInteractionSource() }
-            .also { interactionSource ->
-                LaunchedEffect(interactionSource) {
-                    interactionSource.interactions.collect {
-                        if (it is PressInteraction.Release) {
-                            showDatePicker = true
-                        }
-                    }
-                }
-            }
-    )
+    val daysInSelectedMonth = getDaysInMonth(selectedYear, selectedMonth)
+    val days = remember(selectedYear, selectedMonth) {
+        (1..daysInSelectedMonth).toList()
+    }
 
-    if (showDatePicker) {
-        DatePickerDialog(
-            onDismissRequest = { showDatePicker = false },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        datePickerState.selectedDateMillis?.let { millis ->
-                            val instant = Instant.fromEpochMilliseconds(millis)
-                            val localDate =
-                                instant.toLocalDateTime(TimeZone.currentSystemDefault()).date
-                            onDateSelected(localDate)
-                        }
-                        showDatePicker = false
-                    }
-                ) {
-                    Text(stringResource(Res.string.ok))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) {
-                    Text(stringResource(Res.string.cancel))
-                }
-            }
+    Column {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            DatePicker(state = datePickerState)
+            // Year Dropdown
+            SimpleDropdown(
+                label = stringResource(Res.string.year),
+                options = years.map { it.toString() },
+                selectedOption = selectedYear.toString(),
+                onOptionSelected = { yearString ->
+                    val newYear = yearString.toInt()
+                    val newDaysInMonth = getDaysInMonth(newYear, selectedMonth)
+                    val newDay = if (selectedDay > newDaysInMonth) newDaysInMonth else selectedDay
+                    onDateSelected(LocalDate(newYear, selectedMonth, newDay))
+                },
+                modifier = Modifier.weight(1f)
+            )
+
+            // Month Dropdown
+            SimpleDropdown(
+                label = stringResource(Res.string.month),
+                options = months.map { it.second },
+                selectedOption = months.find { it.first == selectedMonth }?.second ?: "January",
+                onOptionSelected = { monthName ->
+                    val newMonth = months.find { it.second == monthName }?.first ?: 1
+                    val newDaysInMonth = getDaysInMonth(selectedYear, newMonth)
+                    val newDay = if (selectedDay > newDaysInMonth) newDaysInMonth else selectedDay
+                    onDateSelected(LocalDate(selectedYear, newMonth, newDay))
+                },
+                modifier = Modifier.weight(2f)
+            )
+
+            // Day Dropdown
+            SimpleDropdown(
+                label = stringResource(Res.string.day),
+                options = days.map { it.toString() },
+                selectedOption = selectedDay.toString(),
+                onOptionSelected = { dayString ->
+                    val newDay = dayString.toInt()
+                    onDateSelected(LocalDate(selectedYear, selectedMonth, newDay))
+                },
+                modifier = Modifier.weight(1f)
+            )
+        }
+
+        error?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SimpleDropdown(
+    label: String,
+    options: List<String>,
+    selectedOption: String,
+    onOptionSelected: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+        modifier = modifier
+    ) {
+        OutlinedTextField(
+            value = selectedOption,
+            onValueChange = { },
+            readOnly = true,
+            label = { Text(label) },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+            modifier = Modifier
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                .fillMaxWidth()
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        onOptionSelected(option)
+                        expanded = false
+                    }
+                )
+            }
         }
     }
 }

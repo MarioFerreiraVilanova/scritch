@@ -13,8 +13,10 @@
     <string name="admin_panel">Panel de Administración</string>
     <string name="admin_tools_description">Herramientas de moderación y configuraciones de admin</string>
     <string name="app_name">Scritch</string>
+    <string name="april">Abril</string>
     <string name="archives">Historial</string>
     <string name="are_you_sure_delete_entry">¿Seguro que quieres eliminar esta participación?</string>
+    <string name="august">Agosto</string>
     <string name="back">Atrás</string>
     <string name="back_to_home">Volver al inicio</string>
     <string name="back_to_settings">Volver a ajustes</string>
@@ -26,6 +28,8 @@
     <string name="create_jam">Crear Jam</string>
     <string name="create_new_jam">Crear Nueva Jam</string>
     <string name="create_new_jam_description">Crea una nueva jam semanal con retos personalizados y fechas</string>
+    <string name="day">Día</string>
+    <string name="december">Diciembre</string>
     <string name="delete">Eliminar</string>
     <string name="delete_entry">Eliminar participación</string>
     <string name="delete_jam">Eliminar jam</string>
@@ -40,6 +44,7 @@
     <string name="failed_to_delete_jam">Error al eliminar jam</string>
     <string name="failed_to_load_jams">Error al cargar jams</string>
     <string name="failed_to_update_jam">Error al actualizar jam</string>
+    <string name="february">Febrero</string>
     <string name="file_size_exceeded_title">Archivo Demasiado Grande</string>
     <string name="file_size_exceeded_message">La imagen seleccionada es demasiado grande. Por favor, elige una imagen menor a 8MB o toma una nueva foto.</string>
     <string name="generate_prompt">Generar reto</string>
@@ -54,6 +59,8 @@
     <string name="no_category_imposed">Sin %1$s impuesta</string>
     <string name="no_jams_found">No se encontraron jams</string>
     <string name="no_past_jams_found">No se encontraron jams pasadas</string>
+    <string name="november">Noviembre</string>
+    <string name="october">Octubre</string>
     <string name="ok">Vale</string>
     <string name="other">Otro</string>
     <string name="pick_one_from_the_gallery">Elegir de la galería</string>
@@ -77,6 +84,7 @@
     <string name="review_pending">Pendiente de revisión</string>
     <string name="review_pending_message">Tu participación está siendo revisada por nuestros moderadores. Esto suele llevar entre 24 y 48 horas.</string>
     <string name="send_us_an_email">¡Envíanos un correo!</string>
+    <string name="september">Septiembre</string>
     <string name="settings">Ajustes</string>
     <string name="support">Soporte</string>
     <string name="show_contributions">Mostrar contribuciones</string>
@@ -123,6 +131,9 @@
     <string name="jam_management">Gestión de Jams</string>
     <string name="jam_name">Nombre de Jam</string>
     <string name="jam_name_placeholder">ej., 2025-37</string>
+    <string name="january">Enero</string>
+    <string name="july">Julio</string>
+    <string name="june">Junio</string>
     <string name="jam_period">Período de jam: %1$s a %2$s</string>
     <string name="jam_status_finished">Terminada</string>
     <string name="jam_status_ongoing">En curso</string>
@@ -147,9 +158,13 @@
     <string name="manage_jams_description">Ver y gestionar todas las jams existentes en la comunidad</string>
     <string name="manage_existing_jams">Gestionar jams existentes</string>
     <string name="manage_existing_jams_description">Ver y editar los retos artísticos semanales existentes</string>
+    <string name="march">Marzo</string>
+    <string name="may">Mayo</string>
     <string name="moderation_queue">Cola de Moderación</string>
     <string name="moderation_tools">Herramientas de Moderación</string>
+    <string name="month">Mes</string>
     <string name="more_options">Más opciones</string>
+    <string name="year">Año</string>
     <string name="your_contribution">Tu contribución (%1$s)</string>
     <string name="scritch_jam_by">Scritch Jam por %1$s</string>
     <string name="scritch_jam_archives">Historial de Scritch Jams</string>
