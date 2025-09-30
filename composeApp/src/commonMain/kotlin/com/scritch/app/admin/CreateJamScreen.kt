@@ -29,7 +29,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,45 +42,46 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.scritch.app.categories.OptionState
 import com.scritch.app.prompt.Prompt
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
+import scritch.composeapp.generated.resources.april
+import scritch.composeapp.generated.resources.august
 import scritch.composeapp.generated.resources.back
 import scritch.composeapp.generated.resources.constraint_optional
 import scritch.composeapp.generated.resources.create_jam
 import scritch.composeapp.generated.resources.create_new_jam
 import scritch.composeapp.generated.resources.day
+import scritch.composeapp.generated.resources.december
 import scritch.composeapp.generated.resources.edit_jam_title
 import scritch.composeapp.generated.resources.end_date
+import scritch.composeapp.generated.resources.february
+import scritch.composeapp.generated.resources.hour
 import scritch.composeapp.generated.resources.jam_created_successfully
 import scritch.composeapp.generated.resources.jam_name
 import scritch.composeapp.generated.resources.jam_name_placeholder
 import scritch.composeapp.generated.resources.jam_updated_successfully
+import scritch.composeapp.generated.resources.january
+import scritch.composeapp.generated.resources.july
+import scritch.composeapp.generated.resources.june
+import scritch.composeapp.generated.resources.march
+import scritch.composeapp.generated.resources.may
 import scritch.composeapp.generated.resources.medium
 import scritch.composeapp.generated.resources.month
 import scritch.composeapp.generated.resources.none
+import scritch.composeapp.generated.resources.november
+import scritch.composeapp.generated.resources.october
 import scritch.composeapp.generated.resources.preview
 import scritch.composeapp.generated.resources.prompt_elements
 import scritch.composeapp.generated.resources.save_changes
+import scritch.composeapp.generated.resources.september
 import scritch.composeapp.generated.resources.start_date
 import scritch.composeapp.generated.resources.support
 import scritch.composeapp.generated.resources.topic_optional
 import scritch.composeapp.generated.resources.year
-import scritch.composeapp.generated.resources.january
-import scritch.composeapp.generated.resources.february
-import scritch.composeapp.generated.resources.march
-import scritch.composeapp.generated.resources.april
-import scritch.composeapp.generated.resources.may
-import scritch.composeapp.generated.resources.june
-import scritch.composeapp.generated.resources.july
-import scritch.composeapp.generated.resources.august
-import scritch.composeapp.generated.resources.september
-import scritch.composeapp.generated.resources.october
-import scritch.composeapp.generated.resources.november
-import scritch.composeapp.generated.resources.december
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -175,18 +175,18 @@ fun CreateJamScreen(
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                // Date Dropdowns
-                DateDropdownField(
+                // Date Time Dropdowns
+                DateTimeDropdownField(
                     label = stringResource(Res.string.start_date),
-                    selectedDate = viewState.startDate,
-                    onDateSelected = viewModel::onStartDateChanged,
+                    selectedDateTime = viewState.startDateTime,
+                    onDateTimeSelected = viewModel::onStartDateTimeChanged,
                     error = viewState.validationErrors.startDate
                 )
 
-                DateDropdownField(
+                DateTimeDropdownField(
                     label = stringResource(Res.string.end_date),
-                    selectedDate = viewState.endDate,
-                    onDateSelected = viewModel::onEndDateChanged,
+                    selectedDateTime = viewState.endDateTime,
+                    onDateTimeSelected = viewModel::onEndDateTimeChanged,
                     error = viewState.validationErrors.endDate
                 )
 
@@ -282,10 +282,10 @@ fun CreateJamScreen(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
-private fun DateDropdownField(
+private fun DateTimeDropdownField(
     label: String,
-    selectedDate: LocalDate?,
-    onDateSelected: (LocalDate) -> Unit,
+    selectedDateTime: LocalDateTime?,
+    onDateTimeSelected: (LocalDateTime) -> Unit,
     error: String? = null,
 ) {
     val currentYear = remember {
@@ -310,9 +310,10 @@ private fun DateDropdownField(
         12 to stringResource(Res.string.december)
     )
 
-    val selectedYear = selectedDate?.year ?: currentYear
-    val selectedMonth = selectedDate?.monthNumber ?: 1
-    val selectedDay = selectedDate?.dayOfMonth ?: 1
+    val selectedYear = selectedDateTime?.year ?: currentYear
+    val selectedMonth = selectedDateTime?.month?.ordinal?.plus(1) ?: 1
+    val selectedDay = selectedDateTime?.day ?: 1
+    val selectedHour = selectedDateTime?.hour ?: 0
 
     fun getDaysInMonth(year: Int, month: Int): Int {
         return when (month) {
@@ -348,7 +349,15 @@ private fun DateDropdownField(
                     val newYear = yearString.toInt()
                     val newDaysInMonth = getDaysInMonth(newYear, selectedMonth)
                     val newDay = if (selectedDay > newDaysInMonth) newDaysInMonth else selectedDay
-                    onDateSelected(LocalDate(newYear, selectedMonth, newDay))
+                    onDateTimeSelected(
+                        LocalDateTime(
+                            newYear,
+                            selectedMonth,
+                            newDay,
+                            selectedHour,
+                            0
+                        )
+                    )
                 },
                 modifier = Modifier.weight(1f)
             )
@@ -362,7 +371,15 @@ private fun DateDropdownField(
                     val newMonth = months.find { it.second == monthName }?.first ?: 1
                     val newDaysInMonth = getDaysInMonth(selectedYear, newMonth)
                     val newDay = if (selectedDay > newDaysInMonth) newDaysInMonth else selectedDay
-                    onDateSelected(LocalDate(selectedYear, newMonth, newDay))
+                    onDateTimeSelected(
+                        LocalDateTime(
+                            selectedYear,
+                            newMonth,
+                            newDay,
+                            selectedHour,
+                            0
+                        )
+                    )
                 },
                 modifier = Modifier.weight(2f)
             )
@@ -374,7 +391,35 @@ private fun DateDropdownField(
                 selectedOption = selectedDay.toString(),
                 onOptionSelected = { dayString ->
                     val newDay = dayString.toInt()
-                    onDateSelected(LocalDate(selectedYear, selectedMonth, newDay))
+                    onDateTimeSelected(
+                        LocalDateTime(
+                            selectedYear,
+                            selectedMonth,
+                            newDay,
+                            selectedHour,
+                            0
+                        )
+                    )
+                },
+                modifier = Modifier.weight(1f)
+            )
+
+            // Hour Dropdown
+            SimpleDropdown(
+                label = stringResource(Res.string.hour),
+                options = (0..23).map { it.toString().padStart(2, '0') },
+                selectedOption = selectedHour.toString().padStart(2, '0'),
+                onOptionSelected = { hourString ->
+                    val newHour = hourString.toInt()
+                    onDateTimeSelected(
+                        LocalDateTime(
+                            selectedYear,
+                            selectedMonth,
+                            selectedDay,
+                            newHour,
+                            0
+                        )
+                    )
                 },
                 modifier = Modifier.weight(1f)
             )

@@ -16,8 +16,10 @@ import dev.gitlive.firebase.storage.storageMetadata
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.toInstant
 import kotlin.time.Duration.Companion.days
 import kotlin.time.ExperimentalTime
 
@@ -264,16 +266,16 @@ class JamRepository(
     @OptIn(ExperimentalTime::class)
     suspend fun createJam(
         jamId: String,
-        startDate: LocalDate,
-        endDate: LocalDate,
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
         topicId: String? = null,
         mediumId: String? = null,
         supportId: String? = null,
         constraintId: String? = null,
     ) {
-        // Convert LocalDate to Firebase Timestamps using the proper companion method
-        val startInstant = startDate.atStartOfDayIn(TimeZone.currentSystemDefault())
-        val endInstant = endDate.atStartOfDayIn(TimeZone.currentSystemDefault()).plus(1.days)
+        // Convert LocalDateTime to Firebase Timestamps using the proper companion method
+        val startInstant = startDateTime.toInstant(TimeZone.currentSystemDefault())
+        val endInstant = endDateTime.toInstant(TimeZone.currentSystemDefault())
         
         val startTimestamp = Timestamp.Companion.fromMilliseconds(startInstant.toEpochMilliseconds().toDouble())
         val endTimestamp = Timestamp.Companion.fromMilliseconds(endInstant.toEpochMilliseconds().toDouble())
@@ -332,15 +334,15 @@ class JamRepository(
     @OptIn(ExperimentalTime::class)
     suspend fun updateJam(
         jamId: String,
-        startDate: LocalDate,
-        endDate: LocalDate,
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
         topicId: String? = null,
         mediumId: String? = null,
         supportId: String? = null,
         constraintId: String? = null,
     ) {
-        val startInstant = startDate.atStartOfDayIn(TimeZone.currentSystemDefault())
-        val endInstant = endDate.atStartOfDayIn(TimeZone.currentSystemDefault()).plus(1.days)
+        val startInstant = startDateTime.toInstant(TimeZone.currentSystemDefault())
+        val endInstant = endDateTime.toInstant(TimeZone.currentSystemDefault())
 
         val startTimestamp = Timestamp.Companion.fromMilliseconds(startInstant.toEpochMilliseconds().toDouble())
         val endTimestamp = Timestamp.Companion.fromMilliseconds(endInstant.toEpochMilliseconds().toDouble())

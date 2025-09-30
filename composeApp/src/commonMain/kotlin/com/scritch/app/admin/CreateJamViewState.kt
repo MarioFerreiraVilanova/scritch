@@ -8,12 +8,11 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 data class CreateJamViewState(
     val jamName: String,
-    val startDate: LocalDate?,
-    val endDate: LocalDate?,
+    val startDateTime: LocalDateTime?,
+    val endDateTime: LocalDateTime?,
     val topicOptions: List<OptionState>,
     val mediumOptions: List<OptionState>,
     val supportOptions: List<OptionState>,
@@ -28,8 +27,8 @@ data class CreateJamViewState(
     val validationErrors: ValidationErrors,
     val isCreateSuccessful: Boolean,
     // Original values for change tracking in edit mode
-    val originalStartDate: LocalDate? = null,
-    val originalEndDate: LocalDate? = null,
+    val originalStartDateTime: LocalDateTime? = null,
+    val originalEndDateTime: LocalDateTime? = null,
     val originalSelectedTopic: OptionState? = null,
     val originalSelectedMedium: OptionState? = null,
     val originalSelectedSupport: OptionState? = null,
@@ -48,12 +47,12 @@ data class CreateJamViewState(
         get() = validationErrors.isEmpty() &&
                 promptViewState.valid &&
                 jamName.isNotBlank() &&
-                startDate != null &&
-                endDate != null
+                startDateTime != null &&
+                endDateTime != null
 
     val hasChanges: Boolean
-        get() = startDate != originalStartDate ||
-                endDate != originalEndDate ||
+        get() = startDateTime != originalStartDateTime ||
+                endDateTime != originalEndDateTime ||
                 selectedTopic?.id != originalSelectedTopic?.id ||
                 selectedMedium?.id != originalSelectedMedium?.id ||
                 selectedSupport?.id != originalSelectedSupport?.id ||
@@ -62,8 +61,8 @@ data class CreateJamViewState(
     companion object {
         val EMPTY = CreateJamViewState(
             jamName = generateDefaultJamName(),
-            startDate = null,
-            endDate = null,
+            startDateTime = null,
+            endDateTime = null,
             topicOptions = emptyList(),
             mediumOptions = emptyList(),
             supportOptions = emptyList(),

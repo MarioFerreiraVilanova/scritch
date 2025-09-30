@@ -48,6 +48,7 @@
     <string name="file_size_exceeded_title">Fichier Trop Volumineux</string>
     <string name="file_size_exceeded_message">L'image sélectionnée est trop volumineuse. Veuillez choisir une image de moins de 8Mo ou prendre une nouvelle photo.</string>
     <string name="generate_prompt">Générer une idée</string>
+    <string name="hour">Heure</string>
     <string name="landing_screen_description_1">Scritch est une appli conçue pour vous inspirer dans votre pratique du dessin et </string>
     <string name="landing_screen_description_2">vous aider à développer de nouvelles compétences </string>
     <string name="landing_screen_description_3">en vous lançant des défis créatifs qui </string>

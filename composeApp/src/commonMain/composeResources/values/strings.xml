@@ -49,6 +49,7 @@
     <string name="file_size_exceeded_title">File Size Too Large</string>
     <string name="file_size_exceeded_message">The selected image is too large. Please choose an image smaller than 8MB or take a new photo.</string>
     <string name="generate_prompt">Generate prompt</string>
+    <string name="hour">Hour</string>
     <string name="landing_screen_description_1">Scritch is an app designed to inspire your drawings and </string>
     <string name="landing_screen_description_2">help you develop new skills </string>
     <string name="landing_screen_description_3">by challenging you with creative constraints that </string>

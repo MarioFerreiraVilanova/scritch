@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 
 class CreateJamViewModel(
     savedStateHandle: SavedStateHandle,
@@ -30,7 +30,7 @@ class CreateJamViewModel(
 
     private val editJamArgs: Authenticated.EditJam? = try {
         savedStateHandle.toRoute<Authenticated.EditJam>()
-    } catch (e: Exception) {
+    } catch (_: Exception) {
         null
     }
 
@@ -45,20 +45,16 @@ class CreateJamViewModel(
         viewModelScope.launch {
             try {
                 val topicOptions = categoryRepository.getOptions(Category.Topic)
-                    .map { OptionState.fromDto(it, selected = false) }
-                    .filterNotNull()
+                    .mapNotNull { OptionState.fromDto(it, selected = false) }
 
                 val mediumOptions = categoryRepository.getOptions(Category.Medium)
-                    .map { OptionState.fromDto(it, selected = false) }
-                    .filterNotNull()
+                    .mapNotNull { OptionState.fromDto(it, selected = false) }
 
                 val supportOptions = categoryRepository.getOptions(Category.Support)
-                    .map { OptionState.fromDto(it, selected = false) }
-                    .filterNotNull()
+                    .mapNotNull { OptionState.fromDto(it, selected = false) }
 
                 val constraintOptions = categoryRepository.getOptions(Category.Constraint)
-                    .map { OptionState.fromDto(it, selected = false) }
-                    .filterNotNull()
+                    .mapNotNull { OptionState.fromDto(it, selected = false) }
 
                 _viewState.value = _viewState.value.copy(
                     topicOptions = topicOptions,
@@ -113,8 +109,8 @@ class CreateJamViewModel(
         println("  Available topic options: ${currentState.topicOptions.map { "${it.id}: ${it.name}" }}")
         println("  Available medium options: ${currentState.mediumOptions.map { "${it.id}: ${it.name}" }}")
 
-        val startDate = jam.startDate?.toLocalDateTime(TimeZone.currentSystemDefault())?.date
-        val endDate = jam.endDate?.toLocalDateTime(TimeZone.currentSystemDefault())?.date
+        val startDateTime = jam.startDate?.toLocalDateTime(TimeZone.currentSystemDefault())
+        val endDateTime = jam.endDate?.toLocalDateTime(TimeZone.currentSystemDefault())
 
         val selectedTopic = jam.topic?.let { topicId ->
             currentState.topicOptions.find { it.id == topicId }
@@ -136,15 +132,15 @@ class CreateJamViewModel(
 
         val newState = currentState.copy(
             jamName = jam.id,
-            startDate = startDate,
-            endDate = endDate,
+            startDateTime = startDateTime,
+            endDateTime = endDateTime,
             selectedTopic = selectedTopic,
             selectedMedium = selectedMedium,
             selectedSupport = selectedSupport,
             selectedConstraint = selectedConstraint,
             // Store original values for change tracking
-            originalStartDate = startDate,
-            originalEndDate = endDate,
+            originalStartDateTime = startDateTime,
+            originalEndDateTime = endDateTime,
             originalSelectedTopic = selectedTopic,
             originalSelectedMedium = selectedMedium,
             originalSelectedSupport = selectedSupport,
@@ -163,15 +159,15 @@ class CreateJamViewModel(
         )
     }
 
-    fun onStartDateChanged(date: LocalDate) {
-        val newState = _viewState.value.copy(startDate = date)
+    fun onStartDateTimeChanged(dateTime: LocalDateTime) {
+        val newState = _viewState.value.copy(startDateTime = dateTime)
         _viewState.value = newState.copy(
             validationErrors = validateForm(newState)
         )
     }
 
-    fun onEndDateChanged(date: LocalDate) {
-        val newState = _viewState.value.copy(endDate = date)
+    fun onEndDateTimeChanged(dateTime: LocalDateTime) {
+        val newState = _viewState.value.copy(endDateTime = dateTime)
         _viewState.value = newState.copy(
             validationErrors = validateForm(newState)
         )
@@ -221,9 +217,9 @@ class CreateJamViewModel(
             try {
                 if (isEditMode && originalJamId != null) {
                     jamRepository.updateJam(
-                        jamId = originalJamId!!,
-                        startDate = currentState.startDate!!,
-                        endDate = currentState.endDate!!,
+                        jamId = originalJamId,
+                        startDateTime = currentState.startDateTime!!,
+                        endDateTime = currentState.endDateTime!!,
                         topicId = currentState.selectedTopic?.id,
                         mediumId = currentState.selectedMedium?.id,
                         supportId = currentState.selectedSupport?.id,
@@ -232,8 +228,8 @@ class CreateJamViewModel(
                 } else {
                     jamRepository.createJam(
                         jamId = currentState.jamName,
-                        startDate = currentState.startDate!!,
-                        endDate = currentState.endDate!!,
+                        startDateTime = currentState.startDateTime!!,
+                        endDateTime = currentState.endDateTime!!,
                         topicId = currentState.selectedTopic?.id,
                         mediumId = currentState.selectedMedium?.id,
                         supportId = currentState.selectedSupport?.id,
@@ -272,13 +268,13 @@ class CreateJamViewModel(
         }
 
         // Date validation
-        if (state.startDate == null) {
+        if (state.startDateTime == null) {
             startDateError = "Start date is required"
         }
-        if (state.endDate == null) {
+        if (state.endDateTime == null) {
             endDateError = "End date is required"
         }
-        if (state.startDate != null && state.endDate != null && state.startDate >= state.endDate) {
+        if (state.startDateTime != null && state.endDateTime != null && state.startDateTime >= state.endDateTime) {
             endDateError = "End date must be after start date"
         }
 
