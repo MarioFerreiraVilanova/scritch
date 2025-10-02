@@ -1,5 +1,6 @@
 import { onObjectFinalized } from "firebase-functions/v2/storage";
 import { onCall } from "firebase-functions/v2/https";
+import { onDocumentDeleted } from "firebase-functions/v2/firestore";
 import * as admin from "firebase-admin";
 import * as sharp from "sharp";
 
@@ -175,3 +176,69 @@ async function generateThumbnail(originalPath: string): Promise<void> {
 
   console.log(`Thumbnail created and document updated for ${originalPath}`);
 }
+
+/**
+ * Cloud Function triggered when submission documents are deleted.
+ * Automatically cleans up both the main image and thumbnail from Storage.
+ */
+export const cleanupSubmissionFiles = onDocumentDeleted(
+  "weekly_jam/{jamId}/submissions/{userId}",
+  async (event) => {
+    const jamId = event.params.jamId;
+    const userId = event.params.userId;
+
+    console.log(`Cleaning up files for submission: jam=${jamId}, user=${userId}`);
+
+    const mainImagePath = `weekly_jam/${jamId}/${userId}.jpg`;
+    const thumbnailPath = `weekly_jam/${jamId}/thumbnails/${userId}.jpg`;
+
+    const bucket = storage.bucket();
+    let mainImageDeleted = false;
+    let thumbnailDeleted = false;
+    let mainImageError = null;
+    let thumbnailError = null;
+
+    // Delete main image
+    try {
+      await bucket.file(mainImagePath).delete();
+      mainImageDeleted = true;
+      console.log(`✓ Deleted main image: ${mainImagePath}`);
+    } catch (error: any) {
+      const msg = error.message?.toLowerCase() || "";
+      if (msg.includes("no such object") || msg.includes("not found") || msg.includes("404")) {
+        mainImageDeleted = true; // Consider it successful if file doesn't exist
+        console.log(`✓ Main image already deleted: ${mainImagePath}`);
+      } else {
+        mainImageError = error;
+        console.error(`✗ Error deleting main image ${mainImagePath}:`, error);
+      }
+    }
+
+    // Delete thumbnail
+    try {
+      await bucket.file(thumbnailPath).delete();
+      thumbnailDeleted = true;
+      console.log(`✓ Deleted thumbnail: ${thumbnailPath}`);
+    } catch (error: any) {
+      const msg = error.message?.toLowerCase() || "";
+      if (msg.includes("no such object") || msg.includes("not found") || msg.includes("404")) {
+        thumbnailDeleted = true; // Consider it successful if file doesn't exist
+        console.log(`✓ Thumbnail already deleted: ${thumbnailPath}`);
+      } else {
+        thumbnailError = error;
+        console.error(`✗ Error deleting thumbnail ${thumbnailPath}:`, error);
+      }
+    }
+
+    // Log final status
+    if (mainImageDeleted && thumbnailDeleted) {
+      console.log(`✅ Successfully cleaned up all files for submission: jam=${jamId}, user=${userId}`);
+    } else {
+      console.warn(`⚠️ Partial cleanup for submission: jam=${jamId}, user=${userId}. Main: ${mainImageDeleted}, Thumbnail: ${thumbnailDeleted}`);
+
+      // Don't throw errors - we want the submission deletion to succeed even if file cleanup has issues
+      if (mainImageError) console.error("Main image error:", mainImageError);
+      if (thumbnailError) console.error("Thumbnail error:", thumbnailError);
+    }
+  }
+);
