@@ -11,6 +11,7 @@ import io.kamel.core.config.KamelConfig
 import io.kamel.core.config.takeFrom
 import io.kamel.image.config.Default
 import io.kamel.image.config.LocalKamelConfig
+import io.kamel.image.config.imageBitmapDecoder
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -27,6 +28,7 @@ fun App() {
         takeFrom(KamelConfig.Default)
         // Configure memory cache for better performance
         imageBitmapCacheSize = 50 // Limit cache to 50 images
+        imageBitmapDecoder()
     }
 
     CompositionLocalProvider(LocalKamelConfig provides kamelConfig) {
