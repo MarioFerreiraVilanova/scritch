@@ -235,7 +235,7 @@ fun SubmissionCell(
         if (showImage) {
             Box {
                 KamelImage(
-                    resource = { asyncPainterResource(submission.imageUrl) },
+                    resource = { asyncPainterResource(submission.thumbnailUrl ?: submission.imageUrl) },
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     onLoading = { progress ->
@@ -546,6 +546,7 @@ private fun SubmissionCellVisiblePreview() {
             submission = JamSubmission(
                 userId = "user123",
                 imageUrl = "https://example.com/image.jpg",
+                thumbnailUrl = null,
                 createdAt = Timestamp.now(),
                 status = ModerationStatus.Approved,
                 nickname = "Picasso47"
@@ -569,6 +570,7 @@ private fun SubmissionCellHiddenPreview() {
             submission = JamSubmission(
                 userId = "user123",
                 imageUrl = "https://example.com/image.jpg",
+                thumbnailUrl = null,
                 createdAt = Timestamp.now(),
                 status = ModerationStatus.Approved,
                 nickname = "VanGogh203"

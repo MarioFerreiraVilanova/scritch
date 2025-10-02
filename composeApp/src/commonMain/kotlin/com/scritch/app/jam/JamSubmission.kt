@@ -6,6 +6,7 @@ import dev.gitlive.firebase.firestore.Timestamp
 data class JamSubmission(
     val userId: String,
     val imageUrl: String,
+    val thumbnailUrl: String?,
     val createdAt: Timestamp,
     val status: ModerationStatus,
     val nickname: String,
@@ -15,6 +16,7 @@ data class JamSubmission(
             return JamSubmission(
                 userId = dto.userId ?: return null,
                 imageUrl = dto.imageUrl ?: return null,
+                thumbnailUrl = dto.thumbnailUrl,
                 createdAt = dto.createdAt ?: return null,
                 status = submissionStatusFromString(dto.status) ?: return null,
                 nickname = dto.nickname ?: return null,
