@@ -178,4 +178,24 @@ class AdminRepository {
             )
         }
     }
+
+    /**
+     * Batch generates thumbnails for submissions that don't have them using Firebase Cloud Functions
+     */
+    suspend fun batchGenerateThumbnails(): BatchThumbnailGenerationResponse {
+        return try {
+            val functionReference = functions.httpsCallable("batchGenerateThumbnails")
+            val result = functionReference(data = emptyMap<String, Any>())
+
+            val data = result.data<BatchThumbnailGenerationResponse>()
+            data.copy(message = "Thumbnail batch processing completed successfully")
+        } catch (e: Exception) {
+            BatchThumbnailGenerationResponse(
+                success = false,
+                message = "Error: ${e.message}",
+                processedCount = 0,
+                errorCount = 0
+            )
+        }
+    }
 }

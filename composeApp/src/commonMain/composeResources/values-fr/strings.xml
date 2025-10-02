@@ -20,6 +20,8 @@
     <string name="back">Retour</string>
     <string name="back_to_home">Retour à l'accueil</string>
     <string name="back_to_settings">Retour aux paramètres</string>
+    <string name="batch_generate_thumbnails">Générer les Miniatures Manquantes</string>
+    <string name="batch_generate_thumbnails_description">Traiter les soumissions existantes sans miniatures</string>
     <string name="no_one_contributed_yet">Personne n'a encore contribué</string>
     <string name="cancel">Annuler</string>
     <string name="contributed">a contribué</string>
@@ -94,6 +96,7 @@
     <string name="start_date">Date de Début</string>
     <string name="status_approved">Terminé !</string>
     <string name="status_pending">En attente de révision</string>
+    <string name="system_tools">Outils Système</string>
     <string name="submission_preview">Aperçu de la participation</string>
     <string name="take_a_different_picture">Prendre une autre photo</string>
     <string name="take_a_picture">Prendre une photo</string>

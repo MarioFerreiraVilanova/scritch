@@ -2,12 +2,21 @@ package com.scritch.app.admin
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Gavel
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +40,10 @@ import scritch.composeapp.generated.resources.manage_existing_jams_description
 import scritch.composeapp.generated.resources.moderation_tools
 import scritch.composeapp.generated.resources.moderation_queue
 import scritch.composeapp.generated.resources.review_submissions_manual_approval_description
+import scritch.composeapp.generated.resources.system_tools
+import scritch.composeapp.generated.resources.batch_generate_thumbnails
+import scritch.composeapp.generated.resources.batch_generate_thumbnails_description
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,9 +53,26 @@ fun AdminPanelScreen(
     onGoToCreateJam: () -> Unit,
     onGoToJamManagement: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: AdminPanelViewModel = koinViewModel(),
 ) {
+    val viewState by viewModel.viewState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Show success/error messages
+    LaunchedEffect(viewState.message, viewState.error) {
+        viewState.message?.let { message ->
+            snackbarHostState.showSnackbar(message)
+            viewModel.clearMessage()
+        }
+        viewState.error?.let { error ->
+            snackbarHostState.showSnackbar(error)
+            viewModel.clearMessage()
+        }
+    }
+
     Scaffold(
         modifier = modifier,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
@@ -141,6 +171,40 @@ fun AdminPanelScreen(
                     },
                     modifier = Modifier.clickable {
                         onGoToModerationQueue()
+                    }
+                )
+            }
+
+            item {
+                SectionTitle(stringResource(Res.string.system_tools))
+            }
+
+            item {
+                ListItem(
+                    headlineContent = {
+                        Text(stringResource(Res.string.batch_generate_thumbnails))
+                    },
+                    supportingContent = {
+                        Text(
+                            text = stringResource(Res.string.batch_generate_thumbnails_description),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    leadingContent = {
+                        if (viewState.isGeneratingThumbnails) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp)
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Image,
+                                contentDescription = null,
+                            )
+                        }
+                    },
+                    modifier = Modifier.clickable(enabled = !viewState.isGeneratingThumbnails) {
+                        viewModel.batchGenerateThumbnails()
                     }
                 )
             }
