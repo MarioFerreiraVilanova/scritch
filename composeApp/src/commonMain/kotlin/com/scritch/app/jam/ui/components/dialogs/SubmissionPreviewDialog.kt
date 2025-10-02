@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
@@ -124,9 +125,10 @@ fun SubmissionPreviewDialog(
                         ) {
                             val animatedProgress by animateFloatAsState(progress)
                             CircularProgressIndicator(
-                                progress = {
-                                    animatedProgress
-                                }
+                                progress = { animatedProgress },
+                                modifier = Modifier.size(32.dp),
+                                strokeWidth = 2.dp,
+                                color = MaterialTheme.colorScheme.primary
                             )
                             Text(
                                 text = "Loading...",

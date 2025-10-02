@@ -88,6 +88,36 @@ fun UserSubmissionCell(
                         resource = { asyncPainterResource(submissionState.imageUrl) },
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
+                        onLoading = { progress ->
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                            ) {
+                                CircularProgressIndicator(
+                                    progress = { progress },
+                                    modifier = Modifier.size(32.dp),
+                                    strokeWidth = 2.dp,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        },
+                        onFailure = { exception ->
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(MaterialTheme.colorScheme.errorContainer)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.VisibilityOff,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onErrorContainer,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                            }
+                        },
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(MaterialTheme.shapes.small)
@@ -208,11 +238,41 @@ fun SubmissionCell(
                     resource = { asyncPainterResource(submission.imageUrl) },
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
+                    onLoading = { progress ->
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+                        ) {
+                            CircularProgressIndicator(
+                                progress = { progress },
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp,
+                                color = MaterialTheme.colorScheme.outline
+                            )
+                        }
+                    },
+                    onFailure = { exception ->
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.errorContainer)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.VisibilityOff,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onErrorContainer,
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(MaterialTheme.shapes.small)
                 )
-                
+
                 // Nickname overlay for other users
                 SubmissionOverlay(
                     displayName = submission.nickname,
