@@ -59,17 +59,22 @@ export const batchGenerateThumbnails = onCall(async (request) => {
     for (const jamDoc of jamsSnapshot.docs) {
       const jamId = jamDoc.id;
 
-      // Query submissions in this jam that don't have thumbnailUrl
+      // Get ALL submissions in this jam, then filter for those without thumbnails
       const submissionsSnapshot = await firestore
         .collection('weekly_jam')
         .doc(jamId)
         .collection('submissions')
-        .where('thumbnailUrl', '==', null)
         .get();
 
-      console.log(`Processing ${submissionsSnapshot.size} submissions in jam ${jamId}`);
+      // Filter submissions that need thumbnails (missing thumbnailUrl field or null/empty value)
+      const submissionsNeedingThumbnails = submissionsSnapshot.docs.filter(doc => {
+        const data = doc.data();
+        return !data.thumbnailUrl; // Missing field, null, undefined, or empty string
+      });
 
-      for (const submissionDoc of submissionsSnapshot.docs) {
+      console.log(`Processing ${submissionsNeedingThumbnails.length} of ${submissionsSnapshot.size} submissions in jam ${jamId}`);
+
+      for (const submissionDoc of submissionsNeedingThumbnails) {
         const submission = submissionDoc.data();
         const userId = submission.userId;
         const originalPath = `weekly_jam/${jamId}/${userId}.jpg`;
