@@ -51,8 +51,9 @@ class JamArchivesViewModel(
                 }
 
                 _viewState.update { state ->
+                    val newList = state.jams + archiveJamViewStates
                     state.copy(
-                        jams = state.jams + archiveJamViewStates,
+                        jams = newList.distinctBy { it.id },
                         endReached = page.endReached,
                         isLoading = false,
                         isLoadingMore = false

@@ -2,7 +2,6 @@ package com.scritch.app.jam.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,9 +36,9 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import scritch.composeapp.generated.resources.Res
 import scritch.composeapp.generated.resources.back
-import scritch.composeapp.generated.resources.scritch_jam_archives
-import scritch.composeapp.generated.resources.no_past_jams_found
 import scritch.composeapp.generated.resources.loading_more_past_jams
+import scritch.composeapp.generated.resources.no_past_jams_found
+import scritch.composeapp.generated.resources.scritch_jam_archives
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -122,7 +121,10 @@ fun JamArchivesScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(viewState.jams) { jam ->
+                items(
+                    items = viewState.jams,
+                    key = { it.id },
+                ) { jam ->
                     ArchiveJamItem(
                         jam = jam,
                         onClick = { onJamClick(jam.id) },

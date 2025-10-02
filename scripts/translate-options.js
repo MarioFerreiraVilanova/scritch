@@ -2,13 +2,15 @@ const admin = require('firebase-admin');
 const { TranslationServiceClient } = require('@google-cloud/translate').v3;
 
 admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
+  credential: admin.credential.cert('./serviceAccountKey.json'),
   ignoreUndefinedProperties: true,
 });
 
 const firestore = admin.firestore();
 
-const translationClient = new TranslationServiceClient();
+const translationClient = new TranslationServiceClient({
+  keyFilename: './serviceAccountKey.json',
+});
 
 const PROJECT_ID = 'scritch-2daff'; // 🔁 replace with your actual project ID
 const LOCATION = 'global'; // Or 'us-central1' if you're using that region
@@ -27,6 +29,11 @@ async function translateText(text, targetLanguage) {
 
   const [response] = await translationClient.translateText(request);
   return response.translations[0].translatedText;
+}
+
+async function documentExists(collection, docId) {
+  const doc = await firestore.collection(collection).doc(docId).get();
+  return doc.exists;
 }
 
 async function translateDocumentData(data, targetLanguage) {
@@ -62,28 +69,39 @@ async function processOptionsCollection(categoryDoc) {
 
   console.log(`📦 Found ${originalDocsSnap.size} documents in ${basePath}`);
 
+  let translatedCount = 0;
+  let skippedCount = 0;
+
   for (const doc of originalDocsSnap.docs) {
     const data = doc.data();
-    console.log(`🔍 Translating ${doc.id}...`);
+    console.log(`🔍 Processing ${doc.id}...`);
 
     for (const lang of TARGET_LANGUAGES) {
       try {
-        const translatedData = await translateDocumentData(data, lang);
         const targetCollection = `categories/${categoryDoc}/options-${lang}`;
+        const exists = await documentExists(targetCollection, doc.id);
 
-        await firestore
-          .collection(targetCollection)
-          .doc(doc.id)
-          .set(translatedData);
+        if (exists) {
+          console.log(`⏭️  Skipping ${doc.id} → ${targetCollection} (already exists)`);
+          skippedCount++;
+        } else {
+          const translatedData = await translateDocumentData(data, lang);
 
-        console.log(`✅ ${doc.id} → ${targetCollection}`);
+          await firestore
+            .collection(targetCollection)
+            .doc(doc.id)
+            .set(translatedData);
+
+          console.log(`✅ ${doc.id} → ${targetCollection} (newly translated)`);
+          translatedCount++;
+        }
       } catch (err) {
-        console.error(`❌ Error translating ${doc.id} to ${lang}:`, err);
+        console.error(`❌ Error processing ${doc.id} to ${lang}:`, err);
       }
     }
   }
 
-  console.log(`🎉 Done with ${categoryDoc}`);
+  console.log(`🎉 Done with ${categoryDoc}: ${translatedCount} translated, ${skippedCount} skipped`);
 }
 
 async function main() {
