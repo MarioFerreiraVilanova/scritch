@@ -118,6 +118,7 @@
     <string name="version_notes_0_13">Mejoras en las traducciones a español y francés</string>
     <string name="version_notes_0_14">Hemos introducido Scritch Jams. Retos globales para toda la comunidad.</string>
     <string name="version_notes_0_15">Añadidos el historial de Scritch Jams.</string>
+    <string name="version_notes_0_18">Añadida generación de miniaturas para carga más rápida de imágenes en los feeds de jams.</string>
     <string name="version_notes_0_7">Tema oscuro aplicado, se estilizaron los retos y se añadió el icono de la app, se corrigió el cierre de sesión</string>
     <string name="version_notes_0_8">Nueva pantalla de introducción, títulos corregidos en ajustes, nuevo formato para los consejos</string>
     <string name="version_notes_0_9">Cambios en la lógica de retos y correcciones de errores para iOS</string>

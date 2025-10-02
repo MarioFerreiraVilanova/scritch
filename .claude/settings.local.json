@@ -17,7 +17,8 @@
       "WebFetch(domain:firebase.google.com)",
       "WebSearch",
       "Bash(npm view:*)",
-      "Bash(firebase functions:delete moderateSubmission processUserReport onSubmissionWrite recalculateJamStats --force)"
+      "Bash(firebase functions:delete moderateSubmission processUserReport onSubmissionWrite recalculateJamStats --force)",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": [],
     "ask": []
