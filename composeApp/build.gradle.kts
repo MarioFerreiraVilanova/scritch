@@ -84,6 +84,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.image.picker.kmp)
             implementation(libs.material.icons.extended)
+            implementation(libs.zoomable)
             // Firebase
             api(libs.gitlive.firebase.kotlin.crashlytics)
             // Koin

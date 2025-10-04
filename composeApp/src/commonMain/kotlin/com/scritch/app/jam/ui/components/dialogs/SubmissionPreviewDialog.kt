@@ -42,6 +42,8 @@ import com.scritch.app.uicomponents.Button
 import com.scritch.app.uicomponents.ButtonStyle
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
+import net.engawapg.lib.zoomable.rememberZoomState
+import net.engawapg.lib.zoomable.zoomable
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -98,7 +100,6 @@ fun SubmissionPreviewDialog(
                 KamelImage(
                     resource = { asyncPainterResource(imageUrl) },
                     contentDescription = stringResource(Res.string.submission_preview),
-                    contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(MaterialTheme.shapes.small)
@@ -110,7 +111,8 @@ fun SubmissionPreviewDialog(
                                 MaterialTheme.colorScheme.outline
                             },
                             shape = MaterialTheme.shapes.small
-                        ),
+                        )
+                        .zoomable(rememberZoomState()),
                     onLoading = { progress ->
                         // progress in [0f..1f] or null
                         Column(
