@@ -46,6 +46,7 @@ import scritch.composeapp.generated.resources.arrows_repeat
 import scritch.composeapp.generated.resources.generate_prompt
 import scritch.composeapp.generated.resources.scritch_logo
 import scritch.composeapp.generated.resources.settings
+import scritch.composeapp.generated.resources.solo_empty_state_message
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -137,7 +138,7 @@ fun SoloScreen(
                     Text(
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
                         textAlign = TextAlign.Center,
-                        text = "Ready to get inspired? Tap to generate an idea.",
+                        text = stringResource(Res.string.solo_empty_state_message),
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

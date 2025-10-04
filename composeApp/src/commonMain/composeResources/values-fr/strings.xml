@@ -93,6 +93,7 @@
     <string name="show_contributions">Afficher les contributions</string>
     <string name="show_contributions_subtitle">Voir comment d'autres ont relevé le défi</string>
     <string name="solo_mode">Mode Solo</string>
+    <string name="solo_empty_state_message">Prêt à t'inspirer ? Tape pour générer une idée.</string>
     <string name="start_date">Date de Début</string>
     <string name="status_approved">Terminé !</string>
     <string name="status_pending">En attente de révision</string>

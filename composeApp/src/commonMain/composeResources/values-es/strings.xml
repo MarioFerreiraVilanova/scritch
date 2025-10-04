@@ -93,6 +93,7 @@
     <string name="show_contributions">Mostrar contribuciones</string>
     <string name="show_contributions_subtitle">Ve cómo otros han completado el reto</string>
     <string name="solo_mode">Modo Solo</string>
+    <string name="solo_empty_state_message">¿Listo para inspirarte? Toca para generar una idea.</string>
     <string name="start_date">Fecha de Inicio</string>
     <string name="status_approved">¡Hecho!</string>
     <string name="status_pending">Pendiente de revisión</string>
