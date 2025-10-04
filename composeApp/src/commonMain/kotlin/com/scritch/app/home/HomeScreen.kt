@@ -10,6 +10,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.scritch.app.jam.ui.JamScreen
 import com.scritch.app.jam.ui.JamArchivesScreen
@@ -44,6 +46,16 @@ fun HomeScreen(
     var selectedDestination by rememberSaveable { mutableIntStateOf(0) }
     val navigationBarItemColors = NavigationBarItemColors()
 
+    // Sync bottom navigation selection with current back stack entry
+    val currentBackStackEntry by rootNavController.currentBackStackEntryAsState()
+    LaunchedEffect(currentBackStackEntry) {
+        selectedDestination = when (currentBackStackEntry?.destination?.route) {
+            HomeScreen.SoloMode::class.qualifiedName -> 0
+            HomeScreen.WeeklyJam::class.qualifiedName -> 1
+            else -> selectedDestination // Keep current selection for nested screens
+        }
+    }
+
     fun onBottomTabClick(
         index: Int,
     ) {
@@ -60,7 +72,6 @@ fun HomeScreen(
             launchSingleTop = true
             restoreState = true
         }
-        selectedDestination = index
     }
 
     Scaffold(
