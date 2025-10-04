@@ -6,11 +6,11 @@ const db = admin.firestore();
 
 /**
  * Updates submission count and participants list when submissions are created/updated/deleted
+ * Uses actual document count to avoid race conditions
  */
 export const onSubmissionWrite = onDocumentWritten(
   "weekly_jam/{jamId}/submissions/{userId}",
   async (event) => {
-    const change = event.data;
     const jamId = event.params.jamId;
     const userId = event.params.userId;
 
@@ -24,43 +24,28 @@ export const onSubmissionWrite = onDocumentWritten(
         return;
       }
 
-      const jamData = jamDoc.data();
-      const currentParticipants: string[] = jamData?.participants || [];
-      const currentSubmissionCount: number = jamData?.submissionCount || 0;
+      // Query actual submissions to get accurate count and participants
+      const submissionsSnapshot = await jamRef
+        .collection("submissions")
+        .get();
 
-      let newParticipants = [...currentParticipants];
-      let newSubmissionCount = currentSubmissionCount;
-
-      // Handle the change
-      if (!change.before.exists && change.after.exists) {
-        // Document created - add participant and increment count
-        if (!newParticipants.includes(userId)) {
-          newParticipants.push(userId);
+      const participants: string[] = [];
+      submissionsSnapshot.forEach(doc => {
+        const submission = doc.data();
+        if (submission.userId && !participants.includes(submission.userId)) {
+          participants.push(submission.userId);
         }
-        newSubmissionCount++;
-        console.log(`Added submission for user ${userId} in jam ${jamId}`);
-
-      } else if (change.before.exists && !change.after.exists) {
-        // Document deleted - remove participant and decrement count
-        newParticipants = newParticipants.filter(id => id !== userId);
-        newSubmissionCount = Math.max(0, newSubmissionCount - 1);
-        console.log(`Removed submission for user ${userId} in jam ${jamId}`);
-
-      } else if (change.before.exists && change.after.exists) {
-        // Document updated - ensure participant is in list but don't change count
-        if (!newParticipants.includes(userId)) {
-          newParticipants.push(userId);
-        }
-        console.log(`Updated submission for user ${userId} in jam ${jamId}`);
-      }
-
-      // Update the jam document
-      await jamRef.update({
-        participants: newParticipants,
-        submissionCount: newSubmissionCount
       });
 
-      console.log(`Updated jam ${jamId}: ${newSubmissionCount} submissions, ${newParticipants.length} participants`);
+      const submissionCount = submissionsSnapshot.size;
+
+      // Update the jam document with accurate data
+      await jamRef.update({
+        participants,
+        submissionCount
+      });
+
+      console.log(`Updated jam ${jamId}: ${submissionCount} submissions, ${participants.length} participants (triggered by ${userId})`);
 
     } catch (error) {
       console.error(`Error updating jam ${jamId} submission stats:`, error);
