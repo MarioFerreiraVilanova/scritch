@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -99,21 +100,14 @@ fun SoloScreen(
             )
         },
         bottomBar = {
-            AnimatedVisibility(
-                visible = viewState.valid,
-                enter = slideInVertically(
-                    initialOffsetY = { height -> height }
-                )
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center,
             ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    PromptButton(
-                        modifier = Modifier.padding(16.dp),
-                        onClick = viewModel::onGeneratePrompt
-                    )
-                }
+                PromptButton(
+                    modifier = Modifier.padding(16.dp),
+                    onClick = viewModel::onGeneratePrompt
+                )
             }
         }
     ) { innerPadding ->
@@ -140,8 +134,12 @@ fun SoloScreen(
                         }
                     )
                 } else {
-                    PromptButton(
-                        onClick = viewModel::onGeneratePrompt
+                    Text(
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        textAlign = TextAlign.Center,
+                        text = "Ready to get inspired? Tap to generate an idea.",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
