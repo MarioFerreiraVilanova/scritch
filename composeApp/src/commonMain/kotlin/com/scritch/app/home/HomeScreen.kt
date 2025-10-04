@@ -59,6 +59,7 @@ fun HomeScreen(
     fun onBottomTabClick(
         index: Int,
     ) {
+        selectedDestination = index // Immediately update selection when tab is clicked
         rootNavController.navigate(
             route = when (index) {
                 0 -> HomeScreen.SoloMode
